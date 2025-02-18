@@ -7,8 +7,8 @@ assignees: ''
 
 ---
 
-# **Titel**: 
+# **Kurzbeschreibung**:
 
-## **Beschreibung**:
+## **Beschreibung**
 
-## **Steht in Verbindung mit**:
+## **Steht in Verbindung mit**
