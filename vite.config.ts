@@ -7,7 +7,8 @@ const config: UserConfigExport = defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '~': '/node_modules/'
+      '~': '/node_modules/',
+      'styles': 'src/styles'
     }
   }
 })

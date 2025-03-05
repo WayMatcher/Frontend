@@ -5,10 +5,9 @@ import Privacy from './Privacy';
 export default function Footer() {
   return (
     <div className="Footer" >
-      <div className="Terms">
-        <Privacy />
-        <TermsConditions />
-      </div>
+      <Privacy />
+      <TermsConditions />
+      <i className='copyright'>WayMatcher, 2025 ©</i>
     </div>
   );
 }

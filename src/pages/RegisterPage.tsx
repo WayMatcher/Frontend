@@ -1,10 +1,10 @@
-import '../styles/LoginForm.scss';
+import '../styles/RegisterPage.scss';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-export default function LoginForm() {
+export default function RegisterPage() {
   return (
-    <Form className='loginForm'>
+    <Form className='registerForm'>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control type="email" placeholder="Enter email" />
