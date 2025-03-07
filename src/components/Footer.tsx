@@ -1,12 +1,14 @@
 import '../styles/Footer.scss';
-import TermsConditions from './TermsConditions';
-import Privacy from './Privacy';
+import { Container } from 'react-bootstrap';
 
 export default function Footer() {
   return (
-    <div className="Footer" >
-      <Privacy />
-      <TermsConditions />
+
+    <div className='Footer'>
+      <Container>
+        <a href=".">Privacy</a>
+        <a href=".">Terms & Conditions</a>
+      </Container>
       <i className='copyright'>WayMatcher, 2025 ©</i>
     </div>
   );

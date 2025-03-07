@@ -12,33 +12,25 @@ import EventPage from './pages/EventPage';
 
 import { UserProvider } from './context/UserProvider';
 
-function App() {
-  return (
-    <>
-      <header className="App-Header">
-        <NavBar />
-      </header>
-      <main className="App-Main">
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/user" element={<UserPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/event" element={<EventPage />} />
-        </Routes>
-      </main>
-      <footer className="App-Footer">
-        <Footer />
-      </footer>
-    </>
-  );
-}
-
 export default function AppWrapper() {
   return (
     <UserProvider>
       <Router>
-        <App />
+        <header className="App-Header">
+          <NavBar />
+        </header>
+        <main className="App-Main">
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/user" element={<UserPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/event" element={<EventPage />} />
+          </Routes>
+        </main>
+        <footer className="App-Footer">
+          <Footer />
+        </footer>
       </Router>
     </UserProvider>
   );
