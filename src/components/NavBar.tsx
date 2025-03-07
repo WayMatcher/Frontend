@@ -1,5 +1,5 @@
 import '../styles/NavBar.scss';
-import useUser from '../context/UserUse';
+import useUser from '../contexts/UserUse';
 import { NavDropdown, Navbar, Nav, Container } from 'react-bootstrap';
 
 function NavBar() {

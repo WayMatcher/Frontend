@@ -1,5 +1,6 @@
 import './App.scss';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { UserProvider, useUser } from './contexts/UserContext'; // Import
 
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
@@ -8,9 +9,7 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UserPage from './pages/UserPage';
-import EventPage from './pages/EventPage';
-
-import { UserProvider } from './context/UserProvider';
+import EventsPage from './pages/EventsPage';
 
 export default function AppWrapper() {
   return (
@@ -22,10 +21,12 @@ export default function AppWrapper() {
         <main className="App-Main">
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/user" element={<UserPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/event" element={<EventPage />} />
+            <Route path="/user/login" element={<LoginPage />} />
+            <Route path="/user/register" element={<RegisterPage />} />
+            <ProtectedRoute>
+              <Route path="/user/edit" element={<UserPage />} />
+              <Route path="/events" element={<EventsPage />} />
+            </ProtectedRoute>
           </Routes>
         </main>
         <footer className="App-Footer">
@@ -35,3 +36,9 @@ export default function AppWrapper() {
     </UserProvider>
   );
 }
+
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useUser();
+  // Redirect to login if not authenticated
+  return user ? <>{children}</> : <Navigate to="/user/login" />;
+};

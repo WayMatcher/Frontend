@@ -1,53 +1,92 @@
-import bcrypt from 'bcryptjs';
+import axios, { AxiosInstance } from 'axios';
+import { User } from '../types/user';
 
-import { User, Username, Email } from '../types';
+const api: AxiosInstance = axios.create({
+    baseURL: 'http://localhost:5000/api', // Replace with your C# API's URL
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
-/**
- * Hashes a password using bcrypt.
- * @param password - The password to hash.
- * @returns The hashed password.
- */
-function hashPassword(password: string): string {
-    return bcrypt.hashSync(password, 10);
-}
-
-/**
- * Authenticates a user based on a username or email and password.
- *
- * @param userOrEmail - The username or email of the user to authenticate.
- * @param password - The password of the user to authenticate.
- * @returns A promise that resolves to a User object if authentication is successful, or null if authentication fails.
- */
-const authenticate = (userOrEmail: Username | Email, password: string): Promise<User> | null => {
-    //! Placeholder for the return of actual API call
-    // When given a username or email, return a user object with the hashed password
-    const placeHolderPromise = new Promise<User>((resolve, reject) => {
-        if (userOrEmail as Username !== undefined) {
-            resolve({
-                id: 1,
-                username: userOrEmail,
-                email: 'test@exmaple.com',
-                password: hashPassword(password),
-            });
-        } else if (userOrEmail as Email !== undefined) {
-            resolve({
-                id: 1,
-                username: 'test',
-                email: userOrEmail,
-                password: hashPassword(password),
-            });
+// Add a request interceptor
+api.interceptors.request.use(
+    (config) => {
+        const user = localStorage.getItem('user');
+        const token = user ? JSON.parse(user).token : "";
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
         }
-        else {
-            reject(
-                {
-                    id: 1,
-                    username: 'test',
-                    email: 'test@example.com',
-                    password: hashPassword(password),
-                }
-            );
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// --- Authentication ---
+export const loginUser = async (credentials: Pick<User, 'username' | 'email'> & { password: string }) => {
+    try {
+        const response = await api.post('/auth/login', credentials);
+        // The C# server needs to answer with the needed User Data and token.
+        return response.data; // Assuming your API returns { user: User, token: string }
+    } catch (error) {
+        handleApiError(error); // You'll need an error handler
+    }
+};
+
+export const registerUser = async (userData: Omit<User, 'id'>) => { //Exclude id, it's likely auto-generated
+    try {
+        const response = await api.post('/auth/register', userData);
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+    }
+};
+
+// --- User Data ---
+
+export const updateUser = async (userId: number, userData: Partial<User>) => {
+    const response = await api.put(`/users/${userId}`, userData);
+    return response.data;
+};
+
+
+const handleApiError = (error: any) => {
+    if (axios.isAxiosError(error)) {
+        // Handle Axios-specific errors (e.g., network issues, timeouts)
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error("API Error:", error.response.status, error.response.data);
+
+            // Example: Check for specific status codes and handle them
+            if (error.response.status === 401) {
+                // Unauthorized - Redirect to login or show an error message
+                console.warn("Unauthorized: Please log in again.");
+                // You might want to clear the user context here: setUser(null);
+            } else if (error.response.status === 400) {
+                console.warn("Bad Request: Check your data");
+            } else if (error.response.status === 404) {
+                // Not Found - Handle appropriately (e.g., display a 404 message)
+                console.warn("Resource not found.");
+            } else {
+                // Other server errors (5xx)
+                console.error("Server Error:", error.response.status, error.response.data);
+            }
+            throw new Error(error.response.data.message || "An error occurred with your request");
+
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.error("Network Error: No response received.", error.request);
+            throw new Error("Network Error: Could not connect to the server.");
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error("Request Setup Error:", error.message);
+            throw new Error("An unexpected error occurred. Please try again later.");
         }
-    });
-    return placeHolderPromise;
-}
-export default authenticate;
+    } else {
+        // Handle non-Axios errors (e.g., errors in your code)
+        console.error("Generic Error:", error);
+        throw new Error("An unexpected error occurred. Please try again later.");
+    }
+};
