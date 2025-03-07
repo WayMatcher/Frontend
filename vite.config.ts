@@ -8,9 +8,18 @@ const config: UserConfigExport = defineConfig({
   resolve: {
     alias: {
       '~': '/node_modules/',
-      'styles': 'src/styles'
+      'styles': 'src/styles',
+      'components': 'src/components',
+      'pages': 'src/pages',
+      'utils': 'src/utils',
+      'assets': 'src/assets',
+      'services': 'src/services',
+      'hooks': 'src/hooks',
+      'context': 'src/context',
+      'config': 'src/config',
+      'types': 'src/types',
     }
   }
-})
+});
 
 export default config
