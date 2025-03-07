@@ -1,54 +1,53 @@
-import axios from 'axios';
 import bcrypt from 'bcryptjs';
 
-import { User } from '../types';
+import { User, Username, Email } from '../types';
 
-//const API_URL = 'https://example.com/api';
-
-
+/**
+ * Hashes a password using bcrypt.
+ * @param password - The password to hash.
+ * @returns The hashed password.
+ */
 function hashPassword(password: string): string {
     return bcrypt.hashSync(password, 10);
 }
 
-export async function loginUsername(username: string, password: string): Promise<User> {
-    try {
-        // const response = await axios.post(`${API_URL}/login`, {
-        //     username,
-        //     hashedPassword,
-        // });
-        //return response.data;
-
-        //! Placeholder for the return of actual API call
-        return {
-            id: '1',
-            username: username,
-            email: 'test@email.com',
-            password: hashPassword(password),
-        };
-
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error('Failed to login: ' + error.message);
-        } else {
-            throw new Error('Failed to login: ' + error);
+/**
+ * Authenticates a user based on a username or email and password.
+ *
+ * @param userOrEmail - The username or email of the user to authenticate.
+ * @param password - The password of the user to authenticate.
+ * @returns A promise that resolves to a User object if authentication is successful, or null if authentication fails.
+ */
+const authenticate = (userOrEmail: Username | Email, password: string): Promise<User> | null => {
+    //! Placeholder for the return of actual API call
+    // When given a username or email, return a user object with the hashed password
+    const placeHolderPromise = new Promise<User>((resolve, reject) => {
+        if (userOrEmail as Username !== undefined) {
+            resolve({
+                id: 1,
+                username: userOrEmail,
+                email: 'test@exmaple.com',
+                password: hashPassword(password),
+            });
+        } else if (userOrEmail as Email !== undefined) {
+            resolve({
+                id: 1,
+                username: 'test',
+                email: userOrEmail,
+                password: hashPassword(password),
+            });
         }
-    }
-};
-
-export async function loginEmail(email: string, password: string): Promise<User> {
-    try {
-        //! Placeholder for the return of actual API call
-        return {
-            id: '1',
-            username: 'test',
-            email: email,
-            password: hashPassword(password),
+        else {
+            reject(
+                {
+                    id: 1,
+                    username: 'test',
+                    email: 'test@example.com',
+                    password: hashPassword(password),
+                }
+            );
         }
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            throw new Error('Failed to login: ' + error.message);
-        } else {
-            throw new Error('Failed to login: ' + error);
-        }
-    }
+    });
+    return placeHolderPromise;
 }
+export default authenticate;
