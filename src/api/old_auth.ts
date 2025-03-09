@@ -1,23 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import bcrypt from 'bcryptjs';
-
-import { LoginCredentials, LoginResponse, MFAResponse } from '../types/api';
-
-// * How the authentication flow works:
-// 1. User enters username and password in frontend
-// 2. Frontend sends credentials to backend (eg. /api/login)
-// 3. Backend checks user credentials
-// 4. If credentials are correct, backend sends user a MFA token
-// 5. User enters MFA token in frontend
-// 6. Frontend sends MFA token to backend
-// 7. Backend validates MFA token
-// 8. If MFA token is valid, backend sends JWT to frontend
-// 9. Frontend stores JWT in local storage
-// 10. Frontend sends JWT with every request to backend
-
+import { User } from '../types/user';
 
 const api: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api', // Replace with the C# API's URL
+    baseURL: 'http://localhost:5000/api', // Replace with your C# API's URL
     headers: {
         'Content-Type': 'application/json',
     },
@@ -38,34 +23,57 @@ api.interceptors.request.use(
     }
 );
 
-
-
 // --- Authentication ---
-export const loginUser = async (credentials: LoginCredentials) => {
+export const loginUser = async (credentials: Pick<User, 'username' | 'email'> & { password: string }): Promise<{ user: User, token: string }> => {
     try {
-        // Sends the credentials, hashed via bcrypt to the backend
-        const response = await api.post('/auth/login', {
-            username: credentials.username,
-            password: await bcrypt.hash(credentials.password, 10)
-        });
+        // const response = await api.post('/auth/login', credentials);
+        // The C# server needs to answer with the needed User Data and token.
+        // return response.data; // Assuming your API returns { user: User, token: string }
 
-        return response.data as LoginResponse; // Assuming the API returns { user: User }
+        // Mock response
+        const mockResponse = {
+            user: {
+                id: 1,
+                username: credentials.username || 'testuser',
+                email: credentials.email || 'testuser@example.com',
+                // Add other user fields as needed
+            },
+            token: 'mock-token-123456'
+        };
+        return mockResponse;
     } catch (error) {
-        handleApiError(error);
-        throw error;
+        handleApiError(error); // You'll need an error handler
+        throw error; // Ensure the function always returns or throws
     }
 };
 
-
-export const mfaAuthUser = async (mfaToken: string) => {
+// --- Registration ---
+// ! TODO - Implement the registerUser function
+// * This function should send a POST request to the server to register a new user.
+/* export const registerUser = async (userData: Omit<User, 'id'>): Promise<{ user: User, token: string }> => { //Exclude id, it's likely auto-generated
     try {
-        const response = await api.post('/auth/mfa', { mfaToken });
-        return response.data as MFAResponse; // Assuming your API returns { user: User, JWT: string }
-    } catch (error) {
+        // const response = await api.post('/auth/register', userData);
+        // return response.data;
+
+        // Mock response
+        const mockResponse = {
+            user: {
+                id: 1,
+                ...userData
+            },
+            token: 'mock-token-123456'
+        };
+        return mockResponse;
+    } catch (error: unknown) {
         handleApiError(error);
-        throw error;
     }
-}
+}; */
+
+// --- Update User Data ---
+export const updateUser = async (userId: number, userData: Partial<User>) => {
+    const response = await api.put(`/users/${userId}`, userData);
+    return response.data;
+};
 
 const handleApiError = (error: unknown) => {
     if (axios.isAxiosError(error)) {

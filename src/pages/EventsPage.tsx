@@ -1,4 +1,4 @@
-import '../styles/EventPage.scss';
+import '../styles/EventsPage.scss';
 
 export default function EventPage() {
   return (
