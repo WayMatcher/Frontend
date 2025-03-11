@@ -14,7 +14,7 @@ import React, { useContext, useState } from 'react';
 
 // Components
 import { Button, ButtonGroup, Container, Form } from 'react-bootstrap'; // Bootstrap
-import ErrorModal from '../components/ErrorMessage'; // Error Modal
+import ErrorModal from '../components/ErrorModal'; // Error Modal
 
 const LoginPage: React.FC = () => {
   const { setMFA } = useContext(MFAContext);
@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Container>
+    <Container className='loginContainer'>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -106,7 +106,7 @@ const LoginPage: React.FC = () => {
                 <ErrorMessage name="password" />
               </Form.Control.Feedback>
             </Form.Group>
-
+            <br />
             <Form.Group className="mb-3">
               <ButtonGroup>
                 <Button variant="primary" type="submit" disabled={isSubmitting}>

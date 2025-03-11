@@ -1,5 +1,6 @@
 import { Form } from 'react-bootstrap';
 import { Formik, Field, ErrorMessage } from 'formik';
+import ErrorModal from '../components/ErrorModal';
 import * as Yup from 'yup';
 import { useState } from 'react';
 
@@ -18,6 +19,16 @@ const MFAPage: React.FC = () => {
         console.log(values);
         setSubmitting(false);
     }
+
+    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+
+    const handleShowErrorModal = () => {
+        setShowErrorModal(true);
+    };
+
+    const handleCloseErrorModal = () => {
+        setShowErrorModal(false);
+    };
 
     return (
         <>
@@ -46,6 +57,9 @@ const MFAPage: React.FC = () => {
                             />
                         </Field>
                     </Form.Group>
+                    <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
+                        {submissionError}
+                    </ErrorModal>
                 </Form>
             </Formik>
         </>
