@@ -17,7 +17,7 @@ import { LoginCredentials, LoginResponse, MFAResponse } from '../types/api';
 
 
 const api: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:5000/api', // Replace with the C# API's URL
+    baseURL: 'https://waymatcher.com/api',
     headers: {
         'Content-Type': 'application/json',
     },
