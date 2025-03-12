@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react';
-import { User } from '../types/user';
-import { UserContextProps } from '../types/contexts';
+import User from '../types/dto/User';
+import { UserContextProps } from '../types/Contexts';
 
 
 /**

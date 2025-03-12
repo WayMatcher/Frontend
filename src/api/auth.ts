@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 import bcrypt from 'bcryptjs';
 
-import { LoginCredentials, LoginResponse, MFAResponse } from '../types/api';
-import { User } from '../types/user';
+import APIResponse, { MFAResponse } from '../types/API';
+import User, { UserLogin } from '../types/dto/User';
 
 // * How the authentication flow works:
 // 1. User enters username and password in frontend
@@ -47,11 +47,11 @@ api.interceptors.request.use(
  * @returns A promise that resolves to a `LoginResponse` object containing authentication details.
  * @throws Will throw an error if the authentication request fails.
  */
-export const authUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+export const authUser = async (credentials: UserLogin): Promise<APIResponse> => {
     try {
-        const response = await api.post('/auth/login', { user: credentials.user, password: bcrypt.hashSync(credentials.password, 10) });
+        const response = await api.post('/auth/login', { user: credentials.username, password: bcrypt.hashSync(credentials.password, 10) });
 
-        return response.data as LoginResponse;
+        return response.data as APIResponse;
     } catch (error) {
         handleApiError(error);
         throw error;

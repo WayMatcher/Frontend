@@ -1,4 +1,4 @@
-import { User } from './user';
+import User from './dto/User';
 
 export interface UserContextProps {
     user: User | null;

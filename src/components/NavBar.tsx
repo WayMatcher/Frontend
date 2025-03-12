@@ -1,16 +1,20 @@
 import '../styles/NavBar.scss';
 import UserContext from '../contexts/UserContext';
-import { NavDropdown, Navbar, Nav, Container, Button, ButtonGroup } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Container, ButtonGroup } from 'react-bootstrap';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function NavBar() {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const handleBrandClick = () => {
+    navigate('/');
+  }
 
   return (
     <Navbar className="NavBar">
       <Container>
-        <Navbar.Brand href="/">WayMatcher</Navbar.Brand>
+        <Navbar.Brand onClick={handleBrandClick}>WayMatcher</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">

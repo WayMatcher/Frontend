@@ -6,10 +6,10 @@ import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 
 import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage';
-import MFAPage from './pages/MFAPage';
-import RegisterPage from './pages/RegisterPage';
-import UserPage from './pages/UserPage';
+import LoginPage from './pages/user/LoginPage';
+import MFAPage from './pages/user/MFAPage';
+import RegisterPage from './pages/user/RegisterPage';
+import UserPage from './pages/user/UserPage';
 import EventsPage from './pages/EventsPage';
 
 export default function AppWrapper() {

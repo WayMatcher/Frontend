@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, ButtonGroup } from 'react-bootstrap';
-import { Formik, Field } from 'formik';
+import { Form, Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
+import { Formik, Field, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
-import ErrorModal from '../components/ErrorModal';
-import { mfaAuthUser } from '../api/auth';
-import { MFAResponse } from '../types/api';
-import UserContext from '../contexts/UserContext';
+import ErrorModal from '../../components/ErrorModal';
+import { mfaAuthUser } from '../../api/auth';
+import { MFAResponse } from '../../types/API';
+import UserContext from '../../contexts/UserContext';
 
 
 const MFAPage: React.FC = () => {
@@ -83,42 +83,54 @@ const MFAPage: React.FC = () => {
         // Redirect to user edit page if MFA is not pending
         return (
             <>
-                <Formik
-                    initialValues={initialValues}
-                    onSubmit={handleSubmit}
-                    validationSchema={validationSchema}
-                    onReset={() => console.log("Resetting form")}
-                >
-                    {({ isSubmitting }) => (
-                        <Form>
-                            <Form.Group>
-                                <Form.Label htmlFor="mfaToken">MFA Token</Form.Label>
-                                <Field
-                                    type="text"
-                                    id="mfaToken"
-                                    name="mfaToken"
-                                    placeholder="Enter MFA Token"
-                                    className="form-control"
-                                />
-
-                            </Form.Group>
-                            <br />
-                            <Form.Group>
-                                <ButtonGroup>
-                                    <Button type="submit" variant='primary' disabled={isSubmitting}>Submit</Button>
-                                    <Button type="reset" variant='secondary'>Reset</Button>
-                                </ButtonGroup>
-                            </Form.Group>
-                            <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
-                                {submissionError}
-                            </ErrorModal>
-                        </Form>
-                    )}
-                </Formik>
+                <Container>
+                    <h1>Multi-Factor-Authentication (MFA)</h1>
+                    <Formik
+                        onSubmit={handleSubmit}
+                        validateOnChange={true}
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                    >
+                        {({ values, handleSubmit, errors, isSubmitting }) => (
+                            <FormikForm onSubmit={handleSubmit}>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <Form.Label htmlFor="mfaToken">MFA Token</Form.Label>
+                                            <Field
+                                                type="text"
+                                                id="mfaToken"
+                                                name="mfaToken"
+                                                placeholder="Enter MFA Token"
+                                                className="form-control"
+                                                value={values.mfaToken}
+                                            />
+                                            <Form.Control.Feedback type="invalid">{errors.mfaToken}</Form.Control.Feedback>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <Form.Group>
+                                            <ButtonGroup>
+                                                <Button type="submit" variant='primary' disabled={isSubmitting}>Submit</Button>
+                                                <Button type="reset" variant='secondary'>Reset</Button>
+                                            </ButtonGroup>
+                                        </Form.Group>
+                                        <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
+                                            {submissionError}
+                                        </ErrorModal>
+                                    </Col>
+                                </Row>
+                            </FormikForm>
+                        )}
+                    </Formik>
+                </Container>
             </>
         )
     } else {
         // Redirect to login page if user is not defined
+        console.error("User not defined in context");
         navigate('/user/login');
         return null;
     }
