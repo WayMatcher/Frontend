@@ -1,13 +1,14 @@
 import { User } from './user';
 
 export interface LoginCredentials {
-    username: string;
+    user: User;
     password: string;
 }
 
 export interface LoginResponse {
     succeeded: boolean;
     message: string;
+    jwt?: string;
 }
 
 export interface MFAResponse {

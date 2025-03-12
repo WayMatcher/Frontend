@@ -1,23 +1,67 @@
-import { Form } from 'react-bootstrap';
-import { Formik, Field, ErrorMessage } from 'formik';
-import ErrorModal from '../components/ErrorModal';
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Form, Button, ButtonGroup } from 'react-bootstrap';
+import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
-import { useState } from 'react';
+import ErrorModal from '../components/ErrorModal';
+import { mfaAuthUser } from '../api/auth';
+import { MFAResponse } from '../types/api';
+import UserContext from '../contexts/UserContext';
 
 
 const MFAPage: React.FC = () => {
-    const [submissionError, setSubmissionError] = useState<string | null>(null);
+    const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
+    const { user, setUser } = useContext(UserContext); // Get user context
+    const navigate = useNavigate(); // Navigation hook
 
+    // Validation schema for the form
     const validationSchema = Yup.object({
-        mfaToken: Yup.string().required('Please enter MFA Token').matches(/^[0-9]{6}$/, 'MFA Token must be 6 digits'),
+        mfaToken: Yup.string().required('Please enter MFA Token').matches(/^[0-9]{4}$/, 'MFA Token must be 4 digits'),
     });
-    const initialValues = {
-        mfaToken: '',
-    };
 
-    const onSubmit = async (values: typeof initialValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
-        console.log(values);
-        setSubmitting(false);
+    // Initial values for the form
+    const initialValues = { mfaToken: '' };
+
+
+    /**
+     * Handles the submission of the MFA form.
+     *
+     * @param values - The form values, which should match the shape of `initialValues`.
+     * @param object - An object containing the `setSubmitting` function to control the form's submitting state.
+     * @param object.setSubmitting - A function to set the submitting state of the form.
+     *
+     * @returns {Promise<void>} A promise that resolves when the submission handling is complete.
+     *
+     * @throws {Error} Throws an error if an unknown error occurs during the submission process.
+     */
+    const handleSubmit = async (values: typeof initialValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }): Promise<void> => {
+        setSubmissionError(null);
+
+        // Check if user is defined in context
+        if (!user) {
+            setSubmissionError("No user defined in context");
+            handleShowErrorModal();
+            setSubmitting(false);
+            return;
+        }
+
+        try {
+            const result: MFAResponse = await mfaAuthUser(user, values.mfaToken);
+            if (result.succeeded && result.user) {
+                // MFA Token verification succeeded
+                setUser({ ...user, jwt: result.user.jwt, mfaPending: false });
+                navigate('/user/edit');
+            } else {
+                // MFA Token verification failed
+                setSubmissionError(result.succeeded ? "No User received through API" : "MFA Token verification failed");
+                handleShowErrorModal();
+            }
+        } catch (error: unknown) {
+            setSubmissionError("Unknown error occurred: " + (error as Error).message);
+            handleShowErrorModal();
+        } finally {
+            setSubmitting(false);
+        }
     }
 
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
@@ -30,40 +74,54 @@ const MFAPage: React.FC = () => {
         setShowErrorModal(false);
     };
 
-    return (
-        <>
-            <Formik
-                initialValues={initialValues}
-                onSubmit={onSubmit}
-                validationSchema={validationSchema}
-            >
-                <Form>
-                    <Form.Group>
-                        <Form.Label htmlFor="mfaToken">MFA Token</Form.Label>
+    // Check if user is defined in context
+    if (user && user.mfaPending === false) {
+        navigate('/user/edit');
 
-                        <Field
-                            type="text"
-                            id="mfaToken"
-                            name="mfaToken"
-                            placeholder="Enter MFA Token"
-                            className="form-control"
-                        >
-                            <Form.Control
-                                type="text"
-                                id="mfaToken"
-                                name="mfaToken"
-                                placeholder="Enter MFA Token"
-                                className="form-control"
-                            />
-                        </Field>
-                    </Form.Group>
-                    <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
-                        {submissionError}
-                    </ErrorModal>
-                </Form>
-            </Formik>
-        </>
-    );
+
+    } else if (user && user.mfaPending) {
+        // Redirect to user edit page if MFA is not pending
+        return (
+            <>
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
+                    onReset={() => console.log("Resetting form")}
+                >
+                    {({ isSubmitting }) => (
+                        <Form>
+                            <Form.Group>
+                                <Form.Label htmlFor="mfaToken">MFA Token</Form.Label>
+                                <Field
+                                    type="text"
+                                    id="mfaToken"
+                                    name="mfaToken"
+                                    placeholder="Enter MFA Token"
+                                    className="form-control"
+                                />
+
+                            </Form.Group>
+                            <br />
+                            <Form.Group>
+                                <ButtonGroup>
+                                    <Button type="submit" variant='primary' disabled={isSubmitting}>Submit</Button>
+                                    <Button type="reset" variant='secondary'>Reset</Button>
+                                </ButtonGroup>
+                            </Form.Group>
+                            <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
+                                {submissionError}
+                            </ErrorModal>
+                        </Form>
+                    )}
+                </Formik>
+            </>
+        )
+    } else {
+        // Redirect to login page if user is not defined
+        navigate('/user/login');
+        return null;
+    }
 };
 
 export default MFAPage;

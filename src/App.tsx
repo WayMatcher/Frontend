@@ -1,7 +1,6 @@
 import './App.scss';
-import { useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import UserContext, { UserProvider } from './contexts/UserContext'; // Import
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { UserProvider } from './contexts/UserContext'; // Import
 
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
@@ -14,6 +13,7 @@ import UserPage from './pages/UserPage';
 import EventsPage from './pages/EventsPage';
 
 export default function AppWrapper() {
+
   return (
     <div>
       <UserProvider>
@@ -39,9 +39,3 @@ export default function AppWrapper() {
     </div >
   );
 }
-
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useContext(UserContext);  // Get user from context
-  // Redirect to login if not authenticated
-  return user ? <>{children}</> : <Navigate to="/user/login" />;
-};

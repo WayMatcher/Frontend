@@ -1,25 +1,18 @@
-// Forms
-import { Formik, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-
-import { loginUser } from '../api/auth'; // APIs
-import { LoginCredentials, LoginResponse } from '../types/api';
-
-// Contexts
-import MFAContext from '../contexts/MFAContext';
-
-// React
-import { useNavigate } from 'react-router-dom';
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { Container } from 'react-bootstrap';
 
-// Components
-import { Button, ButtonGroup, Container, Form } from 'react-bootstrap'; // Bootstrap
-import ErrorModal from '../components/ErrorModal'; // Error Modal
+import { authUser } from '../api/auth';
+import { LoginResponse } from '../types/api';
+import UserContext from '../contexts/UserContext';
+import ErrorModal from '../components/ErrorModal';
+import classifyText from '../utils/classifyText';
 
 const LoginPage: React.FC = () => {
-  const { setMFA } = useContext(MFAContext);
   const navigate = useNavigate();
-
+  const { user, setUser } = useContext(UserContext);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const validationSchema = Yup.object({
@@ -35,17 +28,22 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     setSubmissionError(null);
     try {
-      const credentials: LoginCredentials = {
-        username: values.userOrEmail,
+
+      // Call the authUser function from the API
+      const loginResponse: LoginResponse = await authUser({
+        user: {
+          ...user,
+          username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
+          email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
+          mfaPending: true,
+        },
         password: values.password,
-      }
+      });
 
-
-      const loginResponse: LoginResponse = await loginUser(credentials);
-      setMFA(loginResponse.succeeded); // Sets MFA token required depending if login was successful
-
+      // Check if login was successful
       if (loginResponse.succeeded === true) {
-        navigate('./mfa'); // Navigates to MFA page if login was successful
+        setUser(user); // Sets user context
+        navigate('/user/mfa'); // Navigates to MFA page if login was successful
       } else {
         setSubmissionError("Login Failed: " + loginResponse.message); // Sets error message if login failed
         handleShowErrorModal(); // Shows error modal
@@ -79,22 +77,22 @@ const LoginPage: React.FC = () => {
         {({ isSubmitting }) => (
           <Form className="loginForm">
             <h2>Login</h2>
-            <Form.Group>
-              <Form.Label htmlFor="userOrEmail">Username or E-Mail Address</Form.Label>
-              <Form.Control
+            <div className='form-group'>
+              <label htmlFor="userOrEmail">Username or E-Mail Address</label>
+              <Field
                 type="text"
                 id="userOrEmail"
                 name="userOrEmail"
                 placeholder="Enter username or E-Mail Address"
                 className="form-control"
               />
-              <Form.Control.Feedback>
+              <div className='invalid-feedback'>
                 <ErrorMessage name="userOrEmail" />
-              </Form.Control.Feedback>
-            </Form.Group>
+              </div>
+            </div>
 
-            <Form.Group>
-              <Form.Label htmlFor="password">Password</Form.Label>
+            <div className='form-group'>
+              <label htmlFor="password">Password</label>
               <Field
                 type="password"
                 id="password"
@@ -102,24 +100,25 @@ const LoginPage: React.FC = () => {
                 placeholder="Password"
                 className="form-control"
               />
-              <Form.Control.Feedback>
+              <div className='invalid-feedback'>
                 <ErrorMessage name="password" />
-              </Form.Control.Feedback>
-            </Form.Group>
+              </div>
+            </div>
             <br />
-            <Form.Group className="mb-3">
-              <ButtonGroup>
-                <Button variant="primary" type="submit" disabled={isSubmitting}>
+            <div className="form-group mb-3">
+              <div className='btn-group'>
+                <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
                   {isSubmitting ? 'Logging in...' : 'Login'}
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => navigate('../register')}
+                </button>
+                <button
+                  className='btn btn-secondary'
+                  type='reset'
+                  onClick={() => navigate('/user/register')}
                 >
                   Register
-                </Button>
-              </ButtonGroup>
-            </Form.Group>
+                </button>
+              </div>
+            </div>
             <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
               {submissionError}
             </ErrorModal>

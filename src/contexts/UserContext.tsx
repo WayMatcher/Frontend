@@ -13,7 +13,7 @@ import { UserContextProps } from '../types/contexts';
  * @property {User | null} defaultValue.user - The current user object or null if no user is logged in.
  * @property {function} defaultValue.setUser - Function to update the user state.
  */
-const UserContext = createContext<UserContextProps>({
+const UserContext: React.Context<UserContextProps> = createContext<UserContextProps>({
     user: null,
     setUser: () => { },
 });

@@ -2,18 +2,18 @@ import axios, { AxiosInstance } from 'axios';
 import bcrypt from 'bcryptjs';
 
 import { LoginCredentials, LoginResponse, MFAResponse } from '../types/api';
+import { User } from '../types/user';
 
 // * How the authentication flow works:
 // 1. User enters username and password in frontend
-// 2. Frontend sends credentials to backend (eg. /api/login)
-// 3. Backend checks user credentials
-// 4. If credentials are correct, backend sends user a MFA token
-// 5. User enters MFA token in frontend
-// 6. Frontend sends MFA token to backend
-// 7. Backend validates MFA token
-// 8. If MFA token is valid, backend sends JWT to frontend
-// 9. Frontend stores JWT in local storage
-// 10. Frontend sends JWT with every request to backend
+// 2. Frontend sends username and password to the backend
+// 3. Backend checks if the username and password are correct
+// 4. If correct, the backend sends a MFA Token to the users email
+// 5. User enters the MFA Token in the frontend
+// 6. Frontend sends the MFA Token to the backend
+// 7. Backend checks if the MFA Token is correct
+// 8. If correct, the backend sends a JWT to the frontend
+// 9. Frontend stores the JWT in the local storage
 
 
 const api: AxiosInstance = axios.create({
@@ -40,33 +40,51 @@ api.interceptors.request.use(
 
 
 
-// --- Authentication ---
-export const loginUser = async (credentials: LoginCredentials) => {
+/**
+ * Authenticates a user with the provided credentials.
+ *
+ * @param credentials - The login credentials containing either a username or email and a password.
+ * @returns A promise that resolves to a `LoginResponse` object containing authentication details.
+ * @throws Will throw an error if the authentication request fails.
+ */
+export const authUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
     try {
-        // Sends the credentials, hashed via bcrypt to the backend
-        const response = await api.post('/auth/login', {
-            username: credentials.username,
-            password: await bcrypt.hash(credentials.password, 10)
-        });
+        const response = await api.post('/auth/login', { user: credentials.user, password: bcrypt.hashSync(credentials.password, 10) });
 
-        return response.data as LoginResponse; // Assuming the API returns { user: User }
+        return response.data as LoginResponse;
     } catch (error) {
         handleApiError(error);
         throw error;
     }
 };
 
-
-export const mfaAuthUser = async (mfaToken: string) => {
+/**
+ * Authenticates a user using multi-factor authentication (MFA).
+ *
+ * @param user - The user object containing user details.
+ * @param mfaToken - The MFA token provided by the user.
+ * @returns A promise that resolves to an MFAResponse object.
+ * @throws Will throw an error if the API request fails.
+ */
+export const mfaAuthUser = async (user: User, mfaToken: string): Promise<MFAResponse> => {
     try {
-        const response = await api.post('/auth/mfa', { mfaToken });
-        return response.data as MFAResponse; // Assuming your API returns { user: User, JWT: string }
+        const response = await api.post('/auth/mfa', { user: user, mfaToken: bcrypt.hash(mfaToken, 10) });
+        return response.data as MFAResponse;
     } catch (error) {
         handleApiError(error);
         throw error;
     }
 }
 
+/**
+ * Handles errors from API requests, specifically those made using Axios.
+ * Differentiates between various types of errors (e.g., network issues, server responses, request setup errors)
+ * and logs appropriate messages to the console. Throws an error with a relevant message based on the type of error.
+ *
+ * @param error - The error object to handle. Can be an Axios error or a generic error.
+ *
+ * @throws {Error} Throws an error with a specific message based on the type of error encountered.
+ */
 const handleApiError = (error: unknown) => {
     if (axios.isAxiosError(error)) {
         // Handle Axios-specific errors (e.g., network issues, timeouts)
