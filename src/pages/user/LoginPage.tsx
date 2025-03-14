@@ -1,32 +1,27 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { Container } from 'react-bootstrap';
+import { Container, Fade } from 'react-bootstrap';
 
-import { authUser } from '../../api/auth';
-import UserContext from '../../contexts/UserContext';
-import ErrorModal from '../../components/ErrorModal';
-import classifyText from '../../utils/classifyText';
-import { UserLogin } from '../../types/dto/User';
+import authUser from '../../api/auth';
 import APIResponse from '../../types/API';
+import classifyText from '../../utils/classifyText';
 
-const LoginPage: React.FC = () => {
+import UserContext from '../../contexts/UserContext';
+
+import { LoginUserSchema } from '../../formValidations';
+import { UserLogin } from '../../types/dto/User';
+import { LoginUserInitialValues } from '../../formInitialValues';
+import ErrorModal from '../../components/ErrorModal';
+
+export default function LoginPage() {
     const navigate = useNavigate();
+
     const { user, setUser } = useContext(UserContext);
+
     const [submissionError, setSubmissionError] = useState<string | null>(null);
-
-    const validationSchema = Yup.object({
-        userOrEmail: Yup.string().required('Username or Email is required'),
-        password: Yup.string().required('Password is required'),
-    });
-
-    const initialValues: UserLogin = {
-        username: '',
-        email: '',
-        userOrEmail: '',
-        password: '',
-    };
+    const [fadeIn, setFadeIn] = useState<boolean>(false);
+    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
     const handleSubmit = async (values: UserLogin, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
         setSubmissionError(null);
@@ -56,7 +51,6 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
     const handleShowErrorModal = () => {
         setShowErrorModal(true);
@@ -66,67 +60,74 @@ const LoginPage: React.FC = () => {
         setShowErrorModal(false);
     };
 
-    return (
-        <Container className='loginContainer'>
-            <Formik
-                onSubmit={handleSubmit}
-                validateOnChange={true}
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-            >
-                {({ isSubmitting }) => (
-                    <FormikForm className="loginForm">
-                        <h2>Login</h2>
-                        <div className='form-group'>
-                            <label htmlFor="userOrEmail">Username or E-Mail Address</label>
-                            <Field
-                                type="text"
-                                id="userOrEmail"
-                                name="userOrEmail"
-                                placeholder="Enter username or E-Mail Address"
-                                className="form-control"
-                            />
-                            <div className='invalid-feedback'>
-                                <ErrorMessage name="userOrEmail" />
-                            </div>
-                        </div>
 
-                        <div className='form-group'>
-                            <label htmlFor="password">Password</label>
-                            <Field
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="Password"
-                                className="form-control"
-                            />
-                            <div className='invalid-feedback'>
-                                <ErrorMessage name="password" />
+    React.useEffect(() => {
+        setFadeIn(true);
+        return () => {
+            setFadeIn(false);
+        };
+    }, []);
+
+    return (
+        <Fade in={fadeIn}>
+            <Container className='loginContainer'>
+                <Formik
+                    onSubmit={handleSubmit}
+                    validateOnChange={true}
+                    initialValues={LoginUserInitialValues}
+                    validationSchema={LoginUserSchema}
+                >
+                    {({ isSubmitting }) => (
+                        <FormikForm className="loginForm">
+                            <h2>Login</h2>
+                            <div className='form-group'>
+                                <label htmlFor="userOrEmail">Username or E-Mail Address</label>
+                                <Field
+                                    type="text"
+                                    id="userOrEmail"
+                                    name="userOrEmail"
+                                    placeholder="Enter username or E-Mail Address"
+                                    className="form-control"
+                                />
+                                <div className='invalid-feedback'>
+                                    <ErrorMessage name="userOrEmail" />
+                                </div>
                             </div>
-                        </div>
-                        <br />
-                        <div className="form-group mb-3">
-                            <div className='btn-group'>
-                                <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? 'Logging in...' : 'Login'}
-                                </button>
-                                <button
-                                    className='btn btn-secondary'
-                                    type='reset'
-                                    onClick={() => navigate('/user/register')}
-                                >
-                                    Register
-                                </button>
+                            <div className='form-group'>
+                                <label htmlFor="password">Password</label>
+                                <Field
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    className="form-control"
+                                />
+                                <div className='invalid-feedback'>
+                                    <ErrorMessage name="password" />
+                                </div>
                             </div>
-                        </div>
-                        <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
-                            {submissionError}
-                        </ErrorModal>
-                    </FormikForm>
-                )}
-            </Formik>
-        </Container>
+                            <br />
+                            <div className="form-group mb-3">
+                                <div className='btn-group'>
+                                    <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
+                                        {isSubmitting ? 'Logging in...' : 'Login'}
+                                    </button>
+                                    <button
+                                        className='btn btn-secondary'
+                                        type='reset'
+                                        onClick={() => navigate('/user/register')}
+                                    >
+                                        Register
+                                    </button>
+                                </div>
+                            </div>
+                            <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
+                                {submissionError}
+                            </ErrorModal>
+                        </FormikForm>
+                    )}
+                </Formik>
+            </Container>
+        </Fade>
     );
 };
-
-export default LoginPage;

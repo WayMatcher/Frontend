@@ -5,4 +5,5 @@ export default interface Vehicle {
     year?: number;
     seats: number;
     license_plate: string;
+    additional_description?: string;
 }

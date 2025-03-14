@@ -1,26 +1,27 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
-import { Formik, Field, Form as FormikForm } from 'formik';
-import * as Yup from 'yup';
+import { Formik, Form as FormikForm } from 'formik';
 import ErrorModal from '../../components/ErrorModal';
 import { mfaAuthUser } from '../../api/auth';
 import { MFAResponse } from '../../types/API';
 import UserContext from '../../contexts/UserContext';
+import { LoginMFASchema } from '../../formValidations';
+import FormInput from '../../components/FormInput';
+import { LoginMFAInitialValues } from '../../formInitialValues';
+import MFAToken from '../../types/dto/MFAToken';
 
 
-const MFAPage: React.FC = () => {
-    const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
-    const { user, setUser } = useContext(UserContext); // Get user context
+export default function MFAPage() {
     const navigate = useNavigate(); // Navigation hook
 
-    // Validation schema for the form
-    const validationSchema = Yup.object({
-        mfaToken: Yup.string().required('Please enter MFA Token').matches(/^[0-9]{4}$/, 'MFA Token must be 4 digits'),
-    });
+    const { user, setUser } = useContext(UserContext); // Get user context
 
-    // Initial values for the form
-    const initialValues = { mfaToken: '' };
+    const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
+    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+
+
+
 
 
     /**
@@ -34,7 +35,7 @@ const MFAPage: React.FC = () => {
      *
      * @throws {Error} Throws an error if an unknown error occurs during the submission process.
      */
-    const handleSubmit = async (values: typeof initialValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }): Promise<void> => {
+    const handleSubmit = async ({ mfaToken }: MFAToken, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }): Promise<void> => {
         setSubmissionError(null);
 
         // Check if user is defined in context
@@ -46,7 +47,7 @@ const MFAPage: React.FC = () => {
         }
 
         try {
-            const result: MFAResponse = await mfaAuthUser(user, values.mfaToken);
+            const result: MFAResponse = await mfaAuthUser(user, mfaToken);
             if (result.succeeded && result.user) {
                 // MFA Token verification succeeded
                 setUser({ ...user, jwt: result.user.jwt, mfaPending: false });
@@ -64,7 +65,6 @@ const MFAPage: React.FC = () => {
         }
     }
 
-    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
     const handleShowErrorModal = () => {
         setShowErrorModal(true);
@@ -88,26 +88,13 @@ const MFAPage: React.FC = () => {
                     <Formik
                         onSubmit={handleSubmit}
                         validateOnChange={true}
-                        initialValues={initialValues}
-                        validationSchema={validationSchema}
+                        initialValues={LoginMFAInitialValues}
+                        validationSchema={LoginMFASchema}
                     >
                         {({ values, handleSubmit, errors, isSubmitting }) => (
                             <FormikForm onSubmit={handleSubmit}>
                                 <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label htmlFor="mfaToken">MFA Token</Form.Label>
-                                            <Field
-                                                type="text"
-                                                id="mfaToken"
-                                                name="mfaToken"
-                                                placeholder="Enter MFA Token"
-                                                className="form-control"
-                                                value={values.mfaToken}
-                                            />
-                                            <Form.Control.Feedback type="invalid">{errors.mfaToken}</Form.Control.Feedback>
-                                        </Form.Group>
-                                    </Col>
+                                    <FormInput label={'MFA Token'} name={'mfaToken'} type={'text'} placeholder={'Enter MFA Token'} error={errors.mfaToken} value={values.mfaToken} />
                                 </Row>
                                 <Row>
                                     <Col>
@@ -135,5 +122,3 @@ const MFAPage: React.FC = () => {
         return null;
     }
 };
-
-export default MFAPage;
