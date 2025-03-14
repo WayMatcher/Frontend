@@ -1,4 +1,4 @@
-import User from './dto/User';
+import User, { UserRegister } from './dto/User';
 import Address from './dto/Address';
 import Vehicle from './dto/Vehicle';
 
@@ -13,10 +13,12 @@ export interface MFAContextProps {
 }
 
 export interface RegisterContextProps {
-    registerUser: User | null;
-    setRegisterUser: (user: User | null) => void;
+    registerUser: UserRegister | null;
+    setRegisterUser: (user: UserRegister | null) => void;
     registerAddress: Address | null;
     setRegisterAddress: (user: Address | null) => void;
     registerVehicle: Vehicle | null;
     setRegisterVehicle: (user: Vehicle | null) => void;
+    step: number;
+    setStep: (step: number) => void;
 }

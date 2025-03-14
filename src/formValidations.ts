@@ -25,7 +25,6 @@ export const RegisterAddressSchema = Yup.object({
     longitude: Yup.number(),
     region: Yup.string(),
     state: Yup.string(),
-    status: Yup.string(),
 }); // Address Page
 export const RegisterVehicleSchema = Yup.object(); // Vehicle Page
 

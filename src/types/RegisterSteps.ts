@@ -1,13 +1,8 @@
-export interface RegisterStep {
-    stepNumber: number;
-    isValid: boolean;
+enum RegisterSteps {
+    USER = 1,
+    ADDRESS = 2,
+    VEHICLE = 3,
+    SUMMARY = 4,
 }
 
-export default interface RegisterSteps {
-    registerSteps: RegisterStep[];
-    isCompleted: boolean;
-    currentStep: number;
-    handleNext: () => void;
-    handlePrevious: () => void;
-    setStepValidity: (stepNumber: number, isValid: boolean) => void;
-}
+export default RegisterSteps

@@ -1,0 +1,20 @@
+import { Field } from 'formik';
+import { Form, Col } from 'react-bootstrap';
+import FormInputProps from '../types/FormInput';
+
+export default function FormInput({ label, name, type, value, placeholder, error }: FormInputProps): React.ReactElement {
+    return (
+        <Form.Group as={Col}>
+            <Form.Label>{label}</Form.Label>
+            <Field
+                type={type}
+                name={name}
+                value={value}
+                placeholder={placeholder}
+                className={`form-control ${error ? 'is-invalid' : ''}`}
+                component={type === 'textarea' ? 'textarea' : undefined}
+            />
+            <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+        </Form.Group>
+    );
+}

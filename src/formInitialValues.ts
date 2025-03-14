@@ -19,6 +19,7 @@ export const RegisterVehicleInitialValues: Vehicle = {
     model: '',
     year: 2025,
     seats: 4,
+    license_plate: ''
 }
 
 export const RegisterAddressInitialValues: Address = {
