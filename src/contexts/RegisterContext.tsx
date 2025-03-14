@@ -7,32 +7,24 @@ import Vehicle from '../types/dto/Vehicle';
 
 
 const RegisterContext: React.Context<RegisterContextProps> = createContext<RegisterContextProps>({
-    user: {
-        registerUser: null,
-        setRegisterUser: () => { },
-    },
-    address: {
-        registerAddress: null,
-        setRegisterAddress: () => { },
-    },
-    vehicle: {
-        registerVehicle: null,
-        setRegisterVehicle: () => { },
-    }
+    registerUser: null,
+    setRegisterUser: () => { },
+    registerAddress: null,
+    setRegisterAddress: () => { },
+    registerVehicle: null,
+    setRegisterVehicle: () => { },
+
 });
 
-export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const RegisterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [registerUser, setRegisterUser] = useState<User | null>(null);
     const [registerAddress, setRegisterAddress] = useState<Address | null>(null);
     const [registerVehicle, setRegisterVehicle] = useState<Vehicle | null>(null);
 
     return (
         <RegisterContext.Provider value={
-            {
-                user: { registerUser, setRegisterUser },
-                address: { registerAddress, setRegisterAddress },
-                vehicle: { registerVehicle, setRegisterVehicle },
-            }} >
+            { registerUser, setRegisterUser, registerAddress, setRegisterAddress, registerVehicle, setRegisterVehicle }
+        } >
             {children}
         </RegisterContext.Provider >
     );

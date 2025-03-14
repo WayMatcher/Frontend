@@ -1,30 +1,30 @@
 import React, { useContext } from "react";
 import { Form as FormikForm, Formik, Field } from "formik";
-import { Container, Form, Button, ButtonGroup, InputGroup, Col, Row } from "react-bootstrap";
+import { Container, Form, InputGroup, Col, Row, Button } from "react-bootstrap";
 import { RegisterUserSchema } from "../../../formValidations";
 import { RegisterUserInitialValues } from "../../../formInitialValues";
 import RegisterContext from "../../../contexts/RegisterContext";
+import { RegisterStepProps } from '../../../types/RegisterSteps';
 
+export default function RegisterUser({ setStepValidity, step }: RegisterStepProps): React.ReactElement {
 
-export default function RegisterUser(): React.ReactElement {
+    const { setRegisterUser } = useContext(RegisterContext);
 
-    const { registerUser, setRegisterUser } = useContext(RegisterContext);
-
-    const handleSubmit = (values: typeof RegisterUserInitialValues, setSubmitting) => {
+    const handleSubmit = async (values: typeof RegisterUserInitialValues) => {
         setRegisterUser(values);
-        console.log(values);
+        setStepValidity(1, true);
     }
 
     return (
         <>
-            <h1>Register User</h1>
+            <h2>User</h2>
             <Container>
                 <Formik
                     initialValues={RegisterUserInitialValues}
                     validationSchema={RegisterUserSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ values, errors, isSubmitting }) => (
+                    {({ values, errors }) => (
                         <FormikForm>
                             <Row>
                                 <Form.Group as={Col}>
@@ -131,21 +131,19 @@ export default function RegisterUser(): React.ReactElement {
                                 <Form.Group as={Col}>
                                     <Form.Label>Profile Picture</Form.Label>
                                     <Field
-                                        id="profilePicture"
-                                        name="ProfilePicture"
+                                        id="profile_picture"
+                                        name="profile_picture"
                                         label="Choose File"
                                         type="file"
                                         className={`form-control`}
                                     />
-                                    <Form.Control.Feedback type="invalid">{errors.ProfilePicture}</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">{errors.profile_picture}</Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
-                            <br />
                             <Row>
-                                <ButtonGroup as={Col}>
-                                    <Button type="submit" disabled={isSubmitting}>Register</Button>
-                                    <Button type="reset" variant='secondary'>Reset</Button>
-                                </ButtonGroup>
+                                <Col>
+                                    <Button type='submit'>Submit</Button>
+                                </Col>
                             </Row>
                         </FormikForm>
                     )}

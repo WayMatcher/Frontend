@@ -13,16 +13,10 @@ export interface MFAContextProps {
 }
 
 export interface RegisterContextProps {
-    user: {
-        registerUser: User | null;
-        setRegisterUser: (user: User | null) => void;
-    };
-    address: {
-        registerAddress: Address | null;
-        setRegisterAddress: (user: Address | null) => void;
-    };
-    vehicle: {
-        registerVehicle: Vehicle | null;
-        setRegisterVehicle: (user: Vehicle | null) => void;
-    };
+    registerUser: User | null;
+    setRegisterUser: (user: User | null) => void;
+    registerAddress: Address | null;
+    setRegisterAddress: (user: Address | null) => void;
+    registerVehicle: Vehicle | null;
+    setRegisterVehicle: (user: Vehicle | null) => void;
 }

@@ -1,7 +1,7 @@
 export default interface Address {
     id?: number;
     city: string;
-    postalCode: string;
+    postal_code: string;
     street: string;
     country: string;
     region?: string;

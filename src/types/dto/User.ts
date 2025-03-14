@@ -11,10 +11,10 @@ export default interface User extends BaseUser {
     name?: string;
     additional_description: string;
     license_verified: boolean;
-    ProfilePicture: string;
+    profile_picture: string;
     telephone?: string;
     address?: Address;
-    mfaPending: boolean;
+    mfaPending?: boolean;
     jwt?: string;
 }
 

@@ -2,6 +2,6 @@ export default interface Vehicle {
     id?: number;
     model: string;
     make: string;
-    year: string;
+    year: number;
     seats: number;
 }
