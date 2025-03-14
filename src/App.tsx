@@ -5,7 +5,7 @@ import { UserProvider } from './contexts/UserContext'; // Import
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 
-import MainPage from './pages/MainPage';
+import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/user/LoginPage';
 import MFAPage from './pages/user/MFAPage';
 import RegisterPage from './pages/user/RegisterPage';
@@ -23,7 +23,7 @@ export default function AppWrapper() {
           </header>
           <main className="App-Main">
             <Routes>
-              <Route path="/" element={<MainPage />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="/user/login" element={<LoginPage />} />
               <Route path="/user/mfa" element={<MFAPage />} />
               <Route path="/user/register" element={<RegisterPage />} />

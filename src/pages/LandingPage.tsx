@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import '/src/styles/MainPage.scss';
 import { Container, Button, Col, Row } from 'react-bootstrap';
 
-export default function MainPage() {
+export default function LandingPage() {
     const navigate = useNavigate();
 
     const getStarted = () => {
