@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Formik, Form as FormikForm, Field, ErrorMessage } from 'formik';
-import { Container, Fade } from 'react-bootstrap';
+import { Formik, Form as FormikForm } from 'formik';
+import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 
 import authUser from '../../api/auth';
 import APIResponse from '../../types/API';
@@ -9,10 +9,11 @@ import classifyText from '../../utils/classifyText';
 
 import UserContext from '../../contexts/UserContext';
 
-import { LoginUserSchema } from '../../formValidations';
+import { LoginUserSchema } from '../../utils/formValidations';
 import { UserLogin } from '../../types/dto/User';
-import { LoginUserInitialValues } from '../../formInitialValues';
 import ErrorModal from '../../components/ErrorModal';
+import CollapseWrapper from '../../components/CollapseWrapper';
+import FormInput from '../../components/FormInput';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -20,7 +21,6 @@ export default function LoginPage() {
     const { user, setUser } = useContext(UserContext);
 
     const [submissionError, setSubmissionError] = useState<string | null>(null);
-    const [fadeIn, setFadeIn] = useState<boolean>(false);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
     const handleSubmit = async (values: UserLogin, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
@@ -60,67 +60,53 @@ export default function LoginPage() {
         setShowErrorModal(false);
     };
 
-
-    React.useEffect(() => {
-        setFadeIn(true);
-        return () => {
-            setFadeIn(false);
-        };
-    }, []);
+    const initialValues: UserLogin = {
+        username: '',
+        email: '',
+        userOrEmail: '',
+        password: '',
+    };
 
     return (
-        <Fade in={fadeIn}>
+        <CollapseWrapper>
             <Container className='loginContainer'>
                 <Formik
                     onSubmit={handleSubmit}
                     validateOnChange={true}
-                    initialValues={LoginUserInitialValues}
+                    initialValues={initialValues}
                     validationSchema={LoginUserSchema}
                 >
-                    {({ isSubmitting }) => (
+                    {({ values, errors, isSubmitting }) => (
                         <FormikForm className="loginForm">
-                            <h2>Login</h2>
-                            <div className='form-group'>
-                                <label htmlFor="userOrEmail">Username or E-Mail Address</label>
-                                <Field
-                                    type="text"
-                                    id="userOrEmail"
-                                    name="userOrEmail"
-                                    placeholder="Enter username or E-Mail Address"
-                                    className="form-control"
+                            <Row>
+                                <FormInput
+                                    label="Email"
+                                    name="userOrEmail" type="email"
+                                    placeholder="Enter username or e-mail address"
+                                    value={values.userOrEmail} error={errors.userOrEmail}
                                 />
-                                <div className='invalid-feedback'>
-                                    <ErrorMessage name="userOrEmail" />
-                                </div>
-                            </div>
-                            <div className='form-group'>
-                                <label htmlFor="password">Password</label>
-                                <Field
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Password"
-                                    className="form-control"
+                            </Row>
+                            <Row>
+                                <FormInput
+                                    label="Password"
+                                    name="password" type="password"
+                                    placeholder="Enter password"
+                                    value={values.password} error={errors.password}
                                 />
-                                <div className='invalid-feedback'>
-                                    <ErrorMessage name="password" />
-                                </div>
-                            </div>
+                            </Row>
                             <br />
-                            <div className="form-group mb-3">
-                                <div className='btn-group'>
-                                    <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-                                        {isSubmitting ? 'Logging in...' : 'Login'}
-                                    </button>
-                                    <button
-                                        className='btn btn-secondary'
-                                        type='reset'
-                                        onClick={() => navigate('/user/register')}
-                                    >
-                                        Register
-                                    </button>
-                                </div>
-                            </div>
+                            <ButtonGroup>
+                                <Button className="btn btn-primary" type="submit" disabled={isSubmitting}>
+                                    {isSubmitting ? 'Logging in...' : 'Login'}
+                                </Button>
+                                <Button
+                                    className='btn btn-secondary'
+                                    type='reset'
+                                    onClick={() => navigate('/user/register')}
+                                >
+                                    Register
+                                </Button>
+                            </ButtonGroup>
                             <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
                                 {submissionError}
                             </ErrorModal>
@@ -128,6 +114,6 @@ export default function LoginPage() {
                     )}
                 </Formik>
             </Container>
-        </Fade>
+        </CollapseWrapper>
     );
 };

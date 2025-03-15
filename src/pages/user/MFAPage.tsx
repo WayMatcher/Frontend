@@ -6,9 +6,8 @@ import ErrorModal from '../../components/ErrorModal';
 import { mfaAuthUser } from '../../api/auth';
 import { MFAResponse } from '../../types/API';
 import UserContext from '../../contexts/UserContext';
-import { LoginMFASchema } from '../../formValidations';
+import { LoginMFASchema } from '../../utils/formValidations';
 import FormInput from '../../components/FormInput';
-import { LoginMFAInitialValues } from '../../formInitialValues';
 import MFAToken from '../../types/dto/MFAToken';
 
 
@@ -19,10 +18,6 @@ export default function MFAPage() {
 
     const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
-
-
-
-
 
     /**
      * Handles the submission of the MFA form.
@@ -74,6 +69,8 @@ export default function MFAPage() {
         setShowErrorModal(false);
     };
 
+    const initialValues: MFAToken = { mfaToken: '' };
+
     // Check if user is defined in context
     if (user && user.mfaPending === false) {
         navigate('/user/edit');
@@ -88,7 +85,7 @@ export default function MFAPage() {
                     <Formik
                         onSubmit={handleSubmit}
                         validateOnChange={true}
-                        initialValues={LoginMFAInitialValues}
+                        initialValues={initialValues}
                         validationSchema={LoginMFASchema}
                     >
                         {({ values, handleSubmit, errors, isSubmitting }) => (

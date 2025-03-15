@@ -43,7 +43,6 @@ export const mfaAuthUser = async (user: User, mfaToken: string): Promise<MFAResp
 const authUser = async (credentials: UserLogin): Promise<APIResponse> => {
     try {
         const response = await api.post('/auth/login', { user: credentials.username, password: bcrypt.hashSync(credentials.password, 10) });
-
         return response.data as APIResponse;
     } catch (error) {
         handleApiError(error);
