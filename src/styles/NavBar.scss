@@ -8,29 +8,39 @@
   position: sticky; // Stick to the top (optional, but common for navbars)
   top: 0;
   z-index: 100; // Ensure it's above other content
-
-  .nav-links {
-    display: flex;
-    list-style: none; // Remove bullet points from list
-    margin: 0; // Remove default margin
-    padding: 0; // Remove default padding
-    gap: 1.5rem; // Spacing between links
-
-    a {
-      color: #fff; // White link text
+  box-shadow: #555 0px 2px 5px; // Add a shadow for depth
+  .container {
+    .navbar-brand {
+      font-size: 1.5rem; // Larger font size for logo
+      font-weight: bold; // Bold text
       text-decoration: none; // Remove underlines
-      padding: 0.5rem; // Add some padding for hover effect
-      border-radius: 4px; // Rounded corners
-      transition: background-color 0.2s ease; // Smooth transition
+      color: #fff; // White text
+      cursor: pointer;
+    }
 
-      &:hover {
-        background-color: #555; // Slightly lighter background on hover
-      }
+    .nav-links {
+      display: flex;
+      list-style: none; // Remove bullet points from list
+      margin: 0; // Remove default margin
+      padding: 0; // Remove default padding
+      gap: 1.5rem; // Spacing between links
 
-      &.active {
-        // Optional: Style for the currently active link
-        font-weight: bold;
-        border-bottom: 2px solid #fff; // Example: Underline active link
+      a {
+        color: #fff; // White link text
+        text-decoration: none; // Remove underlines
+        padding: 0.5rem; // Add some padding for hover effect
+        border-radius: 4px; // Rounded corners
+        transition: background-color 0.2s ease; // Smooth transition
+
+        &:hover {
+          background-color: #555; // Slightly lighter background on hover
+        }
+
+        &.active {
+          // Optional: Style for the currently active link
+          font-weight: bold;
+          border-bottom: 2px solid #fff; // Example: Underline active link
+        }
       }
     }
   }

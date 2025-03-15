@@ -26,7 +26,7 @@ export const RegisterAddressSchema = Yup.object({
     city: Yup.string().required("Please enter a City"),
     country: Yup.string().required("Please enter a Country"),
     street: Yup.string().required("Please enter a Street"),
-    postalCode: Yup.string().required("Please enter a Postal Code"),
+    postal_code: Yup.string().required("Please enter a Postal Code"),
     address_line1: Yup.string(),
     address_line2: Yup.string(),
     latitude: Yup.number(),

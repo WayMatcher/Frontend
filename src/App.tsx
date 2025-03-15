@@ -1,4 +1,4 @@
-import './App.scss';
+import './styles/App.scss';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext'; // Import
 
