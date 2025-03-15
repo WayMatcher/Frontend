@@ -23,7 +23,7 @@ import bcrypt from 'bcryptjs';
  * @returns A promise that resolves to an APIResponse object.
  * @throws Will throw an error if the API request fails.
  */
-export const registerUser = async (user: UserRegister, address: Address, vehicle: Vehicle): Promise<APIResponse> => {
+export const registerAPI = async (user: UserRegister, address: Address, vehicle: Vehicle): Promise<APIResponse> => {
     const hashedUser = { ...user, password: bcrypt.hashSync(user.password, 10) };
     try {
         const response = await api.post('/register', { hashedUser, address, vehicle });
@@ -34,4 +34,4 @@ export const registerUser = async (user: UserRegister, address: Address, vehicle
     }
 }
 
-export default registerUser;
+export default registerAPI;
