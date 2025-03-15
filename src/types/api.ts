@@ -1,4 +1,5 @@
 import User from './dto/User';
+import WMEvent from './dto/Event';
 
 /**
  * Represents the structure of an API response.
@@ -19,4 +20,9 @@ export default interface APIResponse {
  */
 export interface MFAResponse extends APIResponse {
     user?: User;
+}
+
+
+export interface EventsResponse extends APIResponse {
+    events: WMEvent[];
 }

@@ -1,8 +1,10 @@
-import { api, handleApiError } from './common';
+import API from './api';
 import bcrypt from 'bcryptjs';
 
 import APIResponse, { MFAResponse } from '../types/API';
 import User, { UserLogin } from '../types/dto/User';
+
+const api = new API();
 
 // * How the authentication flow works:
 // 1. User enters username and password in frontend
@@ -25,10 +27,10 @@ import User, { UserLogin } from '../types/dto/User';
 */
 export const mfaAuthUser = async (user: User, mfaToken: string): Promise<MFAResponse> => {
     try {
-        const response = await api.post('/auth/mfa', { user: user, mfaToken: bcrypt.hash(mfaToken, 10) });
+        const response = await api.axios.post('/auth/mfa', { user: user, mfaToken: bcrypt.hash(mfaToken, 10) });
         return response.data as MFAResponse;
     } catch (error) {
-        handleApiError(error);
+        api.handleApiError(error);
         throw error;
     }
 }
@@ -42,10 +44,10 @@ export const mfaAuthUser = async (user: User, mfaToken: string): Promise<MFAResp
  */
 const authUser = async (credentials: UserLogin): Promise<APIResponse> => {
     try {
-        const response = await api.post('/auth/login', { user: credentials.username, password: bcrypt.hashSync(credentials.password, 10) });
+        const response = await api.axios.post('/auth/login', { user: credentials.username, password: bcrypt.hashSync(credentials.password, 10) });
         return response.data as APIResponse;
     } catch (error) {
-        handleApiError(error);
+        api.handleApiError(error);
         throw error;
     }
 };
