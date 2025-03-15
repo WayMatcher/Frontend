@@ -29,6 +29,7 @@ export default function AppWrapper() {
               <Route path="/user/register" element={<RegisterPage />} />
               <Route path="/user/edit" element={<UserPage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:eventid" element={<EventsPage />} />
             </Routes>
           </main>
           <footer className="App-Footer">
