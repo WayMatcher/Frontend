@@ -25,7 +25,7 @@ const api = new API();
  * @returns A promise that resolves to an MFAResponse object.
  * @throws Will throw an error if the API request fails.
  */
-export const mfaAuthUser = async (user: User, mfaToken: string): Promise<MFAResponse> => {
+export const mfaAuthUser = async (user: User): Promise<MFAResponse> => {
     // Mock response for frontend testing
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -44,7 +44,7 @@ export const mfaAuthUser = async (user: User, mfaToken: string): Promise<MFAResp
 
     // Original code
     // try {
-    //     const response = await api.axios.post('/auth/mfa', { user: user, mfaToken: bcrypt.hash(mfaToken, 10) });
+    //     const response = await api.axios.post('/auth/mfa', { user: user, mfaToken: bcrypt.hash(mfaToken, 10) }, { withCredentials: true });
     //     return response.data as MFAResponse;
     // } catch (error) {
     //     api.handleApiError(error);

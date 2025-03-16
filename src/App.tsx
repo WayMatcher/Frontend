@@ -12,10 +12,15 @@ import RegisterPage from './pages/user/RegisterPage';
 import UserPage from './pages/user/UserPage';
 import EventsPage from './pages/EventsPage';
 import { useContext } from 'react';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import User from './types/dto/User';
+import AuthOutlet from '@auth-kit/react-router/AuthOutlet';
 
 export default function AppWrapper() {
 
   const { user } = useContext(UserContext);
+
+  const authUser = useAuthUser<User>();
 
   return (
     <div>
@@ -27,10 +32,12 @@ export default function AppWrapper() {
           <main className="App-Main">
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/user/login" element={(!user) ? <LoginPage /> : <Navigate to="/" />} />
-              <Route path="/user/mfa" element={(user && !user.jwt) ? <Navigate to="/" /> : <MFAPage />} />
+              <Route path="/user/login" element={<LoginPage />} />
+              <Route element={<AuthOutlet fallbackPath='/user/login' />}>
+                <Route path="/user/edit" element={<UserPage />} />
+                <Route path="/user/mfa" element={authUser?.mfaPending ? <MFAPage /> : <Navigate to="/" />} />
+              </Route>
               <Route path="/user/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
-              <Route path="/user/edit" element={(user && user.jwt) ? <UserPage /> : <Navigate to="/user/login" />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:eventid" element={<EventsPage />} />
             </Routes>

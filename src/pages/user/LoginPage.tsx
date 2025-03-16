@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
@@ -7,7 +7,7 @@ import authUser from '../../api/endpoints/user/login';
 import { LoginResponse } from '../../types/API';
 import classifyText from '../../utils/classifyText';
 
-import UserContext from '../../contexts/UserContext';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
 
 import { LoginUserSchema } from '../../utils/formValidations';
 import { UserLogin } from '../../types/dto/User';
@@ -18,46 +18,44 @@ import FormInput from '../../components/FormInput';
 export default function LoginPage() {
     const navigate = useNavigate();
 
-    const { user, setUser } = useContext(UserContext);
-
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
-    useEffect(() => {
-        console.log('LoginPage Useffect:', user);
-        if (user && user.mfaPending === true) navigate('/user/mfa');
-    }, [navigate, user]);
+    const signIn = useSignIn();
 
-    const handleSubmit = async (values: UserLogin, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
+    const handleSubmit = async (values: UserLogin) => {
+        // Reset error message
         setSubmissionError(null);
-        try {
-            // Call the authUser function from the API
-            const loginResponse: LoginResponse = await authUser({
-                userOrEmail: values.userOrEmail,
-                username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
-                email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
-                password: values.password,
-            });
 
-            // Check if login was successful
-            if (loginResponse.succeeded === true) {
-                setUser({
-                    username: loginResponse.user?.username,
-                    email: loginResponse.user?.email,
-                    jwt: loginResponse.user?.jwt,
-                    mfaPending: true,
-                }); // Sets user context
+        // Call API to authenticate user
+        authUser({
+            userOrEmail: values.userOrEmail,
+            username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
+            email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
+            password: values.password,
+        }).then((response: LoginResponse) => {
+            // If login is successful, set user context
+            if (response.succeeded === true && response.user.jwt) {
+                signIn({
+                    auth: {
+                        token: response.user?.jwt
+                    },
+                    userState: {
+                        username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
+                        email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
+                        mfa_verfied: false,
+                    },
+                });
             } else {
-                setSubmissionError("Login Failed: " + loginResponse.message); // Sets error message if login failed
+                // If login failed, set error message
+                setSubmissionError("Login Failed: " + response.message); // Sets error message if login failed
                 handleShowErrorModal(); // Shows error modal
             }
-
-        } catch (err: unknown) {
+        }).catch((err: unknown) => {
+            // If unknown error occured, set error message
             setSubmissionError("Unknown error occured: " + (err as Error).message);
             handleShowErrorModal(); // Shows error modal
-        } finally {
-            setSubmitting(false);
-        }
+        });
     };
 
 
