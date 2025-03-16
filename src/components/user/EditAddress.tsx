@@ -1,12 +1,10 @@
 import React, { useContext } from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from "react-bootstrap";
-import { RegisterAddressSchema } from '../../utils/formValidations';
+import { EditAddressSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import CollapseWrapper from '../CollapseWrapper';
 import Address from '../../types/dto/Address';
-
-import EditButtons from './EditButtons';
 import UserContext from '../../contexts/UserContext';
 
 export default function EditAddress(): React.ReactElement {
@@ -41,7 +39,7 @@ export default function EditAddress(): React.ReactElement {
                 <Container>
                     <Formik
                         initialValues={initialValues}
-                        validationSchema={RegisterAddressSchema}
+                        validationSchema={EditAddressSchema}
                         onSubmit={handleSubmit}
                     >
                         {({ values, errors }) => (
@@ -118,7 +116,6 @@ export default function EditAddress(): React.ReactElement {
                                         value={values.latitude} error={errors.latitude}
                                     />
                                 </Row>
-                                <EditButtons />
                             </FormikForm>
                         )}
                     </Formik>

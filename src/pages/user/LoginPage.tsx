@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
@@ -23,6 +23,11 @@ export default function LoginPage() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
+    useEffect(() => {
+        console.log('LoginPage Useffect:', user);
+        if (user && user.mfaPending === true) navigate('/user/mfa');
+    }, [navigate, user]);
+
     const handleSubmit = async (values: UserLogin, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
         setSubmissionError(null);
         try {
@@ -37,13 +42,11 @@ export default function LoginPage() {
             // Check if login was successful
             if (loginResponse.succeeded === true) {
                 setUser({
-                    ...user,
                     username: loginResponse.user?.username,
                     email: loginResponse.user?.email,
                     jwt: loginResponse.user?.jwt,
                     mfaPending: true,
                 }); // Sets user context
-                navigate('/user/mfa'); // Navigates to MFA page if login was successful
             } else {
                 setSubmissionError("Login Failed: " + loginResponse.message); // Sets error message if login failed
                 handleShowErrorModal(); // Shows error modal

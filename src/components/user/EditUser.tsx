@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import { Form as FormikForm, Formik } from "formik";
 import { Container, Row } from "react-bootstrap";
-import { RegisterUserSchema } from "../../utils/formValidations";
+import { EditUserSchema } from "../../utils/formValidations";
 import FormInput from "../FormInput";
 import CollapseWrapper from "../CollapseWrapper";
 import { UserRegister } from "../../types/dto/User";
-import EditButtons from "./EditButtons";
 import UserContext from "../../contexts/UserContext";
 
 export default function EditUser(): React.ReactElement {
@@ -35,7 +34,7 @@ export default function EditUser(): React.ReactElement {
                 <Container>
                     <Formik
                         initialValues={initialValues}
-                        validationSchema={RegisterUserSchema}
+                        validationSchema={EditUserSchema}
                         onSubmit={handleSubmit}
                     >
                         {({ values, errors }) => (
@@ -104,7 +103,6 @@ export default function EditUser(): React.ReactElement {
                                         name="profile_picture" type="file"
                                         value={values.profile_picture} error={errors.profile_picture} />
                                 </Row>
-                                <EditButtons />
                             </FormikForm>
                         )}
                     </Formik>

@@ -70,7 +70,18 @@ export const LoginMFASchema = Yup.object({
  * Schema for validating user edit form.
  * Reuses RegisterUserSchema.
  */
-export const EditUserSchema = RegisterUserSchema; // Edit User Page
+export const EditUserSchema = Yup.object({
+    email: Yup.string().email("E-Mail isn't an E-Mail").required("Please enter an E-Mail"),
+    username: Yup.string().required("Please enter a Username"),
+    password: Yup.string()
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/, "Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji."),
+    confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match'),
+    name: Yup.string(),
+    firstName: Yup.string(),
+    telephone: Yup.string(),
+    additional_description: Yup.string(),
+    ProfilePicture: Yup.string()
+}); // Edit User Page
 
 /**
  * Schema for validating address edit form.

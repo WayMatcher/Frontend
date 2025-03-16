@@ -55,7 +55,6 @@ export default class API {
                 if (error.response.status === 401) {
                     // Unauthorized - Redirect to login or show an error message
                     console.warn("Unauthorized: Please log in again.");
-                    // You might want to clear the user context here: setUser(null);
                 } else if (error.response.status === 400) {
                     console.warn("Bad Request: Check your data");
                 } else if (error.response.status === 404) {

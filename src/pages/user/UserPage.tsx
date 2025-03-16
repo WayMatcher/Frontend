@@ -20,27 +20,33 @@ export default function UserPage() {
         setShowErrorModal(false);
     };
 
+    const handleSubmit = async () => {
+        try {
+            // Submit user data
+        } catch {
+            setSubmissionError("Test");
+            setShowErrorModal(true);
+        }
+    }
+
     if (!user || !user.jwt) {
         return (
-            <Container className="register-page">
+            <Container className="user-page">
                 <h2>Not logged in!</h2>
                 <Button onClick={() => { navigate('/user/login') }}>Log in</Button>
-            </Container >
-
+            </Container>
         );
 
     } else {
         return (
             <div>
-                <Container className="register-page">
+                <Container className="user-page">
                     <h1>Welcome {user.firstName} {user.name} </h1>
                     <Container>
                         <br />
                         <Formik
                             initialValues={{}}
-                            onSubmit={async (values) => {
-                                console.log(values);
-                            }}
+                            onSubmit={handleSubmit}
                         >
                             <FormikForm>
                                 <h2>Edit your profile</h2>

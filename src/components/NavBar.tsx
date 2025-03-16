@@ -5,16 +5,13 @@ import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function NavBar() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
-  const handleBrandClick = () => {
-    navigate('/');
-  }
 
   return (
     <Navbar className="NavBar">
       <Container>
-        <Navbar.Brand onClick={handleBrandClick}>WayMatcher</Navbar.Brand>
+        <Navbar.Brand onClick={() => { navigate('/'); }}>WayMatcher</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -24,8 +21,8 @@ function NavBar() {
           <Nav>
             {(user && user.jwt) ? (
               <NavDropdown title={user.username} id="basic-nav-dropdown" aria-label='User Options' className='justify-content-end'>
-                <NavDropdown.Item href='/user' aria-label='Edit Profile'>Edit Profile</NavDropdown.Item>
-                <NavDropdown.Item href='/' aria-label='Logout'>Logout</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { navigate("/user/edit"); }} aria-label='Edit Profile'>Edit Profile</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { setUser(null); navigate("/user/login"); }} aria-label='Logout'>Logout</NavDropdown.Item>
               </NavDropdown>
             ) : (
               <ButtonGroup>

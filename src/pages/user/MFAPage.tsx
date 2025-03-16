@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
 import { Formik, Form as FormikForm } from 'formik';
@@ -10,26 +10,27 @@ import { LoginMFASchema } from '../../utils/formValidations';
 import FormInput from '../../components/FormInput';
 import MFAToken from '../../types/dto/MFAToken';
 
-
 export default function MFAPage() {
     const navigate = useNavigate(); // Navigation hook
-
     const { user, setUser } = useContext(UserContext); // Get user context
-
     const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
-    /**
-     * Handles the submission of the MFA form.
-     *
-     * @param values - The form values, which should match the shape of `initialValues`.
-     * @param object - An object containing the `setSubmitting` function to control the form's submitting state.
-     * @param object.setSubmitting - A function to set the submitting state of the form.
-     *
-     * @returns {Promise<void>} A promise that resolves when the submission handling is complete.
-     *
-     * @throws {Error} Throws an error if an unknown error occurs during the submission process.
-     */
+    useEffect(() => {
+        console.log('Updated user:', user);
+        if (user && user.jwt != null && user.mfaPending === true) {
+            setUser({ ...user, mfaPending: false });
+            navigate('/user/edit');
+        }
+    }, [navigate, setUser, user]);
+
+    useEffect(() => {
+        if (!user) {
+            console.error("User not defined in context");
+            navigate('/user/login');
+        }
+    }, [user, navigate]);
+
     const handleSubmit = async ({ mfaToken }: MFAToken, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }): Promise<void> => {
         setSubmissionError(null);
 
@@ -45,8 +46,8 @@ export default function MFAPage() {
             const result: MFAResponse = await mfaAuthUser(user, mfaToken);
             if (result.succeeded && result.user) {
                 // MFA Token verification succeeded
-                setUser({ ...user, jwt: result.user.jwt, mfaPending: false });
-                navigate('/user/edit');
+                setUser({ ...user, jwt: "jwt-abcdef", mfaPending: false });
+                navigate('/');
             } else {
                 // MFA Token verification failed
                 setSubmissionError(result.succeeded ? "No User received through API" : "MFA Token verification failed");
@@ -60,7 +61,6 @@ export default function MFAPage() {
         }
     }
 
-
     const handleShowErrorModal = () => {
         setShowErrorModal(true);
     };
@@ -71,12 +71,9 @@ export default function MFAPage() {
 
     const initialValues: MFAToken = { mfaToken: '' };
 
-    // Check if user is defined in context
     if (user && user.mfaPending === false) {
         navigate('/user/edit');
-
-
-    } else if (user && user.mfaPending) {
+    } else if (user && user.mfaPending === true) {
         // Redirect to user edit page if MFA is not pending
         return (
             <>
@@ -84,7 +81,6 @@ export default function MFAPage() {
                     <h1>Multi-Factor-Authentication (MFA)</h1>
                     <Formik
                         onSubmit={handleSubmit}
-                        validateOnChange={true}
                         initialValues={initialValues}
                         validationSchema={LoginMFASchema}
                     >
@@ -113,9 +109,11 @@ export default function MFAPage() {
             </>
         )
     } else {
-        // Redirect to login page if user is not defined
-        console.error("User not defined in context");
-        navigate('/user/login');
-        return null;
+        console.error("Oh no, something happened")
+        return (
+            <>
+                <h2>Oh no, something happened</h2>
+            </>
+        )
     }
-};
+}

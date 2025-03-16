@@ -2,12 +2,11 @@ import React, { useContext } from 'react';
 
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from "react-bootstrap";
-import { RegisterVehicleSchema } from '../../utils/formValidations';
+import { EditVehicleSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import CollapseWrapper from '../CollapseWrapper';
 import Vehicle from '../../types/dto/Vehicle';
 
-import EditButtons from './EditButtons';
 import UserContext from '../../contexts/UserContext';
 
 export default function EditVehicle(): React.ReactElement {
@@ -38,7 +37,7 @@ export default function EditVehicle(): React.ReactElement {
                 <Container>
                     <Formik
                         initialValues={initialValues}
-                        validationSchema={RegisterVehicleSchema}
+                        validationSchema={EditVehicleSchema}
                         onSubmit={handleSubmit}
                     >
                         {({ values, errors }) => (
@@ -55,7 +54,6 @@ export default function EditVehicle(): React.ReactElement {
                                     <FormInput label="License Plate" name="license_plate" type="text" value={values.license_plate} error={errors.license_plate} />
                                 </Row>
                                 <br />
-                                <EditButtons />
                             </FormikForm>
                         )}
                     </Formik>
