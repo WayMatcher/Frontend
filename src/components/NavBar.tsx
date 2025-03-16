@@ -22,7 +22,7 @@ function NavBar() {
             <Link to='/events' className='nav-link'>Events</Link>
           </Nav>
           <Nav>
-            {user ? (
+            {(user && user.jwt) ? (
               <NavDropdown title={user.username} id="basic-nav-dropdown" aria-label='User Options' className='justify-content-end'>
                 <NavDropdown.Item href='/user' aria-label='Edit Profile'>Edit Profile</NavDropdown.Item>
                 <NavDropdown.Item href='/' aria-label='Logout'>Logout</NavDropdown.Item>

@@ -1,0 +1,29 @@
+$gap: 16px;
+$desktop-percentage: 33.333%;
+$tablet-percentage: 50%;
+$mobile-percentage: 100%;
+
+.EventGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gap;
+
+  > * {
+    flex: 1 1 calc(#{$desktop-percentage} - #{$gap});
+    max-width: calc(#{$desktop-percentage} - #{$gap});
+  }
+
+  @media (max-width: 768px) {
+    > * {
+      flex: 1 1 calc(#{$tablet-percentage} - #{$gap});
+      max-width: calc(#{$tablet-percentage} - #{$gap});
+    }
+  }
+
+  @media (max-width: 480px) {
+    > * {
+      flex: 1 1 $mobile-percentage;
+      max-width: $mobile-percentage;
+    }
+  }
+}

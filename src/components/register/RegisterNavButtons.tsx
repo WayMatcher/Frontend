@@ -3,7 +3,7 @@ import RegisterSteps from '../../types/RegisterSteps';
 import RegisterContext from '../../contexts/RegisterContext';
 import { useContext } from 'react';
 
-import apiRegister from '../../api/register';
+import apiRegister from '../../api/endpoints/user/register';
 import { useNavigate } from 'react-router-dom';
 
 /**

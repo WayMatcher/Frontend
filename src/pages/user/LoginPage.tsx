@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 
-import authUser from '../../api/auth';
-import APIResponse from '../../types/API';
+import authUser from '../../api/endpoints/user/login';
+import { LoginResponse } from '../../types/API';
 import classifyText from '../../utils/classifyText';
 
 import UserContext from '../../contexts/UserContext';
@@ -27,7 +27,7 @@ export default function LoginPage() {
         setSubmissionError(null);
         try {
             // Call the authUser function from the API
-            const loginResponse: APIResponse = await authUser({
+            const loginResponse: LoginResponse = await authUser({
                 userOrEmail: values.userOrEmail,
                 username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
                 email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
@@ -36,7 +36,13 @@ export default function LoginPage() {
 
             // Check if login was successful
             if (loginResponse.succeeded === true) {
-                setUser(user); // Sets user context
+                setUser({
+                    ...user,
+                    username: loginResponse.user?.username,
+                    email: loginResponse.user?.email,
+                    jwt: loginResponse.user?.jwt,
+                    mfaPending: true,
+                }); // Sets user context
                 navigate('/user/mfa'); // Navigates to MFA page if login was successful
             } else {
                 setSubmissionError("Login Failed: " + loginResponse.message); // Sets error message if login failed
@@ -80,8 +86,8 @@ export default function LoginPage() {
                         <FormikForm className="loginForm">
                             <Row>
                                 <FormInput
-                                    label="Email"
-                                    name="userOrEmail" type="email"
+                                    label="Email or Username"
+                                    name="userOrEmail" type="text"
                                     placeholder="Enter username or e-mail address"
                                     value={values.userOrEmail} error={errors.userOrEmail}
                                 />

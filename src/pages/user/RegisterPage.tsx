@@ -1,6 +1,6 @@
 import '../../styles/RegisterPage.scss';
 
-import { Container } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { useContext, useEffect, useState } from 'react';
 
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -13,7 +13,7 @@ import RegisterContext, { RegisterProvider } from '../../contexts/RegisterContex
 
 import RegisterSteps from '../../types/RegisterSteps';
 
-import registerAPI from '../../api/register';
+import registerAPI from '../../api/endpoints/user/register';
 import APIResponse from '../../types/API';
 import UserContext from '../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +30,7 @@ export default function RegisterPage() {
 
 function RegisterPageContent() {
     const { registerUser, registerAddress, registerVehicle, step } = useContext(RegisterContext);
-    const { setUser } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const [currentStep, setCurrentstep] = useState<RegisterSteps>(RegisterSteps.USER);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -69,24 +69,35 @@ function RegisterPageContent() {
         setShowErrorModal(false);
     };
 
-    return (
-        <>
+    if (user && user.jwt) {
+        return (
             <Container className="register-page">
-                <h1>Register</h1>
-                <ProgressBar now={step * (1 / 4) * 100} />
-                <Container>
-                    <br />
-                    {currentStep === RegisterSteps.USER && <RegisterUser />}
-                    {currentStep === RegisterSteps.ADDRESS && <RegisterAddress />}
-                    {currentStep === RegisterSteps.VEHICLE && <RegisterVehicle />}
-                    {currentStep === RegisterSteps.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
-                    <br />
+                <h2>Already logged in as {user.username}</h2>
+                <Button onClick={() => { navigate(-1) }}>Go back</Button>
+            </Container >
+
+        );
+    } else {
+
+        return (
+            <>
+                <Container className="register-page">
+                    <h1>Register</h1>
+                    <ProgressBar now={step * (1 / 4) * 100} />
+                    <Container>
+                        <br />
+                        {currentStep === RegisterSteps.USER && <RegisterUser />}
+                        {currentStep === RegisterSteps.ADDRESS && <RegisterAddress />}
+                        {currentStep === RegisterSteps.VEHICLE && <RegisterVehicle />}
+                        {currentStep === RegisterSteps.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
+                        <br />
+                    </Container>
                 </Container>
-            </Container>
-            <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal} >
-                {submissionError}
-            </ErrorModal>
-            <br />
-        </>
-    );
+                <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal} >
+                    {submissionError}
+                </ErrorModal>
+                <br />
+            </>
+        );
+    }
 }

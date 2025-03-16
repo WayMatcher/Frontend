@@ -2,32 +2,30 @@ import React, { useContext } from "react";
 import { Form as FormikForm, Formik } from "formik";
 import { Container, Row } from "react-bootstrap";
 import { RegisterUserSchema } from "../../utils/formValidations";
-import RegisterContext from "../../contexts/RegisterContext";
 import FormInput from "../FormInput";
-import RegisterSteps from "../../types/RegisterSteps";
 import CollapseWrapper from "../CollapseWrapper";
-import RegisterNavButtons from "./RegisterNavButtons";
 import { UserRegister } from "../../types/dto/User";
+import EditButtons from "./EditButtons";
+import UserContext from "../../contexts/UserContext";
 
-export default function RegisterUser(): React.ReactElement {
-    const { registerUser, setRegisterUser, setStep } = useContext(RegisterContext);
+export default function EditUser(): React.ReactElement {
+    const { user, setUser } = useContext(UserContext);
 
     const handleSubmit = async (values: UserRegister) => {
-        setRegisterUser(values);
-        setStep(RegisterSteps.ADDRESS);
+        setUser(values);
     }
 
     const initialValues: UserRegister = {
-        email: registerUser?.email || '',
-        username: registerUser?.username || '',
-        password: registerUser?.password || '',
-        confirmPassword: registerUser?.confirmPassword || '',
-        name: registerUser?.name || '',
-        firstName: registerUser?.firstName || '',
-        telephone: registerUser?.telephone || '',
-        additional_description: registerUser?.additional_description || '',
-        profile_picture: registerUser?.profile_picture || '',
-        license_verified: registerUser?.license_verified || false,
+        email: user?.email || '',
+        username: user?.username || '',
+        password: '',
+        confirmPassword: '',
+        name: user?.name || '',
+        firstName: user?.firstName || '',
+        telephone: user?.telephone || '',
+        additional_description: user?.additional_description || '',
+        profile_picture: user?.profile_picture || '',
+        license_verified: user?.license_verified || false,
     }
 
     return (
@@ -106,7 +104,7 @@ export default function RegisterUser(): React.ReactElement {
                                         name="profile_picture" type="file"
                                         value={values.profile_picture} error={errors.profile_picture} />
                                 </Row>
-                                <RegisterNavButtons nextStep={RegisterSteps.ADDRESS} />
+                                <EditButtons />
                             </FormikForm>
                         )}
                     </Formik>

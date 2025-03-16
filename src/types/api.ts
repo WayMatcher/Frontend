@@ -9,6 +9,10 @@ export default interface APIResponse {
     message: string;
 }
 
+export interface LoginResponse extends APIResponse {
+    user: User;
+}
+
 /**
  * Represents the response from an API that includes Multi-Factor Authentication (MFA) details.
  * Extends the APIResponse interface.
@@ -19,7 +23,7 @@ export default interface APIResponse {
  * @property {User} [user] - The User that is going to be logged in
  */
 export interface MFAResponse extends APIResponse {
-    user?: User;
+    user: User;
 }
 
 

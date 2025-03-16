@@ -1,6 +1,7 @@
 import User, { UserRegister } from './dto/User';
 import Address from './dto/Address';
 import Vehicle from './dto/Vehicle';
+import WMEvent from './dto/Event';
 
 export interface UserContextProps {
     user: User | null;
@@ -21,4 +22,9 @@ export interface RegisterContextProps {
     setRegisterVehicle: (user: Vehicle | null) => void;
     step: number;
     setStep: (step: number) => void;
+}
+
+export interface EventContextProps {
+    currentEvent: WMEvent | null;
+    setCurrentEvent: (currentEvent: WMEvent | null) => void;
 }

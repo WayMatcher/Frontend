@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
 import { Formik, Form as FormikForm } from 'formik';
 import ErrorModal from '../../components/ErrorModal';
-import { mfaAuthUser } from '../../api/auth';
+import { mfaAuthUser } from '../../api/endpoints/user/login';
 import { MFAResponse } from '../../types/API';
 import UserContext from '../../contexts/UserContext';
 import { LoginMFASchema } from '../../utils/formValidations';

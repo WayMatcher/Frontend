@@ -1,11 +1,13 @@
-import { api, handleApiError } from './common';
-import APIResponse from '../types/API';
+import API from '../../api';
+import APIResponse from '../../../types/API';
 
-import { UserRegister } from '../types/dto/User';
-import Address from '../types/dto/Address';
-import Vehicle from '../types/dto/Vehicle';
+import { UserRegister } from '../../../types/dto/User';
+import Address from '../../../types/dto/Address';
+import Vehicle from '../../../types/dto/Vehicle';
 
 import bcrypt from 'bcryptjs';
+
+const api = new API();
 
 // * How the registration flow works:
 // 1. User enters registration details in frontend
@@ -26,10 +28,10 @@ import bcrypt from 'bcryptjs';
 export const registerAPI = async (user: UserRegister, address: Address, vehicle: Vehicle): Promise<APIResponse> => {
     const hashedUser = { ...user, password: bcrypt.hashSync(user.password, 10) };
     try {
-        const response = await api.post('/register', { hashedUser, address, vehicle });
+        const response = await api.axios.post('/register', { hashedUser, address, vehicle });
         return response.data as APIResponse;
     } catch (error) {
-        handleApiError(error);
+        api.handleApiError(error);
         throw error;
     }
 }
