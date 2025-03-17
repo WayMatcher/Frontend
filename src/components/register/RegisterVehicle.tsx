@@ -8,7 +8,7 @@ import FormInput from '../FormInput';
 import RegisterSteps from '../../types/RegisterSteps';
 import CollapseWrapper from '../CollapseWrapper';
 import Vehicle from '../../types/dto/Vehicle';
-import RegisterNavButtons from './RegisterNavButtons';
+import RegisterNavButtons from './RegisterButtons';
 
 export default function RegisterVehicle(): React.ReactElement {
     const { registerVehicle, setRegisterVehicle, setStep } = useContext(RegisterContext);
@@ -37,18 +37,41 @@ export default function RegisterVehicle(): React.ReactElement {
                         validationSchema={RegisterVehicleSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, errors }) => (
+                        {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
-                                    <FormInput label="Make" name="make" type="text" value={values.make} error={errors.make} />
-                                    <FormInput label="Model" name="model" type="text" value={values.model} error={errors.model} />
+                                    <FormInput
+                                        label="Make"
+                                        name="make" type="text"
+                                        formikData={{ value: values.make, error: errors.make, isSubmitting: isSubmitting }}
+                                    />
+                                    <FormInput
+                                        label="Model"
+                                        name="model" type="text"
+                                        formikData={{ value: values.model, error: errors.model, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
                                 <Row>
-                                    <FormInput label="Year" name="year" type="number" value={values.year} error={errors.year} />
-                                    <FormInput label="Seats" name="seats" type="number" value={values.seats} error={errors.seats} />
+                                    <FormInput
+                                        label="Year"
+                                        name="year"
+                                        type="number"
+                                        formikData={{ value: values.year, error: errors.year, isSubmitting: isSubmitting }}
+                                    />
+                                    <FormInput
+                                        label="Seats"
+                                        name="seats"
+                                        type="number"
+                                        formikData={{ value: values.seats, error: errors.seats, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
                                 <Row>
-                                    <FormInput label="License Plate" name="license_plate" type="text" value={values.license_plate} error={errors.license_plate} />
+                                    <FormInput
+                                        label="License Plate"
+                                        name="license_plate"
+                                        type="text"
+                                        formikData={{ value: values.license_plate, error: errors.license_plate, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
                                 <br />
                                 <RegisterNavButtons prevStep={RegisterSteps.USER} nextStep={RegisterSteps.SUMMARY} />

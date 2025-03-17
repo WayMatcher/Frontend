@@ -3,7 +3,7 @@ import RegisterContext from "../../contexts/RegisterContext";
 import { Col, Container, Row } from "react-bootstrap";
 import React from "react";
 import CollapseWrapper from "../CollapseWrapper";
-import RegisterNavButtons from "./RegisterNavButtons";
+import RegisterButtons from "./RegisterButtons";
 import RegisterSteps from "../../types/RegisterSteps";
 import { Form as FormikForm, Formik } from "formik";
 
@@ -53,7 +53,7 @@ export default function RegisterSummary({ handleSubmit }: { handleSubmit(): void
                                         <p>License Plate: {registerVehicle.license_plate}</p>
                                     </Col>
                                 </Row>
-                                <RegisterNavButtons prevStep={RegisterSteps.VEHICLE} />
+                                <RegisterButtons prevStep={RegisterSteps.VEHICLE} />
                             </FormikForm>)}
                     </Formik>
                 </Container>

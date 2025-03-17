@@ -1,5 +1,7 @@
 import User from './dto/User';
 import WMEvent from './dto/Event';
+import Address from './dto/Address';
+import Vehicle from './dto/Vehicle';
 
 /**
  * Represents the structure of an API response.
@@ -24,6 +26,20 @@ export interface LoginResponse extends APIResponse {
  */
 export interface MFAResponse extends APIResponse {
     user: User;
+    jwt: string;
+}
+
+
+export interface UserResponse extends APIResponse {
+    user: User;
+}
+
+export interface AddressResponse extends APIResponse {
+    address: Address;
+}
+
+export interface VehicleResponse extends APIResponse {
+    vehicle: Vehicle;
 }
 
 

@@ -7,8 +7,8 @@ import { RegisterAddressSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import RegisterSteps from '../../types/RegisterSteps';
 import CollapseWrapper from '../CollapseWrapper';
-import RegisterNavButtons from './RegisterNavButtons';
 import Address from '../../types/dto/Address';
+import RegisterButtons from './RegisterButtons';
 
 export default function RegisterAddress(): React.ReactElement {
     const { registerAddress, setRegisterAddress, setStep } = useContext(RegisterContext);
@@ -41,14 +41,14 @@ export default function RegisterAddress(): React.ReactElement {
                         validationSchema={RegisterAddressSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, errors }) => (
+                        {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
                                     <FormInput
                                         label="Street"
                                         name="street" type="text"
                                         placeholder='1234 Main St'
-                                        value={values.street} error={errors.street}
+                                        formikData={{ value: values.street, error: errors.street, isSubmitting: isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -56,13 +56,13 @@ export default function RegisterAddress(): React.ReactElement {
                                         label="Postal Code"
                                         name="postal_code" type="text"
                                         placeholder='12345'
-                                        value={values.postal_code} error={errors.postal_code}
+                                        formikData={{ value: values.postal_code, error: errors.postal_code, isSubmitting }}
                                     />
                                     <FormInput
                                         label="Region"
                                         name="region" type="text"
                                         placeholder='Region'
-                                        value={values.region} error={errors.region}
+                                        formikData={{ value: values.region, error: errors.region, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -70,19 +70,19 @@ export default function RegisterAddress(): React.ReactElement {
                                         label="Country"
                                         name="country" type="text"
                                         placeholder='Country'
-                                        value={values.country} error={errors.country}
+                                        formikData={{ value: values.country, error: errors.country, isSubmitting }}
                                     />
                                     <FormInput
                                         label="State"
                                         name="state" type="text"
                                         placeholder='State'
-                                        value={values.state} error={errors.state}
+                                        formikData={{ value: values.state, error: errors.state, isSubmitting }}
                                     />
                                     <FormInput
                                         label="City"
                                         name="city" type="text"
                                         placeholder='City'
-                                        value={values.city} error={errors.city}
+                                        formikData={{ value: values.city, error: errors.city, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -90,7 +90,7 @@ export default function RegisterAddress(): React.ReactElement {
                                         label="Address Line 1"
                                         name="address_line1" type="text"
                                         placeholder='Address Line 1'
-                                        value={values.address_line1} error={errors.address_line1}
+                                        formikData={{ value: values.address_line1, error: errors.address_line1, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -98,7 +98,7 @@ export default function RegisterAddress(): React.ReactElement {
                                         label="Address Line 2"
                                         name="address_line2" type="text"
                                         placeholder='Address Line 2'
-                                        value={values.address_line2} error={errors.address_line2}
+                                        formikData={{ value: values.address_line2, error: errors.address_line2, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -106,16 +106,16 @@ export default function RegisterAddress(): React.ReactElement {
                                         label="Longitude"
                                         name="longitude" type="number"
                                         placeholder={47.8117211}
-                                        value={values.longitude} error={errors.longitude}
+                                        formikData={{ value: values.longitude, error: errors.longitude, isSubmitting }}
                                     />
                                     <FormInput
                                         label="Latitude"
                                         name="latitude" type="number"
                                         placeholder={13.0322547}
-                                        value={values.latitude} error={errors.latitude}
+                                        formikData={{ value: values.latitude, error: errors.latitude, isSubmitting }}
                                     />
                                 </Row>
-                                <RegisterNavButtons prevStep={RegisterSteps.USER} nextStep={RegisterSteps.VEHICLE} />
+                                <RegisterButtons prevStep={RegisterSteps.USER} nextStep={RegisterSteps.VEHICLE} />
                             </FormikForm>
                         )}
                     </Formik>

@@ -1,33 +1,59 @@
-import React, { useContext } from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from "react-bootstrap";
 import { EditVehicleSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import CollapseWrapper from '../CollapseWrapper';
 import Vehicle from '../../types/dto/Vehicle';
+import EditProps from '../../types/EditProps';
+import APIResponse, { VehicleResponse } from '../../types/API';
+import { apiGetVehicle, apiSetVehicle } from '../../api/endpoints/user/vehicle';
+import EditButtons from './EditButtons';
 
-import UserContext from '../../contexts/UserContext';
+export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
+    const [vehicle, setVehicle] = useState<Vehicle | null>(null);
 
-export default function EditVehicle(): React.ReactElement {
-    const { user, setUser } = useContext(UserContext);
+    useEffect(() => {
+        const fetchVehicle = async () => {
+            apiGetVehicle().then((response: VehicleResponse) => {
+                if (response.succeeded === true) {
+                    setVehicle(response.vehicle);
+                } else {
+                    setSubmissionError(response.message);
+                    setShowErrorModal(true);
+                }
+            }
+            ).catch((error: unknown) => {
+                console.error('Error fetching vehicle:', error);
+                setSubmissionError((error as Error).message);
+                setShowErrorModal(true);
+            });
+        }
+        fetchVehicle();
+    });
 
     const handleSubmit = (values: Vehicle) => {
-        setUser({
-            ...user,
-            vehicle: values,
-            username: user?.username || '',
-            email: user?.email || '',
+        apiSetVehicle(values).then((response: APIResponse) => {
+            if (response.succeeded === true) {
+                setVehicle(values);
+            } else {
+                setSubmissionError(response.message);
+                setShowErrorModal(true);
+            };
+        }).catch((error: unknown) => {
+            console.error('Error fetching vehicle:', error);
+            setSubmissionError((error as Error).message);
+            setShowErrorModal(true);
         });
     }
 
     const initialValues: Vehicle = {
-        make: user?.vehicle?.make || '',
-        model: user?.vehicle?.model || '',
-        year: user?.vehicle?.year || 2025,
-        seats: user?.vehicle?.seats || 4,
-        license_plate: user?.vehicle?.license_plate || '',
-        additional_description: user?.vehicle?.additional_description || '',
+        make: vehicle?.make || '',
+        model: vehicle?.model || '',
+        year: vehicle?.year || 2025,
+        seats: vehicle?.seats || 4,
+        license_plate: vehicle?.license_plate || '',
+        additional_description: vehicle?.additional_description || '',
     }
 
     return (
@@ -40,20 +66,42 @@ export default function EditVehicle(): React.ReactElement {
                         validationSchema={EditVehicleSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, errors }) => (
+                        {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
-                                    <FormInput label="Make" name="make" type="text" value={values.make} error={errors.make} />
-                                    <FormInput label="Model" name="model" type="text" value={values.model} error={errors.model} />
+                                    <FormInput
+                                        label="Make" name="make"
+                                        type="text"
+                                        formikData={{ value: values.make, error: errors.make, isSubmitting: isSubmitting }}
+                                    />
+                                    <FormInput
+                                        label="Model" name="model"
+                                        type="text"
+                                        formikData={{ value: values.model, error: errors.model, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
                                 <Row>
-                                    <FormInput label="Year" name="year" type="number" value={values.year} error={errors.year} />
-                                    <FormInput label="Seats" name="seats" type="number" value={values.seats} error={errors.seats} />
+                                    <FormInput
+                                        label="Year" name="year"
+                                        type="number"
+                                        formikData={{ value: values.year, error: errors.year, isSubmitting: isSubmitting }}
+                                    />
+                                    <FormInput
+                                        label="Seats" name="seats"
+                                        type="number"
+                                        formikData={{ value: values.seats, error: errors.seats, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
                                 <Row>
-                                    <FormInput label="License Plate" name="license_plate" type="text" value={values.license_plate} error={errors.license_plate} />
+                                    <FormInput label="License Plate" name="license_plate"
+                                        type="text"
+                                        formikData={{ value: values.license_plate, error: errors.license_plate, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
                                 <br />
+                                <Row>
+                                    <EditButtons isSubmitting={isSubmitting} />
+                                </Row>
                             </FormikForm>
                         )}
                     </Formik>

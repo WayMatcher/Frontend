@@ -6,7 +6,7 @@ import RegisterContext from "../../contexts/RegisterContext";
 import FormInput from "../FormInput";
 import RegisterSteps from "../../types/RegisterSteps";
 import CollapseWrapper from "../CollapseWrapper";
-import RegisterNavButtons from "./RegisterNavButtons";
+import RegisterButtons from "./RegisterButtons";
 import { UserRegister } from "../../types/dto/User";
 
 export default function RegisterUser(): React.ReactElement {
@@ -40,32 +40,32 @@ export default function RegisterUser(): React.ReactElement {
                         validationSchema={RegisterUserSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, errors }) => (
+                        {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
                                     <FormInput
                                         label="Username"
                                         name="username" type="text"
                                         placeholder="username"
-                                        value={values.username} error={errors.username}
+                                        formikData={{ value: values.username, error: errors.username, isSubmitting }}
                                     />
                                     <FormInput
                                         label="Email"
                                         name="email" type="email"
                                         placeholder="contact@example.com"
-                                        value={values.email} error={errors.email}
+                                        formikData={{ value: values.email, error: errors.email, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
                                         label="Password"
                                         name="password" type="password"
-                                        value={values.password} error={errors.password}
+                                        formikData={{ value: values.password, error: errors.password, isSubmitting }}
                                     />
                                     <FormInput
                                         label="Confirm Password"
                                         name="confirmPassword" type="password"
-                                        value={values.confirmPassword} error={errors.confirmPassword}
+                                        formikData={{ value: values.confirmPassword, error: errors.confirmPassword, isSubmitting }}
                                     />
                                 </Row>
                                 <hr />
@@ -75,20 +75,21 @@ export default function RegisterUser(): React.ReactElement {
                                         label="First Name"
                                         name="firstName" type="text"
                                         placeholder="John"
-                                        value={values.firstName} error={errors.firstName}
+                                        formikData={{ value: values.firstName, error: errors.firstName, isSubmitting }}
                                     />
                                     <FormInput
                                         label="Last Name"
                                         name="name" type="text"
                                         placeholder="Doe"
-                                        value={values.name} error={errors.name} />
+                                        formikData={{ value: values.name, error: errors.name, isSubmitting }}
+                                    />
                                 </Row>
                                 <Row>
                                     <FormInput
                                         label="Telephone"
                                         name="telephone" type="tel"
                                         placeholder="555-555-5555"
-                                        value={values.telephone} error={errors.telephone}
+                                        formikData={{ value: values.telephone, error: errors.telephone, isSubmitting }}
                                     />
                                 </Row>
                                 <hr />
@@ -97,16 +98,17 @@ export default function RegisterUser(): React.ReactElement {
                                         label="Additional Information"
                                         name="additional_description" type="textarea"
                                         placeholder="Tell us about yourself"
-                                        value={values.additional_description} error={errors.additional_description}
+                                        formikData={{ value: values.additional_description, error: errors.additional_description, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
                                         label="Profile Picture"
                                         name="profile_picture" type="file"
-                                        value={values.profile_picture} error={errors.profile_picture} />
+                                        formikData={{ value: values.profile_picture, error: errors.profile_picture, isSubmitting: isSubmitting }}
+                                    />
                                 </Row>
-                                <RegisterNavButtons nextStep={RegisterSteps.ADDRESS} />
+                                <RegisterButtons nextStep={RegisterSteps.ADDRESS} />
                             </FormikForm>
                         )}
                     </Formik>

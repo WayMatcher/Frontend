@@ -1,35 +1,62 @@
-import React, { useContext } from 'react';
-import { Form as FormikForm, Formik } from 'formik';
+import { useState, useEffect } from 'react';
 import { Container, Row } from "react-bootstrap";
+import { Form as FormikForm, Formik } from 'formik';
 import { EditAddressSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import CollapseWrapper from '../CollapseWrapper';
+import EditProps from '../../types/EditProps';
 import Address from '../../types/dto/Address';
-import UserContext from '../../contexts/UserContext';
+import { apiGetAddress, apiSetAddress } from '../../api/endpoints/user/address';
+import EditButtons from './EditButtons';
 
-export default function EditAddress(): React.ReactElement {
-    const { user, setUser } = useContext(UserContext);
+export default function EditAddress({ setShowErrorModal, setSubmissionError }: EditProps) {
+    const [address, setAddress] = useState<Address | null>(null);
+
+    useEffect(() => {
+        const fetchAddress = async () => {
+            try {
+                const response = await apiGetAddress();
+                if (response.succeeded === true) {
+                    setAddress(response.address);
+                } else {
+                    setSubmissionError(response.message);
+                    setShowErrorModal(true);
+                }
+            } catch (error: unknown) {
+                console.error('Error fetching address:', error);
+                setSubmissionError((error as Error).message);
+                setShowErrorModal(true);
+            }
+        };
+        fetchAddress();
+    });
 
     const handleSubmit = (values: Address) => {
-        setUser({
-            ...user,
-            address: values,
-            username: user?.username || '',
-            email: user?.email || '',
+        apiSetAddress(values).then((response) => {
+            if (response.succeeded === true) {
+                setAddress(values);
+            } else {
+                setSubmissionError(response.message);
+                setShowErrorModal(true);
+            };
+        }).catch((error: unknown) => {
+            console.error('Error setting address:', error);
+            setSubmissionError((error as Error).message);
+            setShowErrorModal(true);
         });
     }
 
     const initialValues: Address = {
-        street: user?.address?.street || '',
-        postal_code: user?.address?.postal_code || '',
-        region: user?.address?.region || '',
-        country: user?.address?.country || '',
-        state: user?.address?.state || '',
-        city: user?.address?.city || '',
-        address_line1: user?.address?.address_line1 || '',
-        address_line2: user?.address?.address_line2 || '',
-        longitude: user?.address?.longitude || 0,
-        latitude: user?.address?.latitude || 0,
+        street: address?.street || '',
+        postal_code: address?.postal_code || '',
+        region: address?.region || '',
+        country: address?.country || '',
+        state: address?.state || '',
+        city: address?.city || '',
+        address_line1: address?.address_line1 || '',
+        address_line2: address?.address_line2 || '',
+        longitude: address?.longitude || 0,
+        latitude: address?.latitude || 0,
     }
 
     return (
@@ -42,14 +69,14 @@ export default function EditAddress(): React.ReactElement {
                         validationSchema={EditAddressSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, errors }) => (
+                        {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
                                     <FormInput
                                         label="Street"
                                         name="street" type="text"
                                         placeholder='1234 Main St'
-                                        value={values.street} error={errors.street}
+                                        formikData={{ value: values.street, error: errors.street, isSubmitting: isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -57,13 +84,13 @@ export default function EditAddress(): React.ReactElement {
                                         label="Postal Code"
                                         name="postal_code" type="text"
                                         placeholder='12345'
-                                        value={values.postal_code} error={errors.postal_code}
+                                        formikData={{ value: values.postal_code, error: errors.postal_code, isSubmitting: isSubmitting }}
                                     />
                                     <FormInput
                                         label="Region"
                                         name="region" type="text"
                                         placeholder='Region'
-                                        value={values.region} error={errors.region}
+                                        formikData={{ value: values.region, error: errors.region, isSubmitting: isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -71,19 +98,19 @@ export default function EditAddress(): React.ReactElement {
                                         label="Country"
                                         name="country" type="text"
                                         placeholder='Country'
-                                        value={values.country} error={errors.country}
+                                        formikData={{ value: values.country, error: errors.country, isSubmitting: isSubmitting }}
                                     />
                                     <FormInput
                                         label="State"
                                         name="state" type="text"
                                         placeholder='State'
-                                        value={values.state} error={errors.state}
+                                        formikData={{ value: values.state, error: errors.state, isSubmitting: isSubmitting }}
                                     />
                                     <FormInput
                                         label="City"
                                         name="city" type="text"
                                         placeholder='City'
-                                        value={values.city} error={errors.city}
+                                        formikData={{ value: values.city, error: errors.city, isSubmitting: isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -91,7 +118,7 @@ export default function EditAddress(): React.ReactElement {
                                         label="Address Line 1"
                                         name="address_line1" type="text"
                                         placeholder='Address Line 1'
-                                        value={values.address_line1} error={errors.address_line1}
+                                        formikData={{ value: values.address_line1, error: errors.address_line1, isSubmitting: isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -99,7 +126,7 @@ export default function EditAddress(): React.ReactElement {
                                         label="Address Line 2"
                                         name="address_line2" type="text"
                                         placeholder='Address Line 2'
-                                        value={values.address_line2} error={errors.address_line2}
+                                        formikData={{ value: values.address_line2, error: errors.address_line2, isSubmitting: isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -107,14 +134,18 @@ export default function EditAddress(): React.ReactElement {
                                         label="Longitude"
                                         name="longitude" type="number"
                                         placeholder={47.8117211}
-                                        value={values.longitude} error={errors.longitude}
+                                        formikData={{ value: values.longitude, error: errors.longitude, isSubmitting: isSubmitting }}
                                     />
                                     <FormInput
                                         label="Latitude"
                                         name="latitude" type="number"
                                         placeholder={13.0322547}
-                                        value={values.latitude} error={errors.latitude}
+                                        formikData={{ value: values.latitude, error: errors.latitude, isSubmitting: isSubmitting }}
                                     />
+                                </Row>
+                                <br />
+                                <Row>
+                                    <EditButtons isSubmitting={isSubmitting} />
                                 </Row>
                             </FormikForm>
                         )}

@@ -1,12 +1,7 @@
-import User, { UserRegister } from './dto/User';
+import { UserRegister } from './dto/User';
 import Address from './dto/Address';
 import Vehicle from './dto/Vehicle';
 import WMEvent from './dto/Event';
-
-export interface UserContextProps {
-    user: User | null;
-    setUser: (user: User | null) => void;
-}
 
 export interface MFAContextProps {
     mfaToken: boolean;

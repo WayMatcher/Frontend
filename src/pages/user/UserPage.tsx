@@ -1,18 +1,20 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import EditAddress from "../../components/user/EditAddress";
 import EditUser from "../../components/user/EditUser";
 import EditVehicle from "../../components/user/EditVehicle";
-import UserContext from "../../contexts/UserContext";
 import { Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "../../components/ErrorModal";
 import { Form as FormikForm, Formik } from "formik";
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import User from "../../types/dto/User";
 
 export default function UserPage() {
-    const { user } = useContext(UserContext);
 
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+
+    const authUser = useAuthUser<User>();
 
     const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ export default function UserPage() {
         }
     }
 
-    if (!user || !user.jwt) {
+    if (!authUser) {
         return (
             <Container className="user-page">
                 <h2>Not logged in!</h2>
@@ -41,7 +43,7 @@ export default function UserPage() {
         return (
             <div>
                 <Container className="user-page">
-                    <h1>Welcome {user.firstName} {user.name} </h1>
+                    <h1>Welcome {authUser.firstName} {authUser.name} </h1>
                     <Container>
                         <br />
                         <Formik
@@ -50,11 +52,11 @@ export default function UserPage() {
                         >
                             <FormikForm>
                                 <h2>Edit your profile</h2>
-                                <EditUser />
+                                <EditUser setShowErrorModal={setShowErrorModal} setSubmissionError={setSubmissionError} />
                                 <hr />
-                                <EditAddress />
+                                <EditAddress setShowErrorModal={setShowErrorModal} setSubmissionError={setSubmissionError} />
                                 <hr />
-                                <EditVehicle />
+                                <EditVehicle setShowErrorModal={setShowErrorModal} setSubmissionError={setSubmissionError} />
                                 <br />
                                 <Button type='submit'>Save</Button>
                             </FormikForm>

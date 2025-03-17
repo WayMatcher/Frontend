@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 
 import { LoginResponse, MFAResponse } from '../../../types/API';
 import User, { UserLogin } from '../../../types/dto/User';
+import MFAToken from '../../../types/dto/MFAToken';
 
 const api = new API();
 
@@ -25,7 +26,7 @@ const api = new API();
  * @returns A promise that resolves to an MFAResponse object.
  * @throws Will throw an error if the API request fails.
  */
-export const mfaAuthUser = async (user: User): Promise<MFAResponse> => {
+export const mfaAuthUser = async (user: UserLogin | undefined, mfaToken: MFAToken): Promise<MFAResponse> => {
     // Mock response for frontend testing
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -33,23 +34,28 @@ export const mfaAuthUser = async (user: User): Promise<MFAResponse> => {
                 succeeded: true,
                 message: 'MFA authentication successful',
                 user: {
-                    ...user,
-                    username: user.username,
-                    email: user.email,
-                    jwt: 'mock-jwt-token'
-                }
+                    id: 1,
+                    username: "test-user",
+                    email: "test-user@example.com",
+                },
+                jwt: 'mock-jwt-token',
             });
         }, 1000);
     });
 
-    // Original code
+
+    // * Original code
+    //if (user) {
     // try {
     //     const response = await api.axios.post('/auth/mfa', { user: user, mfaToken: bcrypt.hash(mfaToken, 10) }, { withCredentials: true });
     //     return response.data as MFAResponse;
     // } catch (error) {
     //     api.handleApiError(error);
     //     throw error;
-    // }
+    //}
+    //    } else {
+    //    throw new Error('User object is undefined');
+    //}
 };
 
 /**

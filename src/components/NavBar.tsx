@@ -1,11 +1,15 @@
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import '../styles/NavBar.scss';
-import UserContext from '../contexts/UserContext';
 import { NavDropdown, Navbar, Nav, Container, ButtonGroup } from 'react-bootstrap';
-import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import User from '../types/dto/User';
 
-function NavBar() {
-  const { user, setUser } = useContext(UserContext);
+export default function NavBar() {
+  const signOut = useSignOut();
+  const authUser = useAuthUser<User>();
+  const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
   return (
@@ -19,10 +23,10 @@ function NavBar() {
             <Link to='/events' className='nav-link'>Events</Link>
           </Nav>
           <Nav>
-            {(user && user.jwt) ? (
-              <NavDropdown title={user.username} id="basic-nav-dropdown" aria-label='User Options' className='justify-content-end'>
+            {(isAuthenticated) ? (
+              <NavDropdown title={authUser?.username} id="basic-nav-dropdown" aria-label='User Options' className='justify-content-end'>
                 <NavDropdown.Item onClick={() => { navigate("/user/edit"); }} aria-label='Edit Profile'>Edit Profile</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => { setUser(null); navigate("/user/login"); }} aria-label='Logout'>Logout</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { signOut(); navigate("/user/login"); }} aria-label='Logout'>Logout</NavDropdown.Item>
               </NavDropdown>
             ) : (
               <ButtonGroup>
@@ -36,5 +40,3 @@ function NavBar() {
     </Navbar >
   );
 };
-
-export default NavBar;
