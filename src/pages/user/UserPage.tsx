@@ -3,16 +3,17 @@ import EditAddress from "../../components/user/EditAddress";
 import EditUser from "../../components/user/EditUser";
 import EditVehicle from "../../components/user/EditVehicle";
 import { Button, Container } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorModal from "../../components/ErrorModal";
 import { Form as FormikForm, Formik } from "formik";
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from "../../types/dto/User";
+import User from "../../types/User/dto";
 
 export default function UserPage() {
 
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+    const { username } = useParams<{ username: string }>();
 
     const authUser = useAuthUser<User>();
 
@@ -38,6 +39,14 @@ export default function UserPage() {
                 <Button onClick={() => { navigate('/user/login') }}>Log in</Button>
             </Container>
         );
+    } else if (authUser?.username !== username) {
+        return (
+            <Container className="user-page">
+                <h2>You cannot edit this user!</h2>
+                <Button onClick={() => { navigate('/user/login') }}>Log in</Button>
+            </Container>
+        );
+
 
     } else {
         return (

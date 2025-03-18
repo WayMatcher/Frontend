@@ -5,18 +5,23 @@ import { EditAddressSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import CollapseWrapper from '../CollapseWrapper';
 import EditProps from '../../types/EditProps';
-import Address from '../../types/dto/Address';
-import { apiGetAddress, apiSetAddress } from '../../api/endpoints/user/address';
+import Address from '../../types/Address/dto';
+import { apiGetAddress, apiSetAddress } from '../../api/address';
 import EditButtons from './EditButtons';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import User from '../../types/User/dto';
 
 export default function EditAddress({ setShowErrorModal, setSubmissionError }: EditProps) {
     const [address, setAddress] = useState<Address | null>(null);
+    const authUser = useAuthUser<User>();
 
     useEffect(() => {
         const fetchAddress = async () => {
+            if (authUser === null || authUser.id === null) return;
+
             try {
-                const response = await apiGetAddress();
-                setAddress(response.address);
+                const response = await apiGetAddress({ userID: authUser.id });
+                setAddress(response.data);
             } catch (error: unknown) {
                 console.error('Error fetching address:', error);
                 setSubmissionError((error as Error).message);
@@ -26,19 +31,14 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
         fetchAddress();
     });
 
-    const handleSubmit = (values: Address) => {
-        apiSetAddress(values).then((response) => {
-            if (response.succeeded === true) {
-                setAddress(values);
-            } else {
-                setSubmissionError(response.message);
-                setShowErrorModal(true);
-            };
-        }).catch((error: unknown) => {
-            console.error('Error setting address:', error);
-            setSubmissionError((error as Error).message);
+    const handleSubmit = async (values: Address) => {
+
+        const response = await apiSetAddress({ address: values });
+
+        if (response.status !== 200) {
+            setSubmissionError(response.statusText);
             setShowErrorModal(true);
-        });
+        }
     }
 
     const initialValues: Address = {
@@ -53,7 +53,7 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
         longitude: address?.longitude || 0,
         latitude: address?.latitude || 0,
     }
-
+    if (authUser === null) return <h2>Not logged in</h2>;
     return (
         <>
             <h2>Address</h2>

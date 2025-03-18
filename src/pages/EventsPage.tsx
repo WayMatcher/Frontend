@@ -4,10 +4,10 @@ import '../styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '../components/events/EventCard';
 import SearchBar from '../components/events/SearchBar';
-import { getEvents } from '../api/endpoints/events';
-import WMEvent from '../types/dto/Event';
+import { getEvents } from '../types/Event/api';
+import WMEvent from '../types/Event/dto';
 import EventDetails from '../components/events/EventDetails';
-import EventContext from '../contexts/EventContext';
+import EventContext from '../types/contexts/EventContext';
 
 export default function EventPage() {
     const { eventid } = useParams();

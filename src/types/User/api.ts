@@ -1,8 +1,12 @@
 import { AxiosResponse } from "axios";
-import User from "../dto/User";
-import Address from "../dto/Address";
-import Vehicle from "../dto/Vehicle";
+import API from '../../utils/api';
+const api = new API();
 
+import bcrypt from 'bcryptjs';
+
+import User from "../User/dto";
+import Address from "../Address/dto";
+import Vehicle from "../Vehicle/dto";
 
 // User
 /**
@@ -18,6 +22,7 @@ export interface RequestUser {
     username?: string;
     email?: string;
     user?: User;
+    userID?: number;
 }
 
 /**
@@ -105,3 +110,69 @@ export interface MFATokenRequest {
  * response data contains a `User` object.
  */
 export type MFATokenResponse = AxiosResponse<User>;
+
+
+export const apiGetUser = async (request: RequestUser): Promise<ResponseUser> => {
+    try {
+        const response = await api.axios.get<ResponseUser>('/getUserByID', { params: { ...request } });
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiSetUser = async (request: RequestUser): Promise<ResponseUser> => {
+    try {
+        const response = await api.axios.put<ResponseUser>('/putUser', request);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+}
+
+export const apiAuthMFA = async (request: MFATokenRequest): Promise<MFATokenResponse> => {
+    try {
+        const hashedMFAToken: MFATokenRequest = {
+            ...request,
+            token: bcrypt.hashSync(request.token, 10),
+        }
+
+        const response = await api.axios.post('/auth/mfa', hashedMFAToken);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiAuthUser = async (request: RequestUserLogin): Promise<ResponseUserLogin> => {
+    try {
+        const hashedUserLogin: RequestUserLogin = {
+            ...request,
+            password: bcrypt.hashSync(request.password, 10),
+        }
+
+        const response = await api.axios.post<ResponseUserLogin>('/login', hashedUserLogin);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiRegisterUser = async (request: RequestUserRegister): Promise<ResponseUserRegister> => {
+    try {
+        const hashedRequest: RequestUserRegister = {
+            ...request,
+            password: bcrypt.hashSync(request.password, 10),
+        };
+
+        const response = await api.axios.put<ResponseUserRegister>('/register', hashedRequest);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+}

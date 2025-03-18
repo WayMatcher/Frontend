@@ -4,10 +4,9 @@ import { Container, Row } from "react-bootstrap";
 import { EditUserSchema } from "../../utils/formValidations";
 import FormInput from "../FormInput";
 import CollapseWrapper from "../CollapseWrapper";
-import User, { UserRegister } from "../../types/dto/User";
-import { apiGetUser, apiSetUser } from "../../api/endpoints/user/user";
+import User, { UserRegisterModel } from "../../types/User/dto";
+import { apiGetUser, apiSetUser } from "../../api/user";
 import EditProps from "../../types/EditProps";
-import APIResponse from "../../types/API";
 import EditButtons from "./EditButtons";
 
 export default function EditUser({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
@@ -32,22 +31,12 @@ export default function EditUser({ setShowErrorModal, setSubmissionError }: Edit
         fetchUser();
     }, [setShowErrorModal, setSubmissionError]);
 
-    const handleSubmit = async (values: UserRegister) => {
-        apiSetUser(values).then((response: APIResponse) => {
-            if (response.succeeded === true) {
-                setUser(values);
-            } else {
-                setSubmissionError(response.message);
-                setShowErrorModal(true);
-            }
-        }).catch((error: unknown) => {
-            console.error('Error setting user:', error);
-            setSubmissionError((error as Error).message);
-            setShowErrorModal(true);
-        });
+    const handleSubmit = async (values: UserRegisterModel) => {
+        apiSetUser(values)
+        setUser(values);
     }
 
-    const initialValues: UserRegister = {
+    const initialValues: UserRegisterModel = {
         email: user?.email || '',
         username: user?.username || '',
         password: '',

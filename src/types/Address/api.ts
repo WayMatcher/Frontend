@@ -1,5 +1,8 @@
 import { AxiosResponse } from "axios";
-import Address from "../dto/Address";
+import API from "../../utils/api";
+const api = new API();
+
+import Address from "./dto";
 
 /**
  * Represents a request address model.
@@ -10,6 +13,7 @@ import Address from "../dto/Address";
  * @property {Address} [address] - The address details associated with the request (optional).
  */
 export interface RequestAddress {
+    userID?: number;
     username?: string;
     email?: string;
     address?: Address;
@@ -22,4 +26,22 @@ export interface RequestAddress {
  */
 export type ResponseAddress = AxiosResponse<Address>;
 
+export const apiGetAddress = async (request: RequestAddress): Promise<ResponseAddress> => {
+    try {
+        const response = await api.axios.get<ResponseAddress>('/getAddress', { params: { request } });
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
 
+export const apiSetAddress = async (request: RequestAddress): Promise<AxiosResponse> => {
+    try {
+        const response = await api.axios.put<AxiosResponse>('/setAddress', request);
+        return response;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+}

@@ -11,7 +11,8 @@ import LoginPage from './pages/user/LoginPage';
 import RegisterPage from './pages/user/RegisterPage';
 import EventsPage from './pages/EventsPage';
 import ErrorBoundary from './components/ErrorBoundary';
-import Profile, { ProfileEdit } from './components/user/Profile';
+import Profile from './components/user/Profile';
+import UserPage from './pages/user/UserPage';
 
 export default function AppWrapper() {
 
@@ -31,7 +32,7 @@ export default function AppWrapper() {
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:eventid" element={<EventsPage />} />
               <Route path="/profile/:username" element={<Profile />}>
-                <Route path='/profile/:username/edit' element={<ProfileEdit />} />
+                <Route path='/profile/:username/edit' element={<UserPage />} />
               </Route>
             </Routes>
           </Router>

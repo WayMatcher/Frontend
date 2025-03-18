@@ -65,8 +65,4 @@ export default class API {
             throw new Error("An unexpected error occurred. Please try again later.");
         }
     }
-
-    put<T: any>(data: T, url: string): Promise<T> {
-        return this.axios.put<T>(url, data);
-    }
 }

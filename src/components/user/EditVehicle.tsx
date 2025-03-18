@@ -4,10 +4,9 @@ import { Container, Row } from "react-bootstrap";
 import { EditVehicleSchema } from '../../utils/formValidations';
 import FormInput from '../FormInput';
 import CollapseWrapper from '../CollapseWrapper';
-import Vehicle from '../../types/dto/Vehicle';
+import Vehicle from '../../types/Vehicle/dto';
 import EditProps from '../../types/EditProps';
-import APIResponse, { VehicleResponse } from '../../types/API';
-import { apiGetVehicle, apiSetVehicle } from '../../api/endpoints/user/vehicle';
+import { apiGetVehicle, apiSetVehicle } from '../../api/vehicle';
 import EditButtons from './EditButtons';
 
 export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {

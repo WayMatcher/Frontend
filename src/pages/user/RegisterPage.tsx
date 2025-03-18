@@ -8,10 +8,9 @@ import RegisterUser from '../../components/register/RegisterUser';
 import RegisterAddress from '../../components/register/RegisterAddress';
 import RegisterVehicle from '../../components/register/RegisterVehicle';
 import RegisterSummary from '../../components/register/RegisterSummary';
-import RegisterContext, { RegisterProvider } from '../../contexts/RegisterContext';
-import RegisterSteps from '../../types/RegisterSteps';
-import registerAPI from '../../api/endpoints/user/register';
-import APIResponse from '../../types/API';
+import RegisterContext, { RegisterProvider } from '../../types/contexts/RegisterContext';
+import { RegisterSteps } from '../../types/User/form';
+import { apiRegisterUser } from '../../types/User/api';
 import { useNavigate } from 'react-router-dom';
 import ErrorModal from '../../components/ErrorModal';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
@@ -43,18 +42,10 @@ function RegisterPageContent() {
         }
 
         try {
-            const registerResponse: APIResponse = await registerAPI(registerUser, registerAddress, registerVehicle);
-
-            // Check if registration was successful
-            if (registerResponse.succeeded === true) {
-                navigate('/'); // TODO: Add a proper page that shows that the registration was succesful
-            } else {
-                setSubmissionError("Registration Failed: " + registerResponse.message); // Sets error message if registration failed
-                setShowErrorModal(true); // Shows error modal
-            }
-
+            await apiRegisterUser({ user: registerUser, address: registerAddress, vehicle: registerVehicle, password: registerUser.password });
+            navigate('/user/login');
         } catch (err: unknown) {
-            setSubmissionError("Unknown error occured: " + (err as Error).message);
+            setSubmissionError("An error occured: " + (err as Error).message);
             setShowErrorModal(true); // Shows error modal
         }
     };

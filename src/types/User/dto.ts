@@ -1,5 +1,5 @@
-import Address from './Address';
-import Vehicle from './Vehicle';
+import Address from '../Address/dto';
+import Vehicle from '../Vehicle/dto';
 
 interface BaseUser {
     username: string;
