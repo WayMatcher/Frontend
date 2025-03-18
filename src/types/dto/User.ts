@@ -18,12 +18,12 @@ export default interface User extends BaseUser {
     vehicle?: Vehicle;
 }
 
-export interface UserLogin extends BaseUser {
+export interface UserLoginModel extends BaseUser {
     password: string;
-    userOrEmail: string;
+    userOrEmail?: string;
 }
 
-export interface UserRegister extends User {
+export interface UserRegisterModel extends User {
     password: string;
     confirmPassword: string;
 }

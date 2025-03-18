@@ -1,4 +1,3 @@
-import { UserRegister } from './dto/User';
 import Address from './dto/Address';
 import Vehicle from './dto/Vehicle';
 import WMEvent from './dto/Event';

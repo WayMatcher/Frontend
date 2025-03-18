@@ -6,7 +6,6 @@ export default class API {
 
     constructor() {
         this.axios = this.createAxiosInstance();
-        this.setupInterceptors();
     }
 
     private createAxiosInstance(): AxiosInstance {
@@ -15,23 +14,8 @@ export default class API {
             headers: {
                 'Content-Type': 'application/json',
             },
+            withCredentials: true
         });
-    }
-
-    private setupInterceptors() {
-        this.axios.interceptors.request.use(
-            (config) => {
-                const user = localStorage.getItem('user');
-                const token = user ? JSON.parse(user).token : "";
-                if (token) {
-                    config.headers['Authorization'] = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
     }
 
     /**
@@ -80,5 +64,9 @@ export default class API {
             console.error("Generic Error:", error);
             throw new Error("An unexpected error occurred. Please try again later.");
         }
+    }
+
+    put<T: any>(data: T, url: string): Promise<T> {
+        return this.axios.put<T>(url, data);
     }
 }

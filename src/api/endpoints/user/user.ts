@@ -1,31 +1,82 @@
-import APIResponse, { UserResponse } from '../../../types/API';
-import User from '../../../types/dto/User';
+import { MFATokenRequest, MFATokenResponse, RequestUser, RequestUserLogin, RequestUserRegister, ResponseUser, ResponseUserLogin, ResponseUserRegister } from '../../../types/apiModels/UserModel';
 
-export const apiGetUser = async (): Promise<UserResponse> => {
-    // Mock response for frontend testing
-    return new Promise<UserResponse>((resolve) => {
-        setTimeout(() => {
-            resolve({
-                succeeded: true,
-                message: 'User found',
-                user: {
-                    id: 1,
-                    username: 'test-user',
-                    email: 'test-user@email.com',
-                }
-            });
-        }, 1000);
-    });
+import bcrypt from 'bcryptjs';
+
+import API from "../../api";
+
+const api = new API();
+
+export const apiGetUserByID = async (request: RequestUser): Promise<ResponseUser> => {
+    try {
+        const response = await api.axios.get<ResponseUser>('/getUserByID', { params: { ...request } });
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
 };
 
-export const apiSetUser = async (user: User): Promise<APIResponse> => {
-    // Mock response for frontend testing
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                succeeded: true,
-                message: 'User set successfully',
-            });
-        });
-    });
+export const apiGetUserByUsername = async (request: RequestUser): Promise<ResponseUser> => {
+    try {
+        const response = await api.axios.get<ResponseUser>('/getUserByUsername', { params: { ...request } });
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiSetUser = async (request: RequestUser): Promise<ResponseUser> => {
+    try {
+        const response = await api.axios.put<ResponseUser>('/putUser', request);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+}
+
+export const apiAuthMFA = async (request: MFATokenRequest): Promise<MFATokenResponse> => {
+    try {
+        const hashedMFAToken: MFATokenRequest = {
+            ...request,
+            token: bcrypt.hashSync(request.token, 10),
+        }
+
+        const response = await api.axios.post('/auth/mfa', hashedMFAToken);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiAuthUser = async (request: RequestUserLogin): Promise<ResponseUserLogin> => {
+    try {
+        const hashedUserLogin: RequestUserLogin = {
+            ...request,
+            password: bcrypt.hashSync(request.password, 10),
+        }
+
+        const response = await api.axios.post<ResponseUserLogin>('/login', hashedUserLogin);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiRegisterUser = async (request: RequestUserRegister): Promise<ResponseUserRegister> => {
+    try {
+        const hashedRequest: RequestUserRegister = {
+            ...request,
+            password: bcrypt.hashSync(request.password, 10),
+        };
+
+        const response = await api.axios.put<ResponseUserRegister>('/register', hashedRequest);
+        return response.data;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
 }

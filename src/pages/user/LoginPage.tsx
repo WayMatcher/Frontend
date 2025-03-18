@@ -13,6 +13,7 @@ import ErrorModal from '../../components/ErrorModal';
 import CollapseWrapper from '../../components/CollapseWrapper';
 import FormInput from '../../components/FormInput';
 import MFAModal from '../../components/user/MFAModal';
+import { UserLoginModel } from '../../types/apiModels/UserLoginModel';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -25,9 +26,13 @@ export default function LoginPage() {
     const handleSubmit = async (values: UserLogin) => {
         // Reset error message
         setSubmissionError(null);
+        if (!values.userOrEmail || !values.password) {
+            setSubmissionError('Please fill in all fields');
+            handleShowErrorModal();
+            return;
+        }
 
-        const userLogin = {
-            userOrEmail: values.userOrEmail,
+        const userLogin: UserLoginModel = {
             username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
             email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
             password: values.password,
@@ -78,7 +83,7 @@ export default function LoginPage() {
                                         label="Email or Username"
                                         name="userOrEmail" type="text"
                                         placeholder="Enter username or e-mail address"
-                                        value={values.userOrEmail} error={errors.userOrEmail}
+                                        formikData={{ value: values.userOrEmail, error: errors.userOrEmail, isSubmitting }}
                                     />
                                 </Row>
                                 <Row>
@@ -86,7 +91,7 @@ export default function LoginPage() {
                                         label="Password"
                                         name="password" type="password"
                                         placeholder="Enter password"
-                                        value={values.password} error={errors.password}
+                                        formikData={{ value: values.password, error: errors.password, isSubmitting }}
                                     />
                                 </Row>
                                 <br />

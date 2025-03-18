@@ -14,6 +14,7 @@ import registerAPI from '../../api/endpoints/user/register';
 import APIResponse from '../../types/API';
 import { useNavigate } from 'react-router-dom';
 import ErrorModal from '../../components/ErrorModal';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 export default function RegisterPage() {
     return (
@@ -29,6 +30,7 @@ function RegisterPageContent() {
     const [currentStep, setCurrentstep] = useState<RegisterSteps>(RegisterSteps.USER);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+    const isAuthenticated = useIsAuthenticated();
 
     useEffect(() => {
         setCurrentstep(step);
@@ -56,27 +58,47 @@ function RegisterPageContent() {
             setShowErrorModal(true); // Shows error modal
         }
     };
-
-    return (
-        <>
-            <Container className="register-page">
-                <h1>Register</h1>
-                <ProgressBar now={step * (1 / 4) * 100} />
-                <Container>
-                    <br />
-                    {currentStep === RegisterSteps.USER && <RegisterUser />}
-                    {currentStep === RegisterSteps.ADDRESS && <RegisterAddress />}
-                    {currentStep === RegisterSteps.VEHICLE && <RegisterVehicle />}
-                    {currentStep === RegisterSteps.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
-                    <br />
+    if (isAuthenticated) {
+        return (
+            <>
+                <Container className="register-page">
+                    <h1>Register</h1>
+                    <Container>
+                        <br />
+                        <h2>You are already registered</h2>
+                        <br />
+                    </Container>
                 </Container>
-            </Container>
-            <ErrorModal show={showErrorModal} handleClose={() => {
-                setShowErrorModal(false);
-            }} >
-                {submissionError}
-            </ErrorModal>
-            <br />
-        </>
-    );
+                <ErrorModal show={showErrorModal} handleClose={() => {
+                    setShowErrorModal(false);
+                }} >
+                    {submissionError}
+                </ErrorModal>
+                <br />
+            </>
+        )
+    } else {
+        return (
+            <>
+                <Container className="register-page">
+                    <h1>Register</h1>
+                    <ProgressBar now={step * (1 / 4) * 100} />
+                    <Container>
+                        <br />
+                        {currentStep === RegisterSteps.USER && <RegisterUser />}
+                        {currentStep === RegisterSteps.ADDRESS && <RegisterAddress />}
+                        {currentStep === RegisterSteps.VEHICLE && <RegisterVehicle />}
+                        {currentStep === RegisterSteps.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
+                        <br />
+                    </Container>
+                </Container>
+                <ErrorModal show={showErrorModal} handleClose={() => {
+                    setShowErrorModal(false);
+                }} >
+                    {submissionError}
+                </ErrorModal>
+                <br />
+            </>
+        )
+    }
 }

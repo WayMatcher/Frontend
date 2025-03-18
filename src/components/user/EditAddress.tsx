@@ -16,12 +16,7 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
         const fetchAddress = async () => {
             try {
                 const response = await apiGetAddress();
-                if (response.succeeded === true) {
-                    setAddress(response.address);
-                } else {
-                    setSubmissionError(response.message);
-                    setShowErrorModal(true);
-                }
+                setAddress(response.address);
             } catch (error: unknown) {
                 console.error('Error fetching address:', error);
                 setSubmissionError((error as Error).message);

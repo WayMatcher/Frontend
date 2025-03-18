@@ -1,5 +1,7 @@
 import './styles/App.scss';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
@@ -7,34 +9,37 @@ import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/user/LoginPage';
 import RegisterPage from './pages/user/RegisterPage';
-import UserPage from './pages/user/UserPage';
 import EventsPage from './pages/EventsPage';
-import AuthOutlet from '@auth-kit/react-router/AuthOutlet';
+import ErrorBoundary from './components/ErrorBoundary';
+import Profile, { ProfileEdit } from './components/user/Profile';
 
 export default function AppWrapper() {
 
   return (
     <>
-      <Router>
+      <ErrorBoundary fallback={<p>Something went wrong</p>}>
+
         <header className="App-Header">
           <NavBar />
         </header>
         <main className="App-Main">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/user/login" element={<LoginPage />} />
-            <Route element={<AuthOutlet fallbackPath='/user/login' />}>
-              <Route path="/user/edit" element={<UserPage />} />
-            </Route>
-            <Route path="/user/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/events/:eventid" element={<EventsPage />} />
-          </Routes>
+          <Router>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:eventid" element={<EventsPage />} />
+              <Route path="/profile/:username" element={<Profile />}>
+                <Route path='/profile/:username/edit' element={<ProfileEdit />} />
+              </Route>
+            </Routes>
+          </Router>
         </main>
         <footer className="App-Footer">
           <Footer />
         </footer>
-      </Router>
+      </ErrorBoundary >
     </ >
   );
 }
