@@ -7,15 +7,17 @@ export default function LandingPage() {
 
     const getStarted = () => {
         navigate('/user/register');
-    }
+    };
 
     return (
-        <Container fluid className="landing-page">
-            <Row className="justify-content-center align-items-center text-center">
+        <Container fluid className='landing-page'>
+            <Row className='justify-content-center align-items-center text-center'>
                 <Col md={8}>
                     <h1>Welcome to WayMatcher</h1>
                     <p>Your journey to finding the best paths starts here.</p>
-                    <Button variant="primary" size="lg" onClick={getStarted} >Get Started</Button>
+                    <Button variant='primary' size='lg' onClick={getStarted}>
+                        Get Started
+                    </Button>
                 </Col>
             </Row>
         </Container>

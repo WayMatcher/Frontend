@@ -1,26 +1,23 @@
-import { useContext } from "react"
-import RegisterContext from "../../contexts/RegisterContext";
-import { Col, Container, Row } from "react-bootstrap";
-import React from "react";
-import CollapseWrapper from "../CollapseWrapper";
-import RegisterButtons from "./RegisterButtons";
-import RegisterSteps from "../../types/RegisterSteps";
-import { Form as FormikForm, Formik } from "formik";
+import { useContext } from 'react';
+import RegisterContext from '@/contexts/RegisterContext';
+import { Col, Container, Row } from 'react-bootstrap';
+import React from 'react';
+import CollapseWrapper from '@/components/CollapseWrapper';
+import RegisterButtons from '@/components/register/RegisterButtons';
+import RegisterSteps from '@/types/RegisterSteps';
+import { Form as FormikForm, Formik } from 'formik';
 
 export default function RegisterSummary({ handleSubmit }: { handleSubmit(): void }): React.ReactElement {
     const { registerAddress, registerUser, registerVehicle } = useContext(RegisterContext);
-    if (!registerUser || !registerAddress || !registerVehicle) return <h2 className="warning">Registration not completed!</h2>
-
+    if (!registerUser || !registerAddress || !registerVehicle)
+        return <h2 className='warning'>Registration not completed!</h2>;
 
     return (
         <>
             <h2>Summary</h2>
             <CollapseWrapper>
                 <Container>
-                    <Formik
-                        initialValues={{}}
-                        onSubmit={handleSubmit}
-                    >
+                    <Formik initialValues={{}} onSubmit={handleSubmit}>
                         {() => (
                             <FormikForm>
                                 <Row>
@@ -28,7 +25,9 @@ export default function RegisterSummary({ handleSubmit }: { handleSubmit(): void
                                         <h3>User</h3>
                                         <p>Username: {registerUser.username}</p>
                                         <p>Email: {registerUser.email}</p>
-                                        <p>Name: {registerUser.firstName} {registerUser.name}</p>
+                                        <p>
+                                            Name: {registerUser.firstName} {registerUser.name}
+                                        </p>
                                         <p>Additional Description: {registerUser.additional_description}</p>
                                         <p>Telephone: {registerUser.telephone}</p>
                                     </Col>
@@ -54,7 +53,8 @@ export default function RegisterSummary({ handleSubmit }: { handleSubmit(): void
                                     </Col>
                                 </Row>
                                 <RegisterButtons prevStep={RegisterSteps.VEHICLE} />
-                            </FormikForm>)}
+                            </FormikForm>
+                        )}
                     </Formik>
                 </Container>
             </CollapseWrapper>

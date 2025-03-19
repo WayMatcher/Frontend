@@ -41,12 +41,16 @@ export default function EventPage() {
     });
 
     const handleSearch = (searchTerm: string) => {
-        if (searchTerm === "") {
+        if (searchTerm === '') {
             setFilteredEvents(events);
         } else {
-            setFilteredEvents(events.filter(event =>
-                (event.title.toLowerCase().includes(searchTerm.toLowerCase()) || event.description?.toLowerCase().includes(searchTerm.toLowerCase()))
-            ));
+            setFilteredEvents(
+                events.filter(
+                    (event) =>
+                        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        event.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+                ),
+            );
         }
     };
 
@@ -62,12 +66,12 @@ export default function EventPage() {
 
     return (
         <>
-            <Container className="EventPage">
+            <Container className='EventPage'>
                 <h2>Events</h2>
                 <SearchBar onSearch={handleSearch} />
                 <br />
-                <Container className="EventGrid">
-                    {filteredEvents.map(event => (
+                <Container className='EventGrid'>
+                    {filteredEvents.map((event) => (
                         <EventCard key={event.id} event={event} openModal={handleShowModal} />
                     ))}
                 </Container>
@@ -76,8 +80,8 @@ export default function EventPage() {
                 <EventDetails event={currentEvent} />
                 <Modal.Footer>
                     <ButtonGroup>
-                        <Button variant="primary">Edit</Button>
-                        <Button variant="secondary" onClick={handleCloseModal}>
+                        <Button variant='primary'>Edit</Button>
+                        <Button variant='secondary' onClick={handleCloseModal}>
                             Close
                         </Button>
                     </ButtonGroup>

@@ -1,9 +1,9 @@
 import React, { createContext, useState, ReactNode } from 'react';
-import { RegisterContextProps } from '@/types/contexts/registerContext';
+import { RegisterContextProps } from '../types/Contexts';
 
-import { UserRegister } from '@/types/User/dto';
-import Address from '@/types/Address/dto';
-import Vehicle from '@/types/Vehicle/dto';
+import { UserRegister } from '../types/dto/User';
+import Address from '../types/dto/Address';
+import Vehicle from '../types/dto/Vehicle';
 
 const RegisterContext: React.Context<RegisterContextProps> = createContext<RegisterContextProps>({
     registerUser: null,

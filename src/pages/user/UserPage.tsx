@@ -1,16 +1,15 @@
-import { useState } from "react";
-import EditAddress from "../../components/user/EditAddress";
-import EditUser from "../../components/user/EditUser";
-import EditVehicle from "../../components/user/EditVehicle";
-import { Button, Container } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import ErrorModal from "../../components/ErrorModal";
-import { Form as FormikForm, Formik } from "formik";
+import { useState } from 'react';
+import EditAddress from '@/components/user/EditAddress';
+import EditUser from '@/components/user/EditUser';
+import EditVehicle from '@/components/user/EditVehicle';
+import { Button, Container } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import ErrorModal from '@/components/ErrorModal';
+import { Form as FormikForm, Formik } from 'formik';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from "../../types/User/dto";
+import User from '@/types/User/dto';
 
 export default function UserPage() {
-
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const { username } = useParams<{ username: string }>();
@@ -27,52 +26,70 @@ export default function UserPage() {
         try {
             // Submit user data
         } catch {
-            setSubmissionError("Test");
+            setSubmissionError('Test');
             setShowErrorModal(true);
         }
-    }
+    };
 
     if (!authUser) {
         return (
-            <Container className="user-page">
+            <Container className='user-page'>
                 <h2>Not logged in!</h2>
-                <Button onClick={() => { navigate('/user/login') }}>Log in</Button>
+                <Button
+                    onClick={() => {
+                        navigate('/user/login');
+                    }}
+                >
+                    Log in
+                </Button>
             </Container>
         );
     } else if (authUser?.username !== username) {
         return (
-            <Container className="user-page">
+            <Container className='user-page'>
                 <h2>You cannot edit this user!</h2>
-                <Button onClick={() => { navigate('/user/login') }}>Log in</Button>
+                <Button
+                    onClick={() => {
+                        navigate('/user/login');
+                    }}
+                >
+                    Log in
+                </Button>
             </Container>
         );
-
-
     } else {
         return (
             <div>
-                <Container className="user-page">
-                    <h1>Welcome {authUser.firstName} {authUser.name} </h1>
+                <Container className='user-page'>
+                    <h1>
+                        Welcome {authUser.firstName} {authUser.name}{' '}
+                    </h1>
                     <Container>
                         <br />
-                        <Formik
-                            initialValues={{}}
-                            onSubmit={handleSubmit}
-                        >
+                        <Formik initialValues={{}} onSubmit={handleSubmit}>
                             <FormikForm>
                                 <h2>Edit your profile</h2>
-                                <EditUser setShowErrorModal={setShowErrorModal} setSubmissionError={setSubmissionError} />
+                                <EditUser
+                                    setShowErrorModal={setShowErrorModal}
+                                    setSubmissionError={setSubmissionError}
+                                />
                                 <hr />
-                                <EditAddress setShowErrorModal={setShowErrorModal} setSubmissionError={setSubmissionError} />
+                                <EditAddress
+                                    setShowErrorModal={setShowErrorModal}
+                                    setSubmissionError={setSubmissionError}
+                                />
                                 <hr />
-                                <EditVehicle setShowErrorModal={setShowErrorModal} setSubmissionError={setSubmissionError} />
+                                <EditVehicle
+                                    setShowErrorModal={setShowErrorModal}
+                                    setSubmissionError={setSubmissionError}
+                                />
                                 <br />
                                 <Button type='submit'>Save</Button>
                             </FormikForm>
                         </Formik>
                     </Container>
                 </Container>
-                <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal} >
+                <ErrorModal show={showErrorModal} handleClose={handleCloseErrorModal}>
                     {submissionError}
                 </ErrorModal>
                 <br />

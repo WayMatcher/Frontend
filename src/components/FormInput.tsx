@@ -15,7 +15,7 @@ export default function FormInput({ label, name, type, placeholder, formikData }
                 component={type === 'textarea' ? 'textarea' : undefined}
                 disabled={formikData.isSubmitting}
             />
-            <Form.Control.Feedback type="invalid">{formikData.error}</Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>{formikData.error}</Form.Control.Feedback>
         </Form.Group>
     );
 }

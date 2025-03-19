@@ -1,7 +1,7 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 import API from '../../utils/api';
-const api = new API()
-import Vehicle from "./dto";
+const api = new API();
+import Vehicle from './dto';
 
 /**
  * Represents a request for a vehicle.
@@ -18,14 +18,13 @@ export interface RequestVehicle {
 
 /**
  * Represents the response object for a vehicle API call.
- * 
+ *
  * This type is a wrapper around the `AxiosResponse` type, specifically
  * for responses that return a `Vehicle` object.
- * 
+ *
  * @typedef {AxiosResponse<Vehicle>} ResponseVehicle
  */
 export type ResponseVehicle = AxiosResponse<Vehicle>;
-
 
 export const apiGetVehicle = async (request: RequestVehicle): Promise<ResponseVehicle> => {
     try {
@@ -45,4 +44,4 @@ export const apiSetVehicle = async (request: RequestVehicle): Promise<ResponseVe
         api.handleApiError(error);
         throw error;
     }
-}
+};

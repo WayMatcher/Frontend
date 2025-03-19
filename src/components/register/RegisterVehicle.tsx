@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import RegisterContext from '../../contexts/RegisterContext';
+import RegisterContext from '@/contexts/RegisterContext';
 
 import { Form as FormikForm, Formik } from 'formik';
-import { Container, Row } from "react-bootstrap";
-import { RegisterVehicleSchema } from '../../utils/formValidations';
-import FormInput from '../FormInput';
-import RegisterSteps from '../../types/RegisterSteps';
-import CollapseWrapper from '../CollapseWrapper';
-import Vehicle from '../../types/dto/Vehicle';
-import RegisterNavButtons from './RegisterButtons';
+import { Container, Row } from 'react-bootstrap';
+import { RegisterVehicleSchema } from '@/utils/formValidations';
+import FormInput from '@/components/FormInput';
+import RegisterSteps from '@/types/RegisterSteps';
+import CollapseWrapper from '@/components/CollapseWrapper';
+import Vehicle from '@/types/dto/Vehicle';
+import RegisterNavButtons from '@/components/register/RegisterButtons';
 
 export default function RegisterVehicle(): React.ReactElement {
     const { registerVehicle, setRegisterVehicle, setStep } = useContext(RegisterContext);
@@ -16,7 +16,7 @@ export default function RegisterVehicle(): React.ReactElement {
     const handleSubmit = (values: Vehicle) => {
         setRegisterVehicle(values);
         setStep(RegisterSteps.SUMMARY);
-    }
+    };
 
     const initialValues: Vehicle = {
         make: registerVehicle?.make || '',
@@ -24,8 +24,8 @@ export default function RegisterVehicle(): React.ReactElement {
         year: registerVehicle?.year || 2025,
         seats: registerVehicle?.seats || 4,
         license_plate: registerVehicle?.license_plate || '',
-        additional_description: ''
-    }
+        additional_description: '',
+    };
 
     return (
         <>
@@ -41,36 +41,58 @@ export default function RegisterVehicle(): React.ReactElement {
                             <FormikForm>
                                 <Row>
                                     <FormInput
-                                        label="Make"
-                                        name="make" type="text"
-                                        formikData={{ value: values.make, error: errors.make, isSubmitting: isSubmitting }}
+                                        label='Make'
+                                        name='make'
+                                        type='text'
+                                        formikData={{
+                                            value: values.make,
+                                            error: errors.make,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                     <FormInput
-                                        label="Model"
-                                        name="model" type="text"
-                                        formikData={{ value: values.model, error: errors.model, isSubmitting: isSubmitting }}
-                                    />
-                                </Row>
-                                <Row>
-                                    <FormInput
-                                        label="Year"
-                                        name="year"
-                                        type="number"
-                                        formikData={{ value: values.year, error: errors.year, isSubmitting: isSubmitting }}
-                                    />
-                                    <FormInput
-                                        label="Seats"
-                                        name="seats"
-                                        type="number"
-                                        formikData={{ value: values.seats, error: errors.seats, isSubmitting: isSubmitting }}
+                                        label='Model'
+                                        name='model'
+                                        type='text'
+                                        formikData={{
+                                            value: values.model,
+                                            error: errors.model,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="License Plate"
-                                        name="license_plate"
-                                        type="text"
-                                        formikData={{ value: values.license_plate, error: errors.license_plate, isSubmitting: isSubmitting }}
+                                        label='Year'
+                                        name='year'
+                                        type='number'
+                                        formikData={{
+                                            value: values.year,
+                                            error: errors.year,
+                                            isSubmitting: isSubmitting,
+                                        }}
+                                    />
+                                    <FormInput
+                                        label='Seats'
+                                        name='seats'
+                                        type='number'
+                                        formikData={{
+                                            value: values.seats,
+                                            error: errors.seats,
+                                            isSubmitting: isSubmitting,
+                                        }}
+                                    />
+                                </Row>
+                                <Row>
+                                    <FormInput
+                                        label='License Plate'
+                                        name='license_plate'
+                                        type='text'
+                                        formikData={{
+                                            value: values.license_plate,
+                                            error: errors.license_plate,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <br />
@@ -81,5 +103,5 @@ export default function RegisterVehicle(): React.ReactElement {
                 </Container>
             </CollapseWrapper>
         </>
-    )
+    );
 }

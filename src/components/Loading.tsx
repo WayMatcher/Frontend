@@ -1,4 +1,4 @@
-import { Spinner } from "react-bootstrap";
+import { Spinner } from 'react-bootstrap';
 
 interface LoadingProps {
     loading: boolean;
@@ -6,10 +6,5 @@ interface LoadingProps {
 }
 
 export default function Loading({ loading, children }: LoadingProps) {
-    return (
-        <>
-            {(loading) ? children : <Spinner animation="border" role="status" />}
-        </>
-    );
-
+    return <>{loading ? children : <Spinner animation='border' role='status' />}</>;
 }

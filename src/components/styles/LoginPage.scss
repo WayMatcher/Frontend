@@ -1,19 +1,19 @@
 .loginPage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
 
-  .loginForm {
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.178) 0px 0px 20px;
+    .loginForm {
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: rgba(0, 0, 0, 0.178) 0px 0px 20px;
 
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
     }
-  }
 }

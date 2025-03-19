@@ -5,7 +5,7 @@ interface IconProps {
 export default function Icon({ ...props }: IconProps) {
     return (
         <>
-            <span className={"bi " + props.icon} />
+            <span className={'bi ' + props.icon} />
         </>
-    )
+    );
 }

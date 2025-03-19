@@ -1,4 +1,4 @@
-import Stop from '../Stop/dto';
+import Stop from '@/types/Stop/dto';
 
 export default interface WMEvent {
     id: number;

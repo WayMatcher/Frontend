@@ -1,14 +1,14 @@
 footer {
-  background-color: #f8f9fa;
-  width: 100%;
-  padding: 10px 0;
-  text-align: center;
-  .container {
-    display: flex;
-    justify-content: space-evenly;
-    display: flexbox;
-  }
-  .copyright {
+    background-color: #f8f9fa;
     width: 100%;
-  }
+    padding: 10px 0;
+    text-align: center;
+    .container {
+        display: flex;
+        justify-content: space-evenly;
+        display: flexbox;
+    }
+    .copyright {
+        width: 100%;
+    }
 }

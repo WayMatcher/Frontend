@@ -14,7 +14,7 @@ export default class API {
             headers: {
                 'Content-Type': 'application/json',
             },
-            withCredentials: true
+            withCredentials: true,
         });
     }
 
@@ -33,36 +33,35 @@ export default class API {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
-                console.error("API Error:", error.response.status, error.response.data);
+                console.error('API Error:', error.response.status, error.response.data);
 
                 // Example: Check for specific status codes and handle them
                 if (error.response.status === 401) {
                     // Unauthorized - Redirect to login or show an error message
-                    console.warn("Unauthorized: Please log in again.");
+                    console.warn('Unauthorized: Please log in again.');
                 } else if (error.response.status === 400) {
-                    console.warn("Bad Request: Check your data");
+                    console.warn('Bad Request: Check your data');
                 } else if (error.response.status === 404) {
                     // Not Found - Handle appropriately (e.g., display a 404 message)
-                    console.warn("Resource not found.");
+                    console.warn('Resource not found.');
                 } else {
                     // Other server errors (5xx)
-                    console.error("Server Error:", error.response.status, error.response.data);
+                    console.error('Server Error:', error.response.status, error.response.data);
                 }
-                throw new Error(error.response.data.message || "An error occurred with your request");
-
+                throw new Error(error.response.data.message || 'An error occurred with your request');
             } else if (error.request) {
                 // The request was made but no response was received
-                console.error("Network Error: No response received.", error.request);
-                throw new Error("Network Error: Could not connect to the server.");
+                console.error('Network Error: No response received.', error.request);
+                throw new Error('Network Error: Could not connect to the server.');
             } else {
                 // Something happened in setting up the request that triggered an Error
-                console.error("Request Setup Error:", error.message);
-                throw new Error("An unexpected error occurred. Please try again later.");
+                console.error('Request Setup Error:', error.message);
+                throw new Error('An unexpected error occurred. Please try again later.');
             }
         } else {
             // Handle non-Axios errors (e.g., errors in your code)
-            console.error("Generic Error:", error);
-            throw new Error("An unexpected error occurred. Please try again later.");
+            console.error('Generic Error:', error);
+            throw new Error('An unexpected error occurred. Please try again later.');
         }
     }
 }

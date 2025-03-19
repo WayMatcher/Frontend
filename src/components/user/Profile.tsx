@@ -1,14 +1,14 @@
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
-import User from "../../types/dto/User";
-import { useEffect, useState } from "react";
-import { apiGetUser } from "../../api/user";
-import { useNavigate, useParams } from "react-router-dom";
-import Vehicle from "../../types/dto/Vehicle";
-import Address from "../../types/dto/Address";
-import { apiGetAddress } from "../../api/address";
-import { apiGetVehicle } from "../../api/vehicle";
-import { Button, Container, Table } from "react-bootstrap";
-import Loading from "../Loading";
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import User from '@/types/User/dto';
+import { useEffect, useState } from 'react';
+import { apiGetUser } from '@/api/user';
+import { useNavigate, useParams } from 'react-router-dom';
+import Vehicle from '@/types/Vehicle/dto';
+import Address from '@/types/Address/dto';
+import { apiGetAddress } from '@/api/address';
+import { apiGetVehicle } from '@/api/vehicle';
+import { Button, Container, Table } from 'react-bootstrap';
+import Loading from '@/components/Loading';
 
 export default function Profile() {
     const { username } = useParams<{ username: string }>();
@@ -28,7 +28,7 @@ export default function Profile() {
             try {
                 const effectiveUsername = username || authUser?.username;
                 if (!effectiveUsername) {
-                    throw new Error("No username available");
+                    throw new Error('No username available');
                 }
 
                 const userResponse = await apiGetUser({ username: effectiveUsername });
@@ -39,7 +39,7 @@ export default function Profile() {
                 setAddress(addressResponse.data);
                 setVehicle(vehicleResponse.data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error('Error fetching data:', error);
             } finally {
                 setLoading(false);
             }
@@ -50,11 +50,13 @@ export default function Profile() {
 
     return (
         <Loading loading={loading}>
-            <Container className="profile">
-                <Container className="profile-picture">
+            <Container className='profile'>
+                <Container className='profile-picture'>
                     <p>{user?.profile_picture}</p>
                 </Container>
-                <h1>{user?.firstName} {user?.name}</h1>
+                <h1>
+                    {user?.firstName} {user?.name}
+                </h1>
                 <p>{user?.additional_description}</p>
                 <br />
                 <Table responsive striped bordered hover>
@@ -79,17 +81,19 @@ export default function Profile() {
                         </tr>
                         <tr>
                             <td>Address</td>
-                            <td>{address?.street} {address?.postal_code} {address?.city}</td>
+                            <td>
+                                {address?.street} {address?.postal_code} {address?.city}
+                            </td>
                         </tr>
                         <tr>
                             <td>Vehicle</td>
-                            <td>{vehicle?.make} {vehicle?.model}</td>
+                            <td>
+                                {vehicle?.make} {vehicle?.model}
+                            </td>
                         </tr>
                     </tbody>
                 </Table>
-                {authUser?.id === user?.id && (
-                    <Button onClick={() => navigate('./edit')}>Edit</Button>
-                )}
+                {authUser?.id === user?.id && <Button onClick={() => navigate('./edit')}>Edit</Button>}
             </Container>
         </Loading>
     );

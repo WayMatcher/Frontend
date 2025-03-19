@@ -16,13 +16,13 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ show, handleClose, children }) 
                 </Modal.Header>
                 <Modal.Body>{children}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant='secondary' onClick={handleClose}>
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
         </>
     );
-}
+};
 
 export default ErrorModal;

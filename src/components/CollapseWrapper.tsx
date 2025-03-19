@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Collapse } from "react-bootstrap";
+import { useEffect, useState } from 'react';
+import { Collapse } from 'react-bootstrap';
 
 export default function FadeWrapper({ children }: { children: React.ReactElement }) {
     const [fade, setFade] = useState<boolean>(false);
@@ -11,9 +11,5 @@ export default function FadeWrapper({ children }: { children: React.ReactElement
         };
     }, []);
 
-    return (
-        <Collapse in={fade}>
-            {children}
-        </Collapse>
-    );
+    return <Collapse in={fade}>{children}</Collapse>;
 }

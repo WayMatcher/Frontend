@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Container, Row } from "react-bootstrap";
+import { Container, Row } from 'react-bootstrap';
 import { Form as FormikForm, Formik } from 'formik';
-import { EditAddressSchema } from '../../utils/formValidations';
-import FormInput from '../FormInput';
-import CollapseWrapper from '../CollapseWrapper';
-import EditProps from '../../types/EditProps';
-import Address from '../../types/Address/dto';
-import { apiGetAddress, apiSetAddress } from '../../api/address';
-import EditButtons from './EditButtons';
+import { EditAddressSchema } from '@/utils/formValidations';
+import FormInput from '@/components/FormInput';
+import CollapseWrapper from '@/components/CollapseWrapper';
+import EditProps from '@/types/EditProps';
+import Address from '@/types/Address/dto';
+import { apiGetAddress, apiSetAddress } from '@/api/address';
+import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from '../../types/User/dto';
+import User from '@/types/User/dto';
 
 export default function EditAddress({ setShowErrorModal, setSubmissionError }: EditProps) {
     const [address, setAddress] = useState<Address | null>(null);
@@ -32,14 +32,13 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
     });
 
     const handleSubmit = async (values: Address) => {
-
         const response = await apiSetAddress({ address: values });
 
         if (response.status !== 200) {
             setSubmissionError(response.statusText);
             setShowErrorModal(true);
         }
-    }
+    };
 
     const initialValues: Address = {
         street: address?.street || '',
@@ -52,90 +51,136 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
         address_line2: address?.address_line2 || '',
         longitude: address?.longitude || 0,
         latitude: address?.latitude || 0,
-    }
+    };
     if (authUser === null) return <h2>Not logged in</h2>;
     return (
         <>
             <h2>Address</h2>
             <CollapseWrapper>
                 <Container>
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={EditAddressSchema}
-                        onSubmit={handleSubmit}
-                    >
+                    <Formik initialValues={initialValues} validationSchema={EditAddressSchema} onSubmit={handleSubmit}>
                         {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
                                     <FormInput
-                                        label="Street"
-                                        name="street" type="text"
+                                        label='Street'
+                                        name='street'
+                                        type='text'
                                         placeholder='1234 Main St'
-                                        formikData={{ value: values.street, error: errors.street, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.street,
+                                            error: errors.street,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="Postal Code"
-                                        name="postal_code" type="text"
+                                        label='Postal Code'
+                                        name='postal_code'
+                                        type='text'
                                         placeholder='12345'
-                                        formikData={{ value: values.postal_code, error: errors.postal_code, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.postal_code,
+                                            error: errors.postal_code,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                     <FormInput
-                                        label="Region"
-                                        name="region" type="text"
+                                        label='Region'
+                                        name='region'
+                                        type='text'
                                         placeholder='Region'
-                                        formikData={{ value: values.region, error: errors.region, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.region,
+                                            error: errors.region,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="Country"
-                                        name="country" type="text"
+                                        label='Country'
+                                        name='country'
+                                        type='text'
                                         placeholder='Country'
-                                        formikData={{ value: values.country, error: errors.country, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.country,
+                                            error: errors.country,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                     <FormInput
-                                        label="State"
-                                        name="state" type="text"
+                                        label='State'
+                                        name='state'
+                                        type='text'
                                         placeholder='State'
-                                        formikData={{ value: values.state, error: errors.state, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.state,
+                                            error: errors.state,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                     <FormInput
-                                        label="City"
-                                        name="city" type="text"
+                                        label='City'
+                                        name='city'
+                                        type='text'
                                         placeholder='City'
-                                        formikData={{ value: values.city, error: errors.city, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.city,
+                                            error: errors.city,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="Address Line 1"
-                                        name="address_line1" type="text"
+                                        label='Address Line 1'
+                                        name='address_line1'
+                                        type='text'
                                         placeholder='Address Line 1'
-                                        formikData={{ value: values.address_line1, error: errors.address_line1, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.address_line1,
+                                            error: errors.address_line1,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="Address Line 2"
-                                        name="address_line2" type="text"
+                                        label='Address Line 2'
+                                        name='address_line2'
+                                        type='text'
                                         placeholder='Address Line 2'
-                                        formikData={{ value: values.address_line2, error: errors.address_line2, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.address_line2,
+                                            error: errors.address_line2,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="Longitude"
-                                        name="longitude" type="number"
+                                        label='Longitude'
+                                        name='longitude'
+                                        type='number'
                                         placeholder={47.8117211}
-                                        formikData={{ value: values.longitude, error: errors.longitude, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.longitude,
+                                            error: errors.longitude,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                     <FormInput
-                                        label="Latitude"
-                                        name="latitude" type="number"
+                                        label='Latitude'
+                                        name='latitude'
+                                        type='number'
                                         placeholder={13.0322547}
-                                        formikData={{ value: values.latitude, error: errors.latitude, isSubmitting: isSubmitting }}
+                                        formikData={{
+                                            value: values.latitude,
+                                            error: errors.latitude,
+                                            isSubmitting: isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <br />
@@ -148,5 +193,5 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
                 </Container>
             </CollapseWrapper>
         </>
-    )
+    );
 }

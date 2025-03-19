@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 
-import { apiAuthUser, RequestUserLogin } from '../../types/User/api';
-import classifyText from '../../utils/classifyText';
+import { apiAuthUser, RequestUserLogin } from '@/types/User/api';
+import classifyText from '@/utils/classifyText';
 
-import { LoginUserSchema } from '../../utils/formValidations';
-import { UserLogin } from '../../types/User/form';
-import ErrorModal from '../../components/ErrorModal';
-import CollapseWrapper from '../../components/CollapseWrapper';
-import FormInput from '../../components/FormInput';
-import MFAModal from '../../components/user/MFAModal';
+import { LoginUserSchema } from '@/utils/formValidations';
+import { UserLogin } from '@/types/User/form';
+import ErrorModal from '@/components/ErrorModal';
+import CollapseWrapper from '@/components/CollapseWrapper';
+import FormInput from '@/components/FormInput';
+import MFAModal from '@/components/user/MFAModal';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -31,8 +31,8 @@ export default function LoginPage() {
         }
 
         const userLogin: RequestUserLogin = {
-            username: (classifyText(values.userOrEmail) === 'username') ? values.userOrEmail : '',
-            email: (classifyText(values.userOrEmail) === 'email') ? values.userOrEmail : '',
+            username: classifyText(values.userOrEmail) === 'username' ? values.userOrEmail : '',
+            email: classifyText(values.userOrEmail) === 'email' ? values.userOrEmail : '',
             password: values.password,
         };
 
@@ -44,8 +44,7 @@ export default function LoginPage() {
             setSubmissionError((err as Error).message);
             handleShowErrorModal();
         }
-
-    }
+    };
 
     const handleShowErrorModal = () => {
         setShowErrorModal(true);
@@ -71,26 +70,32 @@ export default function LoginPage() {
                         validationSchema={LoginUserSchema}
                     >
                         {({ values, errors, isSubmitting }) => (
-                            <FormikForm className="loginForm">
+                            <FormikForm className='loginForm'>
                                 <Row>
                                     <FormInput
-                                        label="Email or Username"
-                                        name="userOrEmail" type="text"
-                                        placeholder="Enter username or e-mail address"
-                                        formikData={{ value: values.userOrEmail, error: errors.userOrEmail, isSubmitting }}
+                                        label='Email or Username'
+                                        name='userOrEmail'
+                                        type='text'
+                                        placeholder='Enter username or e-mail address'
+                                        formikData={{
+                                            value: values.userOrEmail,
+                                            error: errors.userOrEmail,
+                                            isSubmitting,
+                                        }}
                                     />
                                 </Row>
                                 <Row>
                                     <FormInput
-                                        label="Password"
-                                        name="password" type="password"
-                                        placeholder="Enter password"
+                                        label='Password'
+                                        name='password'
+                                        type='password'
+                                        placeholder='Enter password'
                                         formikData={{ value: values.password, error: errors.password, isSubmitting }}
                                     />
                                 </Row>
                                 <br />
                                 <ButtonGroup>
-                                    <Button className="btn btn-primary" type="submit" disabled={isSubmitting}>
+                                    <Button className='btn btn-primary' type='submit' disabled={isSubmitting}>
                                         {isSubmitting ? 'Logging in...' : 'Login'}
                                     </Button>
                                     <Button
@@ -112,4 +117,4 @@ export default function LoginPage() {
             <MFAModal show={showMFAModal} userLogin={userLogin} />
         </>
     );
-};
+}

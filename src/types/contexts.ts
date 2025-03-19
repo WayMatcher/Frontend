@@ -1,6 +1,6 @@
-import Address from './dto/Address';
-import Vehicle from './dto/Vehicle';
-import WMEvent from './dto/Event';
+import Address from './Address/dto';
+import Vehicle from './Vehicle/dto';
+import WMEvent from './Event/dto';
 
 export interface MFAContextProps {
     mfaToken: boolean;

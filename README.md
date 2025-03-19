@@ -13,25 +13,25 @@ Dieses Projekt ist das Frontend der WayMatcher Webanwendung, die zur Vermittlung
 
 1. **Repository klonen:**
 
-   ```bash
-   git clone https://github.com/WayMatcher/Frontend.git
-   cd Frontend
-   ```
+    ```bash
+    git clone https://github.com/WayMatcher/Frontend.git
+    cd Frontend
+    ```
 
 2. **Abhängigkeiten installieren:**
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 3. **Umgebungsvariablen konfigurieren:**
    Erstelle eine `.env` Datei im Projektverzeichnis und füge die notwendigen Umgebungsvariablen hinzu.
 
 4. **Projekt starten:**
 
-   ```bash
-   npm start
-   ```
+    ```bash
+    npm start
+    ```
 
 ## Verzeichnisstruktur
 

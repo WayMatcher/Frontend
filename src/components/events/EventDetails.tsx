@@ -1,11 +1,8 @@
-
 import { Modal } from 'react-bootstrap';
 import WMEvent from '../../types/dto/Event';
 import { EventError } from './EventError';
 
-const EventDetails = ({ event }: {
-    event: WMEvent | null;
-}) => {
+const EventDetails = ({ event }: { event: WMEvent | null }) => {
     if (event) {
         return (
             <>
@@ -14,8 +11,12 @@ const EventDetails = ({ event }: {
                 </Modal.Header>
                 <Modal.Body>
                     <p>{event.description}</p>
-                    <p><strong>Date:</strong> {event.start_time}</p>
-                    <p><strong>Start:</strong> {event.stops[0].id}</p>
+                    <p>
+                        <strong>Date:</strong> {event.start_time}
+                    </p>
+                    <p>
+                        <strong>Start:</strong> {event.stops[0].id}
+                    </p>
                 </Modal.Body>
             </>
         );

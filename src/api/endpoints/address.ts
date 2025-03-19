@@ -1,8 +1,8 @@
-import { AxiosResponse } from "axios";
-import API from "../../utils/api";
+import { AxiosResponse } from 'axios';
+import API from '@/api/api';
 const api = new API();
 
-import Address from "./dto";
+import Address from '@/types/Address/dto';
 
 /**
  * Represents a request address model.
@@ -44,4 +44,4 @@ export const apiSetAddress = async (request: RequestAddress): Promise<AxiosRespo
         api.handleApiError(error);
         throw error;
     }
-}
+};

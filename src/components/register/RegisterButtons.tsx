@@ -1,9 +1,7 @@
 import { Button, Col, ButtonGroup, Row } from 'react-bootstrap';
-import RegisterSteps from '../../types/RegisterSteps';
-import RegisterContext from '../../contexts/RegisterContext';
+import { RegisterSteps } from '@/types/User/form';
+import RegisterContext from '@/contexts/RegisterContext';
 import { useContext } from 'react';
-
-import apiRegister from '../../api/endpoints/user/register';
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -20,53 +18,60 @@ interface RegisterNavButtonsProps {
 
 const ButtonsRegister = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => void) => {
     const { registerUser, registerAddress, registerVehicle } = useContext(RegisterContext);
-    if (!registerUser || !registerAddress || !registerVehicle) return (<></>);
-    return (<>
-        <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>Previous</Button>
-        <Button type="submit" onClick={() => apiRegister(registerUser, registerAddress, registerVehicle)}>Register</Button>
-    </>
+    if (!registerUser || !registerAddress || !registerVehicle) return <></>;
+    return (
+        <>
+            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
+                Previous
+            </Button>
+            <Button type='submit'>Register</Button>
+        </>
     );
-}
+};
 
 const ButtonsNext = () => {
     return (
         <>
-
-            <Button type='button' variant='secondary' disabled={true} >Previous</Button>
+            <Button type='button' variant='secondary' disabled={true}>
+                Previous
+            </Button>
             <Button type='submit'>Next</Button>
         </>
     );
-}
+};
 
 const ButtonsPrev = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => void) => {
     return (
         <>
-            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>Previous</Button>
+            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
+                Previous
+            </Button>
             <Button type='submit'>Submit</Button>
         </>
     );
-}
+};
 
 const Buttons = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => void) => {
     return (
         <>
-            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>Previous</Button>
+            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
+                Previous
+            </Button>
             <Button type='submit'>Next</Button>
         </>
     );
-}
+};
 
 export default function RegisterNavButtons({ prevStep, nextStep }: RegisterNavButtonsProps) {
     const { setRegisterUser, setRegisterAddress, setRegisterVehicle, setStep } = useContext(RegisterContext);
     const navigate = useNavigate();
-
 
     const cancel = () => {
         setRegisterAddress(null);
         setRegisterUser(null);
         setRegisterVehicle(null);
         navigate('/');
-    }
+    };
 
     let buttons;
     if (prevStep === RegisterSteps.VEHICLE) {
@@ -85,7 +90,9 @@ export default function RegisterNavButtons({ prevStep, nextStep }: RegisterNavBu
             <Row>
                 <Col>
                     <ButtonGroup>
-                        <Button onClick={cancel} variant='secondary'>Cancel</Button>
+                        <Button onClick={cancel} variant='secondary'>
+                            Cancel
+                        </Button>
                         {buttons}
                     </ButtonGroup>
                 </Col>

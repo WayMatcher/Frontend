@@ -1,5 +1,4 @@
-import API from '../../utils/api';
-import { RequestEvent, ResponseEvent } from '../types/Event/api';
+import API from '@/api/api';
 
 const api = new API();
 
@@ -11,4 +10,4 @@ export const getEvents = async (): Promise<ResponseEvent> => {
         api.handleApiError(error);
         throw error;
     }
-}
+};

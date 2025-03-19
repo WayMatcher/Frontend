@@ -1,10 +1,9 @@
 ---
 name: Arbeitspaket
 about: Ein neues Arbeitspaket
-title: "[1.3.X] Frontend-Arbeitspaket"
+title: '[1.3.X] Frontend-Arbeitspaket'
 labels: enhancement
 assignees: salkinxd
-
 ---
 
 # **Arbeitspaketbeschreibung**
@@ -32,7 +31,7 @@ Wonnebauer Niklas
 
 | **Durchführende(r)** | **Aufwand (P-Stunden/-Tage)** | **Kosten (€)** |
 | -------------------- | ----------------------------- | -------------- |
-| Hr. Wonnebauer       | X                     | -       |
+| Hr. Wonnebauer       | X                             | -              |
 
 ---
 

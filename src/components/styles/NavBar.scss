@@ -1,77 +1,77 @@
 .NavBar {
-  background-color: #3d3d3d; // Dark background
-  color: #fff; // Light text
-  padding: 1rem 2rem; // Padding around the navbar
-  display: flex; // Use flexbox for layout
-  justify-content: space-between; // Space out logo/links and buttons
-  align-items: center; // Vertically center items
-  position: sticky; // Stick to the top (optional, but common for navbars)
-  top: 0;
-  z-index: 100; // Ensure it's above other content
-  box-shadow: #555 0px 2px 5px; // Add a shadow for depth
-  .container {
-    .navbar-brand {
-      font-size: 1.5rem; // Larger font size for logo
-      font-weight: bold; // Bold text
-      text-decoration: none; // Remove underlines
-      color: #fff; // White text
-      cursor: pointer;
-    }
-
-    .nav-links {
-      display: flex;
-      list-style: none; // Remove bullet points from list
-      margin: 0; // Remove default margin
-      padding: 0; // Remove default padding
-      gap: 1.5rem; // Spacing between links
-
-      a {
-        color: #fff; // White link text
-        text-decoration: none; // Remove underlines
-        padding: 0.5rem; // Add some padding for hover effect
-        border-radius: 4px; // Rounded corners
-        transition: background-color 0.2s ease; // Smooth transition
-
-        &:hover {
-          background-color: #555; // Slightly lighter background on hover
+    background-color: #3d3d3d; // Dark background
+    color: #fff; // Light text
+    padding: 1rem 2rem; // Padding around the navbar
+    display: flex; // Use flexbox for layout
+    justify-content: space-between; // Space out logo/links and buttons
+    align-items: center; // Vertically center items
+    position: sticky; // Stick to the top (optional, but common for navbars)
+    top: 0;
+    z-index: 100; // Ensure it's above other content
+    box-shadow: #555 0px 2px 5px; // Add a shadow for depth
+    .container {
+        .navbar-brand {
+            font-size: 1.5rem; // Larger font size for logo
+            font-weight: bold; // Bold text
+            text-decoration: none; // Remove underlines
+            color: #fff; // White text
+            cursor: pointer;
         }
 
-        &.active {
-          // Optional: Style for the currently active link
-          font-weight: bold;
-          border-bottom: 2px solid #fff; // Example: Underline active link
+        .nav-links {
+            display: flex;
+            list-style: none; // Remove bullet points from list
+            margin: 0; // Remove default margin
+            padding: 0; // Remove default padding
+            gap: 1.5rem; // Spacing between links
+
+            a {
+                color: #fff; // White link text
+                text-decoration: none; // Remove underlines
+                padding: 0.5rem; // Add some padding for hover effect
+                border-radius: 4px; // Rounded corners
+                transition: background-color 0.2s ease; // Smooth transition
+
+                &:hover {
+                    background-color: #555; // Slightly lighter background on hover
+                }
+
+                &.active {
+                    // Optional: Style for the currently active link
+                    font-weight: bold;
+                    border-bottom: 2px solid #fff; // Example: Underline active link
+                }
+            }
         }
-      }
     }
-  }
 
-  //  For smaller screen size.
-  @media (max-width: 768px) {
-    flex-direction: column; // Stack items vertically
-    align-items: stretch; // Stretch items to full width
+    //  For smaller screen size.
+    @media (max-width: 768px) {
+        flex-direction: column; // Stack items vertically
+        align-items: stretch; // Stretch items to full width
 
-    .nav-links {
-      flex-direction: column; // Stack links vertically
-      text-align: center; // Center-align links
-      gap: 0.5rem; // Reduce gap in links
-      margin-top: 1rem; // Add space between logo and links
+        .nav-links {
+            flex-direction: column; // Stack links vertically
+            text-align: center; // Center-align links
+            gap: 0.5rem; // Reduce gap in links
+            margin-top: 1rem; // Add space between logo and links
 
-      a {
-        display: block; // Make links full-width
-        padding: 0.8rem; // Increase padding for touch targets
-      }
+            a {
+                display: block; // Make links full-width
+                padding: 0.8rem; // Increase padding for touch targets
+            }
+        }
     }
-  }
-  a {
-    color: #fff;
-    text-decoration: none;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-  }
-  .active {
-    color: #fff;
-    font-weight: bold;
-    border-bottom: 2px solid #fff;
-  }
+    a {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+    .active {
+        color: #fff;
+        font-weight: bold;
+        border-bottom: 2px solid #fff;
+    }
 }
