@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { Button, ButtonGroup, Container, Modal } from 'react-bootstrap';
-import '../styles/EventsPage.scss';
+import './styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '../components/events/EventCard';
 import SearchBar from '../components/events/SearchBar';
-import { getEvents } from '../types/Event/api';
+import { getEvents } from '@/api/endpoints/event';
 import WMEvent from '../types/Event/dto';
 import EventDetails from '../components/events/EventDetails';
 import EventContext from '../types/contexts/EventContext';

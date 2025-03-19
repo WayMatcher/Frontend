@@ -4,20 +4,20 @@ import { Container, Row } from 'react-bootstrap';
 import { RegisterUserSchema } from '@/utils/formValidations';
 import RegisterContext from '@/contexts/RegisterContext';
 import FormInput from '@/components/FormInput';
-import RegisterSteps from '@/types/RegisterSteps';
+import { RegisterSteps } from '@/types/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import RegisterButtons from '@/components/register/RegisterButtons';
-import { UserRegister } from '@/types/User/dto';
+import { UserRegisterModel } from '@/types/User/dto';
 
 export default function RegisterUser(): React.ReactElement {
     const { registerUser, setRegisterUser, setStep } = useContext(RegisterContext);
 
-    const handleSubmit = async (values: UserRegister) => {
+    const handleSubmit = async (values: UserRegisterModel) => {
         setRegisterUser(values);
         setStep(RegisterSteps.ADDRESS);
     };
 
-    const initialValues: UserRegister = {
+    const initialValues: UserRegisterModel = {
         email: registerUser?.email || '',
         username: registerUser?.username || '',
         password: registerUser?.password || '',

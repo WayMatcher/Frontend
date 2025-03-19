@@ -1,6 +1,7 @@
 import Address from './Address/dto';
 import Vehicle from './Vehicle/dto';
 import WMEvent from './Event/dto';
+import { UserRegisterModel } from './User/dto';
 
 export interface MFAContextProps {
     mfaToken: boolean;
@@ -8,8 +9,8 @@ export interface MFAContextProps {
 }
 
 export interface RegisterContextProps {
-    registerUser: UserRegister | null;
-    setRegisterUser: (user: UserRegister | null) => void;
+    registerUser: UserRegisterModel | null;
+    setRegisterUser: (user: UserRegisterModel | null) => void;
     registerAddress: Address | null;
     setRegisterAddress: (user: Address | null) => void;
     registerVehicle: Vehicle | null;

@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode } from 'react';
-import { EventContextProps } from '@/types/contexts/EventContext';
+import { EventContextProps } from '@/types/contexts';
 import WMEvent from '@/types/Event/dto';
 
 const EventContext: React.Context<EventContextProps> = createContext<EventContextProps>({

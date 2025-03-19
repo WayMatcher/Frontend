@@ -4,7 +4,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import React from 'react';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import RegisterButtons from '@/components/register/RegisterButtons';
-import RegisterSteps from '@/types/RegisterSteps';
+import { RegisterSteps } from '@/types/User/form';
 import { Form as FormikForm, Formik } from 'formik';
 
 export default function RegisterSummary({ handleSubmit }: { handleSubmit(): void }): React.ReactElement {
