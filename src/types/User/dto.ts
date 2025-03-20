@@ -27,3 +27,8 @@ export interface UserRegisterModel extends User {
     password: string;
     confirmPassword: string;
 }
+
+export interface MFAToken {
+    user: User;
+    jwt: string;
+}

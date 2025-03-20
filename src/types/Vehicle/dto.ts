@@ -3,7 +3,7 @@ export default interface Vehicle {
     model?: string;
     make?: string;
     year?: number;
-    seats: number;
-    license_plate: string;
+    seats?: number;
+    license_plate?: string;
     additional_description?: string;
 }
