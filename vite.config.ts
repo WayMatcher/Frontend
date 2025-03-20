@@ -10,4 +10,12 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
+    server: {
+        allowedHosts: [
+            'https://waymatcher.hobedere.com',
+            'http://waymatcher.hobedere.com',
+            'https://api.waymatcher.hobedere.com',
+            'http://api.waymatcher.hobedere.com',
+        ],
+    },
 });
