@@ -1,4 +1,4 @@
-import '@/styles/RegisterPage.scss';
+import '@/pages/styles/RegisterPage.scss';
 
 import { Container } from 'react-bootstrap';
 import { useContext, useEffect, useState } from 'react';

@@ -5,6 +5,11 @@ export enum StepsRegister {
     SUMMARY = 4,
 }
 
+export interface FormUserLogin {
+    userOrEmail: string;
+    password: string;
+}
+
 export interface FormLoginUser {
     userOrEmail: string;
     password: string;

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import '../styles/MainPage.scss';
+import '@/pages/styles/LandingPage.scss';
 import { Container, Button, Col, Row } from 'react-bootstrap';
 
 export default function LandingPage() {

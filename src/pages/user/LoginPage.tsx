@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 
-import { apiAuthUser, RequestUserLogin } from '@/api/endpoints/user';
+import { apiAuthUser } from '@/api/endpoints/user';
 import classifyText from '@/utils/classifyText';
 
 import { LoginUserSchema } from '@/utils/formValidations';
-import { LoginUserForm, LoginUserInitialValues } from '@/types/User/form';
+import { FormUserLogin } from '@/types/User/form';
 import ErrorModal from '@/components/ErrorModal';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import FormInput from '@/components/FormInput';
@@ -20,9 +20,9 @@ export default function LoginPage() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [showMFAModal, setShowMFAModal] = useState<boolean>(false);
-    const [user, setUser] = useState<User>();
+    const [userLogin, setUserLogin] = useState<{ username: string; email: string }>();
 
-    const handleSubmit = async (values: LoginUserForm) => {
+    const handleSubmit = async (values: FormUserLogin) => {
         // Reset error message
         setSubmissionError(null);
         if (!values.userOrEmail || !values.password) {
@@ -31,7 +31,7 @@ export default function LoginPage() {
             return;
         }
 
-        const userLogin: RequestUserLogin = {
+        const userLogin: { username: string; email: string; password: string } = {
             username: classifyText(values.userOrEmail) === 'username' ? values.userOrEmail : '',
             email: classifyText(values.userOrEmail) === 'email' ? values.userOrEmail : '',
             password: values.password,
@@ -39,12 +39,10 @@ export default function LoginPage() {
 
         try {
             const response = await apiAuthUser(userLogin);
-
-            setUser({
-                email: response.email,
-                username: response.username,
+            setUserLogin({
+                username: userLogin.username,
+                email: userLogin.email,
             });
-
             setShowMFAModal(true);
         } catch (err: unknown) {
             setSubmissionError((err as Error).message);

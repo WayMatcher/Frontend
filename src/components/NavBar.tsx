@@ -1,5 +1,5 @@
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
-import '../styles/NavBar.scss';
+import './styles/NavBar.scss';
 import { NavDropdown, Navbar, Nav, Container, ButtonGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';

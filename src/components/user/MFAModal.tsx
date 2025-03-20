@@ -19,33 +19,28 @@ export default function MFAModal({ show, user }: MFAModalProps) {
     const navigate = useNavigate();
     const signIn = useSignIn();
 
-    const handleSubmit = async (values: FormMFAToken): Promise<void> => {
+    const handleSubmit = async (values: { mfaToken: string }): Promise<void> => {
         setSubmissionError(null);
 
-        if (user && user.email && user.username) {
-            // Construct the request object
-            const request: MFATokenRequest = {
+        if (userLogin && userLogin.email && userLogin.username) {
+            const mfaTokenModel = {
                 token: values.mfaToken,
                 email: user?.email,
                 username: user?.username,
             };
 
-            const response = await apiAuthMFA(request);
+            const response = await apiAuthMFA(mfaTokenModel);
 
-            // Sign in the user with the returned JWT and user state
             signIn({
                 auth: {
                     token: response.jwt,
+                    type: 'Bearer',
                 },
                 userState: response.user,
             });
 
-            navigate('/'); // Redirect to home page
+            navigate('/');
         }
-    };
-
-    const initialValues: FormMFAToken = {
-        mfaToken: initialValuesMFAToken.mfaToken,
     };
 
     return (

@@ -5,14 +5,15 @@ import { EditVehicleSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/Vehicle/dto';
-import { apiGetVehicle, apiSetVehicle, RequestVehicle, ResponseVehicle } from '@/api/endpoints/vehicle';
+import EditProps from '@/types/EditProps';
+import { apiGetVehicle, apiSetVehicle } from '@/api/endpoints/vehicle';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/User/dto';
 import { FormVehicle, initialValuesVehicle } from '@/types/Vehicle/form';
 
-export default function EditVehicle(): React.ReactElement {
-    const [vehicle, setVehicle] = useState<Vehicle>();
+export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
+    const [vehicle, setVehicle] = useState<Vehicle | null>(null);
     const authUser = useAuthUser<User>();
 
     useEffect(() => {

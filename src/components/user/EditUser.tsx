@@ -5,7 +5,7 @@ import { EditUserSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import User, { UserRegisterModel } from '@/types/User/dto';
-import { apiGetUser, apiSetUser, RequestUser, ResponseUser } from '@/api/endpoints/user';
+import { apiGetUser, apiSetUser } from '@/api/endpoints/user';
 import EditProps from '@/types/EditProps';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
