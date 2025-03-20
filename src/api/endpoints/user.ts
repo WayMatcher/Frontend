@@ -54,7 +54,7 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
             password: request.password,
         };
 
-        return await api.axios.post('http://api.waymatcher.hobedere.com/api/login/loginuser', hashedUserLogin);
+        return await api.axios.post('http://waymatcher.hobedere.com/api/login/loginuser', hashedUserLogin);
     } catch (error) {
         api.handleApiError(error);
         throw error;

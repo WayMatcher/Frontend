@@ -11,11 +11,6 @@ export default defineConfig({
         },
     },
     server: {
-        allowedHosts: [
-            'https://waymatcher.hobedere.com',
-            'http://waymatcher.hobedere.com',
-            'https://api.waymatcher.hobedere.com',
-            'http://api.waymatcher.hobedere.com',
-        ],
+        allowedHosts: ['waymatcher.hobedere.com'],
     },
 });
