@@ -59,7 +59,8 @@
             "@swc/core",
             "core-js",
             "core-js-pure",
-            "esbuild"
+            "esbuild",
+            "sharp"
         ]
     }
 }
