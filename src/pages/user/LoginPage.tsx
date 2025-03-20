@@ -3,15 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 
-import { apiAuthUser, RequestUserLogin } from '@/types/User/api';
+import { apiAuthUser, RequestUserLogin } from '@/api/endpoints/user';
 import classifyText from '@/utils/classifyText';
 
 import { LoginUserSchema } from '@/utils/formValidations';
-import { UserLogin } from '@/types/User/form';
+import { LoginUserForm, LoginUserInitialValues } from '@/types/User/form';
 import ErrorModal from '@/components/ErrorModal';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import FormInput from '@/components/FormInput';
 import MFAModal from '@/components/user/MFAModal';
+import User from '@/types/User/dto';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -19,9 +20,9 @@ export default function LoginPage() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [showMFAModal, setShowMFAModal] = useState<boolean>(false);
-    const [userLogin, setUserLogin] = useState<UserLogin>();
+    const [user, setUser] = useState<User>();
 
-    const handleSubmit = async (values: UserLogin) => {
+    const handleSubmit = async (values: LoginUserForm) => {
         // Reset error message
         setSubmissionError(null);
         if (!values.userOrEmail || !values.password) {
@@ -37,8 +38,13 @@ export default function LoginPage() {
         };
 
         try {
-            await apiAuthUser(userLogin);
-            setUserLogin(userLogin);
+            const response = await apiAuthUser(userLogin);
+
+            setUser({
+                email: response.email,
+                username: response.username,
+            });
+
             setShowMFAModal(true);
         } catch (err: unknown) {
             setSubmissionError((err as Error).message);
@@ -54,11 +60,6 @@ export default function LoginPage() {
         setShowErrorModal(false);
     };
 
-    const initialValues: UserLogin = {
-        userOrEmail: '',
-        password: '',
-    };
-
     return (
         <>
             <CollapseWrapper>
@@ -66,7 +67,7 @@ export default function LoginPage() {
                     <Formik
                         onSubmit={handleSubmit}
                         validateOnChange={true}
-                        initialValues={initialValues}
+                        initialValues={LoginUserInitialValues}
                         validationSchema={LoginUserSchema}
                     >
                         {({ values, errors, isSubmitting }) => (
@@ -114,7 +115,7 @@ export default function LoginPage() {
                     </Formik>
                 </Container>
             </CollapseWrapper>
-            <MFAModal show={showMFAModal} userLogin={userLogin} />
+            <MFAModal show={showMFAModal} user={user} />
         </>
     );
 }

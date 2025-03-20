@@ -5,48 +5,68 @@ import { EditUserSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import User, { UserRegisterModel } from '@/types/User/dto';
-import { apiGetUser, apiSetUser } from '@/api/user';
+import { apiGetUser, apiSetUser, RequestUser, ResponseUser } from '@/api/endpoints/user';
 import EditProps from '@/types/EditProps';
 import EditButtons from '@/components/user/EditButtons';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { FormUser, initialValuesUser } from '@/types/User/form';
 
 export default function EditUser({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User>();
+    const authUser = useAuthUser<User>();
 
     useEffect(() => {
         const fetchUser = async () => {
-            try {
-                const response = await apiGetUser();
-                if (response.succeeded === true) {
-                    setUser(response.user);
-                } else {
-                    setSubmissionError(response.message);
-                    setShowErrorModal(true);
-                }
-            } catch (error: unknown) {
-                console.error('Error fetching user:', error);
-                setSubmissionError((error as Error).message);
-                setShowErrorModal(true);
-            }
+            if (!authUser) return;
+
+            const request: RequestUser = {
+                userID: authUser.id,
+            };
+
+            const response = await apiGetUser(request);
+
+            setUser({
+                email: response.email,
+                username: response.username,
+                additional_description: response.additional_description,
+                firstName: response.firstName,
+                name: response.name,
+                telephone: response.telephone,
+                profile_picture: response.profile_picture,
+                license_verified: response.license_verified,
+            });
         };
         fetchUser();
     }, [setShowErrorModal, setSubmissionError]);
 
     const handleSubmit = async (values: UserRegisterModel) => {
-        apiSetUser(values);
-        setUser(values);
+        const request: RequestUser = values;
+
+        const response: ResponseUser = await apiSetUser(request);
+
+        setUser({
+            email: values.email,
+            username: values.username,
+            additional_description: values.additional_description,
+            firstName: values.firstName,
+            name: values.name,
+            telephone: values.telephone,
+            profile_picture: values.profile_picture,
+            license_verified: values.license_verified,
+        });
     };
 
-    const initialValues: UserRegisterModel = {
-        email: user?.email || '',
-        username: user?.username || '',
-        password: '',
-        confirmPassword: '',
-        name: user?.name || '',
-        firstName: user?.firstName || '',
-        telephone: user?.telephone || '',
-        additional_description: user?.additional_description || '',
-        profile_picture: user?.profile_picture || '',
-        license_verified: user?.license_verified || false,
+    const initialValues: FormUser = {
+        username: user?.username || initialValuesUser.username,
+        email: user?.email || initialValuesUser.email,
+        password: initialValuesUser.password,
+        confirmPassword: initialValuesUser.confirmPassword,
+        name: user?.name || initialValuesUser.name,
+        firstName: user?.firstName || initialValuesUser.firstName,
+        telephone: user?.telephone || initialValuesUser.telephone,
+        additional_description: user?.additional_description || initialValuesUser.additional_description,
+        profile_picture: user?.profile_picture || initialValuesUser.profile_picture,
+        license_verified: user?.license_verified || initialValuesUser.license_verified,
     };
 
     return (

@@ -5,58 +5,61 @@ import { EditVehicleSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/Vehicle/dto';
-import EditProps from '@/types/EditProps';
-import { apiGetVehicle, apiSetVehicle } from '@/api/vehicle';
+import { apiGetVehicle, apiSetVehicle, RequestVehicle, ResponseVehicle } from '@/api/endpoints/vehicle';
 import EditButtons from '@/components/user/EditButtons';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import User from '@/types/User/dto';
+import { FormVehicle, initialValuesVehicle } from '@/types/Vehicle/form';
 
-export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
-    const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+export default function EditVehicle(): React.ReactElement {
+    const [vehicle, setVehicle] = useState<Vehicle>();
+    const authUser = useAuthUser<User>();
 
     useEffect(() => {
         const fetchVehicle = async () => {
-            apiGetVehicle()
-                .then((response: VehicleResponse) => {
-                    if (response.succeeded === true) {
-                        setVehicle(response.vehicle);
-                    } else {
-                        setSubmissionError(response.message);
-                        setShowErrorModal(true);
-                    }
-                })
-                .catch((error: unknown) => {
-                    console.error('Error fetching vehicle:', error);
-                    setSubmissionError((error as Error).message);
-                    setShowErrorModal(true);
-                });
+            if (!authUser) return;
+
+            const request: RequestVehicle = { userID: authUser.id };
+            const response: ResponseVehicle = await apiGetVehicle(request);
+
+            setVehicle({
+                license_plate: response.data.license_plate,
+                make: response.data.make,
+                seats: response.data.seats,
+                model: response.data.model,
+                year: response.data.year,
+                additional_description: response.data.additional_description,
+            });
         };
         fetchVehicle();
     });
 
-    const handleSubmit = (values: Vehicle) => {
-        apiSetVehicle(values)
-            .then((response: APIResponse) => {
-                if (response.succeeded === true) {
-                    setVehicle(values);
-                } else {
-                    setSubmissionError(response.message);
-                    setShowErrorModal(true);
-                }
-            })
-            .catch((error: unknown) => {
-                console.error('Error fetching vehicle:', error);
-                setSubmissionError((error as Error).message);
-                setShowErrorModal(true);
-            });
+    const handleSubmit = async (values: FormVehicle) => {
+        const request: RequestVehicle = {
+            vehicle: {
+                license_plate: values.license_plate,
+                make: values.make,
+                seats: values.seats,
+                model: values.model,
+                year: values.year,
+                additional_description: values.additional_description,
+            },
+            userID: authUser?.id,
+        };
+
+        const response: ResponseVehicle = await apiSetVehicle(request);
+
+        setVehicle({
+            license_plate: response.data.license_plate,
+            make: response.data.make,
+            seats: response.data.seats,
+            model: response.data.model,
+            year: response.data.year,
+            additional_description: response.data.additional_description,
+        });
     };
 
-    const initialValues: Vehicle = {
-        make: vehicle?.make || '',
-        model: vehicle?.model || '',
-        year: vehicle?.year || 2025,
-        seats: vehicle?.seats || 4,
-        license_plate: vehicle?.license_plate || '',
-        additional_description: vehicle?.additional_description || '',
-    };
+    const initialValues: FormVehicle = vehicle || initialValuesVehicle;
 
     return (
         <>

@@ -6,7 +6,8 @@ import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import EditProps from '@/types/EditProps';
 import Address from '@/types/Address/dto';
-import { apiGetAddress, apiSetAddress } from '@/api/address';
+import { FormAddress, initialValuesAddress } from '@/types/Address/form';
+import { apiGetAddress, apiSetAddress, RequestAddress } from '@/api/endpoints/address';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/User/dto';
@@ -31,27 +32,29 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
         fetchAddress();
     });
 
-    const handleSubmit = async (values: Address) => {
-        const response = await apiSetAddress({ address: values });
+    const handleSubmit = async (values: FormAddress) => {
+        const request: RequestAddress = {
+            address: values,
+        };
 
-        if (response.status !== 200) {
-            setSubmissionError(response.statusText);
-            setShowErrorModal(true);
-        }
+        await apiSetAddress(request);
+
+        setAddress(values);
     };
 
-    const initialValues: Address = {
-        street: address?.street || '',
-        postal_code: address?.postal_code || '',
-        region: address?.region || '',
-        country: address?.country || '',
-        state: address?.state || '',
-        city: address?.city || '',
-        address_line1: address?.address_line1 || '',
-        address_line2: address?.address_line2 || '',
-        longitude: address?.longitude || 0,
-        latitude: address?.latitude || 0,
+    const initialValues: FormAddress = {
+        address_line1: address?.address_line1 || initialValuesAddress.address_line1,
+        address_line2: address?.address_line2 || initialValuesAddress.address_line2,
+        city: address?.city || initialValuesAddress.city,
+        country: address?.country || initialValuesAddress.country,
+        latitude: address?.latitude || initialValuesAddress.latitude,
+        longitude: address?.longitude || initialValuesAddress.longitude,
+        postal_code: address?.postal_code || initialValuesAddress.postal_code,
+        region: address?.region || initialValuesAddress.region,
+        state: address?.state || initialValuesAddress.state,
+        street: address?.street || initialValuesAddress.street,
     };
+
     if (authUser === null) return <h2>Not logged in</h2>;
     return (
         <>

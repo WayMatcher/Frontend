@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
-import API from '../../utils/api';
+import API from '@/api/api';
 const api = new API();
-import Vehicle from './dto';
+import Vehicle from '@/types/Vehicle/dto';
 
 /**
  * Represents a request for a vehicle.

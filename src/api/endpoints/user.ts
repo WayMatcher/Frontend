@@ -33,7 +33,7 @@ export interface RequestUser {
  *
  * @template User - The type of the user data contained in the response.
  */
-export type ResponseUser = AxiosResponse<User>;
+export type ResponseUser = User;
 
 // Login
 /**
@@ -51,15 +51,10 @@ export interface RequestUserLogin {
     password: string;
 }
 
-/**
- * Represents the response type for a user login API call.
- *
- * This type is an alias for `AxiosResponse`, which contains the HTTP response
- * details such as status, headers, and data returned from the server.
- *
- * @see AxiosResponse
- */
-export type ResponseUserLogin = AxiosResponse;
+export interface ResponseUserLogin {
+    username: string;
+    email: string;
+}
 
 // Registration
 /**
@@ -106,7 +101,10 @@ export interface MFATokenRequest {
  * This type is a wrapper around the `AxiosResponse` object, where the
  * response data contains a `User` object.
  */
-export type MFATokenResponse = AxiosResponse<User>;
+export interface MFATokenResponse {
+    jwt: string;
+    user: User;
+}
 
 export const apiGetUser = async (request: RequestUser): Promise<ResponseUser> => {
     try {
