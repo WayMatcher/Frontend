@@ -1,5 +1,5 @@
-import Address from '@/types/Address/dto';
-import Vehicle from '@/types/Vehicle/dto';
+import Address from '@/types/objects/Address/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
 
 interface BaseUser {
     username: string;
@@ -25,7 +25,7 @@ export interface UserLoginModel extends BaseUser {
 
 export interface UserRegisterModel extends User {
     password: string;
-    confirmPassword: string;
+    password_confirm: string;
 }
 
 export interface MFAToken {

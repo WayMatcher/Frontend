@@ -5,9 +5,9 @@ import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
 import { RegisterAddressSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
-import { RegisterSteps } from '@/types/User/form';
+import { StepsRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import Address from '@/types/Address/dto';
+import Address from '@/types/objects/Address/dto';
 import RegisterButtons from '@/components/register/RegisterButtons';
 
 export default function RegisterAddress(): React.ReactElement {
@@ -15,7 +15,7 @@ export default function RegisterAddress(): React.ReactElement {
 
     const handleSubmit = (values: Address) => {
         setRegisterAddress(values);
-        setStep(RegisterSteps.VEHICLE);
+        setStep(StepsRegister.VEHICLE);
     };
 
     const initialValues: Address = {
@@ -141,7 +141,7 @@ export default function RegisterAddress(): React.ReactElement {
                                         formikData={{ value: values.latitude, error: errors.latitude, isSubmitting }}
                                     />
                                 </Row>
-                                <RegisterButtons prevStep={RegisterSteps.USER} nextStep={RegisterSteps.VEHICLE} />
+                                <RegisterButtons prevStep={StepsRegister.USER} nextStep={StepsRegister.VEHICLE} />
                             </FormikForm>
                         )}
                     </Formik>

@@ -1,10 +1,10 @@
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from '@/types/User/dto';
+import User from '@/types/objects/User/dto';
 import { useEffect, useState } from 'react';
 import { apiGetUser } from '@/api/endpoints/user';
 import { useNavigate, useParams } from 'react-router-dom';
-import Vehicle from '@/types/Vehicle/dto';
-import Address from '@/types/Address/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
+import Address from '@/types/objects/Address/dto';
 import { apiGetAddress } from '@/api/endpoints/address';
 import { apiGetVehicle } from '@/api/endpoints/vehicle';
 import { Button, Container, Table } from 'react-bootstrap';

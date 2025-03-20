@@ -1,3 +1,5 @@
+import User from './dto';
+
 export enum StepsRegister {
     USER = 1,
     ADDRESS = 2,
@@ -28,11 +30,11 @@ export const initialValuesMFAToken: FormMFAToken = {
     mfaToken: '',
 };
 
-export interface FormUser {
+export interface FormUser extends User {
     email: string;
     username: string;
     password: string;
-    confirmPassword: string;
+    password_confirm: string;
     name: string;
     firstName: string;
     telephone: string;
@@ -45,7 +47,43 @@ export const initialValuesUser: FormUser = {
     email: '',
     username: '',
     password: '',
-    confirmPassword: '',
+    password_confirm: '',
+    name: '',
+    firstName: '',
+    telephone: '',
+    additional_description: '',
+    profile_picture: '',
+    license_verified: false,
+};
+
+export interface FormUserRegister extends FormUser {
+    password: string;
+    password_confirm: string;
+}
+
+export const initialValuesUserRegister: FormUserRegister = {
+    email: '',
+    username: '',
+    password: '',
+    password_confirm: '',
+    name: '',
+    firstName: '',
+    telephone: '',
+    additional_description: '',
+    profile_picture: '',
+    license_verified: false,
+};
+
+export interface FormUserEdit extends FormUser {
+    password: string;
+    password_confirm: string;
+}
+
+export const initialValuesUserEdit: FormUserEdit = {
+    username: '',
+    email: '',
+    password: '',
+    password_confirm: '',
     name: '',
     firstName: '',
     telephone: '',

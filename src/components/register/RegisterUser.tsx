@@ -4,30 +4,16 @@ import { Container, Row } from 'react-bootstrap';
 import { RegisterUserSchema } from '@/utils/formValidations';
 import RegisterContext from '@/contexts/RegisterContext';
 import FormInput from '@/components/FormInput';
-import { RegisterSteps } from '@/types/User/form';
+import { FormUserRegister, initialValuesUserRegister, StepsRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import RegisterButtons from '@/components/register/RegisterButtons';
-import { UserRegisterModel } from '@/types/User/dto';
 
 export default function RegisterUser(): React.ReactElement {
     const { registerUser, setRegisterUser, setStep } = useContext(RegisterContext);
 
-    const handleSubmit = async (values: UserRegisterModel) => {
+    const handleSubmit = async (values: FormUserRegister) => {
         setRegisterUser(values);
-        setStep(RegisterSteps.ADDRESS);
-    };
-
-    const initialValues: UserRegisterModel = {
-        email: registerUser?.email || '',
-        username: registerUser?.username || '',
-        password: registerUser?.password || '',
-        confirmPassword: registerUser?.confirmPassword || '',
-        name: registerUser?.name || '',
-        firstName: registerUser?.firstName || '',
-        telephone: registerUser?.telephone || '',
-        additional_description: registerUser?.additional_description || '',
-        profile_picture: registerUser?.profile_picture || '',
-        license_verified: registerUser?.license_verified || false,
+        setStep(StepsRegister.ADDRESS);
     };
 
     return (
@@ -35,7 +21,11 @@ export default function RegisterUser(): React.ReactElement {
             <h2>User</h2>
             <CollapseWrapper>
                 <Container>
-                    <Formik initialValues={initialValues} validationSchema={RegisterUserSchema} onSubmit={handleSubmit}>
+                    <Formik
+                        initialValues={initialValuesUserRegister}
+                        validationSchema={RegisterUserSchema}
+                        onSubmit={handleSubmit}
+                    >
                         {({ values, errors, isSubmitting }) => (
                             <FormikForm>
                                 <Row>
@@ -63,11 +53,11 @@ export default function RegisterUser(): React.ReactElement {
                                     />
                                     <FormInput
                                         label='Confirm Password'
-                                        name='confirmPassword'
+                                        name='password_confirm'
                                         type='password'
                                         formikData={{
-                                            value: values.confirmPassword,
-                                            error: errors.confirmPassword,
+                                            value: values.password_confirm,
+                                            error: errors.password_confirm,
                                             isSubmitting,
                                         }}
                                     />
@@ -125,7 +115,7 @@ export default function RegisterUser(): React.ReactElement {
                                         }}
                                     />
                                 </Row>
-                                <RegisterButtons nextStep={RegisterSteps.ADDRESS} />
+                                <RegisterButtons nextStep={StepsRegister.ADDRESS} />
                             </FormikForm>
                         )}
                     </Formik>

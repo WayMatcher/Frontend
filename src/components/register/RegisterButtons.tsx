@@ -1,5 +1,5 @@
 import { Button, Col, ButtonGroup, Row } from 'react-bootstrap';
-import { RegisterSteps } from '@/types/User/form';
+import { StepsRegister } from '@/types/objects/User/form';
 import RegisterContext from '@/contexts/RegisterContext';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,15 +8,15 @@ import { useNavigate } from 'react-router-dom';
  * Props for the RegisterNavButtons component.
  *
  * @interface RegisterNavButtonsProps
- * @property {RegisterSteps} [prevStep] - The previous step in the registration process. Optional.
- * @property {RegisterSteps} [nextStep] - The next step in the registration process. Optional.
+ * @property {StepsRegister} [prevStep] - The previous step in the registration process. Optional.
+ * @property {StepsRegister} [nextStep] - The next step in the registration process. Optional.
  */
 interface RegisterNavButtonsProps {
-    prevStep?: RegisterSteps | undefined;
-    nextStep?: RegisterSteps | undefined;
+    prevStep?: StepsRegister | undefined;
+    nextStep?: StepsRegister | undefined;
 }
 
-const ButtonsRegister = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => void) => {
+const ButtonsRegister = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
     const { registerUser, registerAddress, registerVehicle } = useContext(RegisterContext);
     if (!registerUser || !registerAddress || !registerVehicle) return <></>;
     return (
@@ -40,7 +40,7 @@ const ButtonsNext = () => {
     );
 };
 
-const ButtonsPrev = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => void) => {
+const ButtonsPrev = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
     return (
         <>
             <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
@@ -51,7 +51,7 @@ const ButtonsPrev = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => 
     );
 };
 
-const Buttons = (prevStep: RegisterSteps, setStep: (step: RegisterSteps) => void) => {
+const Buttons = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
     return (
         <>
             <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
@@ -74,7 +74,7 @@ export default function RegisterNavButtons({ prevStep, nextStep }: RegisterNavBu
     };
 
     let buttons;
-    if (prevStep === RegisterSteps.VEHICLE) {
+    if (prevStep === StepsRegister.VEHICLE) {
         buttons = ButtonsRegister(prevStep, setStep);
     } else if (prevStep && nextStep) {
         buttons = Buttons(prevStep, setStep);

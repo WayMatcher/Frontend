@@ -5,12 +5,12 @@ import { EditAddressSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import EditProps from '@/types/EditProps';
-import Address from '@/types/Address/dto';
-import { FormAddress, initialValuesAddress } from '@/types/Address/form';
-import { apiGetAddress, apiSetAddress, RequestAddress } from '@/api/endpoints/address';
+import Address from '@/types/objects/Address/dto';
+import { FormAddress, initialValuesAddress } from '@/types/objects/Address/form';
+import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from '@/types/User/dto';
+import User from '@/types/objects/User/dto';
 
 export default function EditAddress({ setShowErrorModal, setSubmissionError }: EditProps) {
     const [address, setAddress] = useState<Address | null>(null);
@@ -18,13 +18,12 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
 
     useEffect(() => {
         const fetchAddress = async () => {
-            if (authUser === null || authUser.id === null) return;
+            if (!authUser || !authUser.id) return;
 
             try {
                 const response = await apiGetAddress({ userID: authUser.id });
                 setAddress(response.data);
             } catch (error: unknown) {
-                console.error('Error fetching address:', error);
                 setSubmissionError((error as Error).message);
                 setShowErrorModal(true);
             }
@@ -32,12 +31,12 @@ export default function EditAddress({ setShowErrorModal, setSubmissionError }: E
         fetchAddress();
     });
 
-    const handleSubmit = async (values: FormAddress) => {
-        const request: RequestAddress = {
+    const handleSubmit = async (values: Address) => {
+        if (!authUser || !authUser.id) return;
+        await apiSetAddress({
             address: values,
-        };
-
-        await apiSetAddress(request);
+            userID: authUser.id,
+        });
 
         setAddress(values);
     };

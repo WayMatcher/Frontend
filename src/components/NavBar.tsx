@@ -4,7 +4,7 @@ import { NavDropdown, Navbar, Nav, Container, ButtonGroup } from 'react-bootstra
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import User from '../types/User/dto';
+import User from '../types/objects/User/dto';
 
 export default function NavBar() {
     const signOut = useSignOut();
@@ -42,7 +42,7 @@ export default function NavBar() {
                             >
                                 <NavDropdown.Item
                                     onClick={() => {
-                                        navigate('/user/edit');
+                                        navigate('/edit');
                                     }}
                                     aria-label='Edit Profile'
                                 >
@@ -51,7 +51,7 @@ export default function NavBar() {
                                 <NavDropdown.Item
                                     onClick={() => {
                                         signOut();
-                                        navigate('/user/login');
+                                        navigate('/login');
                                     }}
                                     aria-label='Logout'
                                 >
@@ -60,10 +60,10 @@ export default function NavBar() {
                             </NavDropdown>
                         ) : (
                             <ButtonGroup>
-                                <Link className='btn btn-primary' to='/user/login'>
+                                <Link className='btn btn-primary' to='/login'>
                                     Login
                                 </Link>
-                                <Link className='btn btn-secondary' to='/user/register'>
+                                <Link className='btn btn-secondary' to='/register'>
                                     Register
                                 </Link>
                             </ButtonGroup>

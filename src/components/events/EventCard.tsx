@@ -1,7 +1,7 @@
 import { Button, Card } from 'react-bootstrap';
-import WMEvent from '@/types/Event/dto';
+import WMEvent from '@/types/objects/Event/dto';
 import { useContext } from 'react';
-import EventContext from '@/contexts/EventContext';
+import EventContext from '@/contexts/EventContext.tsx';
 
 interface EventCardProps {
     event: WMEvent;

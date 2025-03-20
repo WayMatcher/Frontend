@@ -9,7 +9,7 @@ import RegisterAddress from '@/components/register/RegisterAddress';
 import RegisterVehicle from '@/components/register/RegisterVehicle';
 import RegisterSummary from '@/components/register/RegisterSummary';
 import RegisterContext, { RegisterProvider } from '@/types/contexts/RegisterContext';
-import { RegisterSteps } from '@/types/User/form';
+import { StepsRegister } from '@/types/objects/User/form';
 import { apiRegisterUser } from '@/api/endpoints/user';
 import { useNavigate } from 'react-router-dom';
 import ErrorModal from '@/components/ErrorModal';
@@ -26,7 +26,7 @@ export default function RegisterPage() {
 function RegisterPageContent() {
     const { registerUser, registerAddress, registerVehicle, step } = useContext(RegisterContext);
     const navigate = useNavigate();
-    const [currentStep, setCurrentstep] = useState<RegisterSteps>(RegisterSteps.USER);
+    const [currentStep, setCurrentstep] = useState<StepsRegister>(StepsRegister.USER);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const isAuthenticated = useIsAuthenticated();
@@ -84,10 +84,10 @@ function RegisterPageContent() {
                     <ProgressBar now={step * (1 / 4) * 100} />
                     <Container>
                         <br />
-                        {currentStep === RegisterSteps.USER && <RegisterUser />}
-                        {currentStep === RegisterSteps.ADDRESS && <RegisterAddress />}
-                        {currentStep === RegisterSteps.VEHICLE && <RegisterVehicle />}
-                        {currentStep === RegisterSteps.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
+                        {currentStep === StepsRegister.USER && <RegisterUser />}
+                        {currentStep === StepsRegister.ADDRESS && <RegisterAddress />}
+                        {currentStep === StepsRegister.VEHICLE && <RegisterVehicle />}
+                        {currentStep === StepsRegister.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
                         <br />
                     </Container>
                 </Container>

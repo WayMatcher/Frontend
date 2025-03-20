@@ -1,5 +1,5 @@
 import './App.scss';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -17,12 +17,12 @@ import UserPage from './pages/user/UserPage';
 export default function AppWrapper() {
     return (
         <>
-            <ErrorBoundary fallback={<p>Something went wrong</p>}>
-                <header className='App-Header'>
-                    <NavBar />
-                </header>
-                <main className='App-Main'>
-                    <Router>
+            <BrowserRouter>
+                <ErrorBoundary fallback={<p>Something went wrong</p>}>
+                    <header className='App-Header'>
+                        <NavBar />
+                    </header>
+                    <main className='App-Main'>
                         <Routes>
                             <Route path='/' element={<LandingPage />} />
                             <Route path='/login' element={<LoginPage />} />
@@ -33,12 +33,12 @@ export default function AppWrapper() {
                                 <Route path='/profile/:username/edit' element={<UserPage />} />
                             </Route>
                         </Routes>
-                    </Router>
-                </main>
+                    </main>
+                </ErrorBoundary>
                 <footer className='App-Footer'>
                     <Footer />
                 </footer>
-            </ErrorBoundary>
+            </BrowserRouter>
         </>
     );
 }

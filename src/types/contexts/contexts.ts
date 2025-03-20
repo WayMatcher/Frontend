@@ -1,7 +1,7 @@
-import Address from './Address/dto';
-import Vehicle from './Vehicle/dto';
-import WMEvent from './Event/dto';
-import { UserRegisterModel } from './User/dto';
+import Address from '@/types/objects/Address/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
+import WMEvent from '@/types/objects/Event/dto';
+import { FormUserRegister } from '../objects/User/form';
 
 export interface MFAContextProps {
     mfaToken: boolean;
@@ -9,8 +9,8 @@ export interface MFAContextProps {
 }
 
 export interface RegisterContextProps {
-    registerUser: UserRegisterModel | null;
-    setRegisterUser: (user: UserRegisterModel | null) => void;
+    registerUser: FormUserRegister | null;
+    setRegisterUser: (user: FormUserRegister | null) => void;
     registerAddress: Address | null;
     setRegisterAddress: (user: Address | null) => void;
     registerVehicle: Vehicle | null;

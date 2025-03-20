@@ -1,5 +1,5 @@
-import Address from '@/types/Address/dto';
-import WMEvent from '@/types/Event/dto';
+import Address from '@/types/objects/Address/dto';
+import WMEvent from '@/types/objects/Event/dto';
 
 export default interface Stop {
     id?: number;

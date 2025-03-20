@@ -1,5 +1,5 @@
 import { Modal, Button } from 'react-bootstrap';
-import WMEvent from '../../types/dto/Event';
+import WMEvent from '@/types/objects/Event/dto';
 import { EventError } from './EventError';
 
 const EventEdit = ({ event }: { event: WMEvent | null }) => {

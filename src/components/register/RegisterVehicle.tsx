@@ -5,9 +5,9 @@ import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
 import { RegisterVehicleSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
-import { RegisterSteps } from '@/types/User/form';
+import { StepsRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import Vehicle from '@/types/Vehicle/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
 import RegisterNavButtons from '@/components/register/RegisterButtons';
 
 export default function RegisterVehicle(): React.ReactElement {
@@ -15,7 +15,7 @@ export default function RegisterVehicle(): React.ReactElement {
 
     const handleSubmit = (values: Vehicle) => {
         setRegisterVehicle(values);
-        setStep(RegisterSteps.SUMMARY);
+        setStep(StepsRegister.SUMMARY);
     };
 
     const initialValues: Vehicle = {
@@ -96,7 +96,7 @@ export default function RegisterVehicle(): React.ReactElement {
                                     />
                                 </Row>
                                 <br />
-                                <RegisterNavButtons prevStep={RegisterSteps.USER} nextStep={RegisterSteps.SUMMARY} />
+                                <RegisterNavButtons prevStep={StepsRegister.USER} nextStep={StepsRegister.SUMMARY} />
                             </FormikForm>
                         )}
                     </Formik>

@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ErrorModal from '@/components/ErrorModal';
 import { Form as FormikForm, Formik } from 'formik';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from '@/types/User/dto';
+import User from '@/types/objects/User/dto';
 
 export default function UserPage() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);

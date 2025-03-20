@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import EventCard from '../components/events/EventCard';
 import SearchBar from '../components/events/SearchBar';
 import { getEvents } from '@/api/endpoints/event';
-import WMEvent from '../types/Event/dto';
+import WMEvent from '../types/objects/Event/dto';
 import EventDetails from '../components/events/EventDetails';
 import EventContext from '../types/contexts/EventContext';
 

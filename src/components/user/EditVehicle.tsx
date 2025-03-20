@@ -4,137 +4,117 @@ import { Container, Row } from 'react-bootstrap';
 import { EditVehicleSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import Vehicle from '@/types/Vehicle/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
 import EditProps from '@/types/EditProps';
 import { apiGetVehicle, apiSetVehicle } from '@/api/endpoints/vehicle';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import User from '@/types/User/dto';
-import { FormVehicle, initialValuesVehicle } from '@/types/Vehicle/form';
+import User from '@/types/objects/User/dto';
+import { useNavigate } from 'react-router-dom';
 
 export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
     const [vehicle, setVehicle] = useState<Vehicle | null>(null);
     const authUser = useAuthUser<User>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchVehicle = async () => {
-            if (!authUser) return;
-
-            const request: RequestVehicle = { userID: authUser.id };
-            const response: ResponseVehicle = await apiGetVehicle(request);
-
-            setVehicle({
-                license_plate: response.data.license_plate,
-                make: response.data.make,
-                seats: response.data.seats,
-                model: response.data.model,
-                year: response.data.year,
-                additional_description: response.data.additional_description,
-            });
+            if (!authUser || !authUser.id) return;
+            const { data } = await apiGetVehicle({ userID: authUser.id });
+            setVehicle(data);
         };
         fetchVehicle();
     });
 
-    const handleSubmit = async (values: FormVehicle) => {
-        const request: RequestVehicle = {
-            vehicle: {
-                license_plate: values.license_plate,
-                make: values.make,
-                seats: values.seats,
-                model: values.model,
-                year: values.year,
-                additional_description: values.additional_description,
-            },
-            userID: authUser?.id,
-        };
-
-        const response: ResponseVehicle = await apiSetVehicle(request);
-
-        setVehicle({
-            license_plate: response.data.license_plate,
-            make: response.data.make,
-            seats: response.data.seats,
-            model: response.data.model,
-            year: response.data.year,
-            additional_description: response.data.additional_description,
-        });
+    const handleSubmit = async (values: Vehicle) => {
+        try {
+            await apiSetVehicle({
+                vehicle: values,
+                userID: authUser?.id,
+            });
+            setVehicle(values);
+        } catch (error: unknown) {
+            setSubmissionError((error as Error).message);
+            setShowErrorModal(true);
+        }
     };
-
-    const initialValues: FormVehicle = vehicle || initialValuesVehicle;
-
-    return (
-        <>
-            <h2>Vehicle</h2>
-            <CollapseWrapper>
-                <Container>
-                    <Formik initialValues={initialValues} validationSchema={EditVehicleSchema} onSubmit={handleSubmit}>
-                        {({ values, errors, isSubmitting }) => (
-                            <FormikForm>
-                                <Row>
-                                    <FormInput
-                                        label='Make'
-                                        name='make'
-                                        type='text'
-                                        formikData={{
-                                            value: values.make,
-                                            error: errors.make,
-                                            isSubmitting: isSubmitting,
-                                        }}
-                                    />
-                                    <FormInput
-                                        label='Model'
-                                        name='model'
-                                        type='text'
-                                        formikData={{
-                                            value: values.model,
-                                            error: errors.model,
-                                            isSubmitting: isSubmitting,
-                                        }}
-                                    />
-                                </Row>
-                                <Row>
-                                    <FormInput
-                                        label='Year'
-                                        name='year'
-                                        type='number'
-                                        formikData={{
-                                            value: values.year,
-                                            error: errors.year,
-                                            isSubmitting: isSubmitting,
-                                        }}
-                                    />
-                                    <FormInput
-                                        label='Seats'
-                                        name='seats'
-                                        type='number'
-                                        formikData={{
-                                            value: values.seats,
-                                            error: errors.seats,
-                                            isSubmitting: isSubmitting,
-                                        }}
-                                    />
-                                </Row>
-                                <Row>
-                                    <FormInput
-                                        label='License Plate'
-                                        name='license_plate'
-                                        type='text'
-                                        formikData={{
-                                            value: values.license_plate,
-                                            error: errors.license_plate,
-                                            isSubmitting: isSubmitting,
-                                        }}
-                                    />
-                                </Row>
-                                <br />
-                                <Row>
-                                    <EditButtons isSubmitting={isSubmitting} />
-                                </Row>
-                            </FormikForm>
-                        )}
-                    </Formik>
-                </Container>
-            </CollapseWrapper>
-        </>
-    );
+    if (!vehicle) {
+        navigate('/login');
+        return <></>;
+    } else
+        return (
+            <>
+                <h2>Vehicle</h2>
+                <CollapseWrapper>
+                    <Container>
+                        <Formik initialValues={vehicle} validationSchema={EditVehicleSchema} onSubmit={handleSubmit}>
+                            {({ values, errors, isSubmitting }) => (
+                                <FormikForm>
+                                    <Row>
+                                        <FormInput
+                                            label='Make'
+                                            name='make'
+                                            type='text'
+                                            formikData={{
+                                                value: values.make,
+                                                error: errors.make,
+                                                isSubmitting: isSubmitting,
+                                            }}
+                                        />
+                                        <FormInput
+                                            label='Model'
+                                            name='model'
+                                            type='text'
+                                            formikData={{
+                                                value: values.model,
+                                                error: errors.model,
+                                                isSubmitting: isSubmitting,
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row>
+                                        <FormInput
+                                            label='Year'
+                                            name='year'
+                                            type='number'
+                                            formikData={{
+                                                value: values.year,
+                                                error: errors.year,
+                                                isSubmitting: isSubmitting,
+                                            }}
+                                        />
+                                        <FormInput
+                                            label='Seats'
+                                            name='seats'
+                                            type='number'
+                                            formikData={{
+                                                value: values.seats,
+                                                error: errors.seats,
+                                                isSubmitting: isSubmitting,
+                                            }}
+                                        />
+                                    </Row>
+                                    <Row>
+                                        <FormInput
+                                            label='License Plate'
+                                            name='license_plate'
+                                            type='text'
+                                            formikData={{
+                                                value: values.license_plate,
+                                                error: errors.license_plate,
+                                                isSubmitting: isSubmitting,
+                                            }}
+                                        />
+                                    </Row>
+                                    <br />
+                                    <Row>
+                                        <EditButtons isSubmitting={isSubmitting} />
+                                    </Row>
+                                </FormikForm>
+                            )}
+                        </Formik>
+                    </Container>
+                </CollapseWrapper>
+            </>
+        );
 }

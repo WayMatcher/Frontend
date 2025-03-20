@@ -5,9 +5,9 @@ import FormInput from '../FormInput';
 import { useNavigate } from 'react-router-dom';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useState } from 'react';
-import { apiAuthMFA, MFATokenRequest } from '@/api/endpoints/user';
-import User from '@/types/User/dto';
-import { FormMFAToken, initialValuesMFAToken } from '@/types/User/form';
+import { apiAuthMFA } from '@/api/endpoints/user';
+import User from '@/types/objects/User/dto';
+import { initialValuesMFAToken } from '@/types/objects/User/form';
 
 interface MFAModalProps {
     show: boolean | undefined;
@@ -22,21 +22,19 @@ export default function MFAModal({ show, user }: MFAModalProps) {
     const handleSubmit = async (values: { mfaToken: string }): Promise<void> => {
         setSubmissionError(null);
 
-        if (userLogin && userLogin.email && userLogin.username) {
-            const mfaTokenModel = {
+        if (user && user.email && user.username) {
+            const response = await apiAuthMFA({
                 token: values.mfaToken,
                 email: user?.email,
                 username: user?.username,
-            };
-
-            const response = await apiAuthMFA(mfaTokenModel);
+            });
 
             signIn({
                 auth: {
-                    token: response.jwt,
+                    token: response.data.jwt,
                     type: 'Bearer',
                 },
-                userState: response.user,
+                userState: response.data.user,
             });
 
             navigate('/');
@@ -45,7 +43,7 @@ export default function MFAModal({ show, user }: MFAModalProps) {
 
     return (
         <Modal show={show} centered>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Formik initialValues={initialValuesMFAToken} onSubmit={handleSubmit}>
                 {({ values, errors, isSubmitting }) => (
                     <FormikForm>
                         <Modal.Header>

@@ -1,9 +1,9 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
-import UserRegisterModel from '@/types/User/dto';
-import Address from '@/types/Address/dto';
-import Vehicle from '@/types/Vehicle/dto';
-import { RegisterContextProps } from '@/types/contexts';
+import Address from '@/types/objects/Address/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
+import { RegisterContextProps } from '@/types/contexts/contexts';
+import { FormUserRegister } from '@/types/objects/User/form';
 
 const RegisterContext: React.Context<RegisterContextProps> = createContext<RegisterContextProps>({
     registerUser: null,
@@ -17,7 +17,7 @@ const RegisterContext: React.Context<RegisterContextProps> = createContext<Regis
 });
 
 export const RegisterProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [registerUser, setRegisterUser] = useState<UserRegisterModel | null>(null);
+    const [registerUser, setRegisterUser] = useState<FormUserRegister | null>(null);
     const [registerAddress, setRegisterAddress] = useState<Address | null>(null);
     const [registerVehicle, setRegisterVehicle] = useState<Vehicle | null>(null);
     const [step, setStep] = useState<number>(1);

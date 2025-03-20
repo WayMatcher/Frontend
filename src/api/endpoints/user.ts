@@ -3,14 +3,14 @@ const api = new API();
 
 import bcrypt from 'bcryptjs';
 
-import User from '@/types/User/dto';
-import Address from '@/types/Address/dto';
-import Vehicle from '@/types/Vehicle/dto';
+import User from '@/types/objects/User/dto';
+import Address from '@/types/objects/Address/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
 
 export const apiGetUser = async (request: { username?: string; email?: string; user?: User; userID?: number }) => {
     try {
         const response = await api.axios.get<User>('/getUserByID', { params: { ...request } });
-        return response.data;
+        return response;
     } catch (error) {
         api.handleApiError(error);
         throw error;
@@ -20,7 +20,7 @@ export const apiGetUser = async (request: { username?: string; email?: string; u
 export const apiSetUser = async (request: { username?: string; email?: string; user?: User; userID?: number }) => {
     try {
         const response = await api.axios.put<User>('/putUser', request);
-        return response.data;
+        return response;
     } catch (error) {
         api.handleApiError(error);
         throw error;
@@ -39,7 +39,7 @@ export const apiAuthMFA = async (request: { token: string; username: string; ema
         };
 
         const response = await api.axios.post<{ jwt: string; user: User }>('/MfA/MfAInput', hashedMFAToken);
-        return response.data;
+        return response;
     } catch (error) {
         api.handleApiError(error);
         throw error;
@@ -50,11 +50,11 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
     try {
         const hashedUserLogin = {
             ...request,
-            password: bcrypt.hashSync(request.password, 10),
+            //password: bcrypt.hashSync(request.password, 10),
+            password: request.password,
         };
 
-        const response = await api.axios.post('/login', hashedUserLogin);
-        return response;
+        return await api.axios.post('http://api.waymatcher.hobedere.com/api/login/loginuser', hashedUserLogin);
     } catch (error) {
         api.handleApiError(error);
         throw error;
@@ -74,7 +74,7 @@ export const apiRegisterUser = async (request: {
         };
 
         const response = await api.axios.put('/register', hashedRequest);
-        return response.data;
+        return response;
     } catch (error) {
         api.handleApiError(error);
         throw error;

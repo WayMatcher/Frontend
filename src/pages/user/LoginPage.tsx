@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
@@ -7,12 +7,11 @@ import { apiAuthUser } from '@/api/endpoints/user';
 import classifyText from '@/utils/classifyText';
 
 import { LoginUserSchema } from '@/utils/formValidations';
-import { FormUserLogin } from '@/types/User/form';
 import ErrorModal from '@/components/ErrorModal';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import FormInput from '@/components/FormInput';
 import MFAModal from '@/components/user/MFAModal';
-import User from '@/types/User/dto';
+import User from '@/types/objects/User/dto';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -22,36 +21,30 @@ export default function LoginPage() {
     const [showMFAModal, setShowMFAModal] = useState<boolean>(false);
     const [userLogin, setUserLogin] = useState<{ username: string; email: string }>();
 
-    const handleSubmit = async (values: FormUserLogin) => {
+    const handleSubmit = async (values: { user?: User; userOrEmail: string; password: string }) => {
         // Reset error message
         setSubmissionError(null);
         if (!values.userOrEmail || !values.password) {
             setSubmissionError('Please fill in all fields');
-            handleShowErrorModal();
+            setShowErrorModal(true);
             return;
         }
 
-        const userLogin: { username: string; email: string; password: string } = {
-            username: classifyText(values.userOrEmail) === 'username' ? values.userOrEmail : '',
-            email: classifyText(values.userOrEmail) === 'email' ? values.userOrEmail : '',
-            password: values.password,
-        };
-
         try {
-            const response = await apiAuthUser(userLogin);
-            setUserLogin({
-                username: userLogin.username,
-                email: userLogin.email,
-            });
-            setShowMFAModal(true);
-        } catch (err: unknown) {
-            setSubmissionError((err as Error).message);
-            handleShowErrorModal();
-        }
-    };
+            const tempUser = {
+                username: classifyText(values.userOrEmail) === 'username' ? values.userOrEmail : '',
+                email: classifyText(values.userOrEmail) === 'email' ? values.userOrEmail : '',
+            };
 
-    const handleShowErrorModal = () => {
-        setShowErrorModal(true);
+            await apiAuthUser({ ...tempUser, password: values.password });
+
+            setUserLogin(tempUser);
+
+            setShowMFAModal(true);
+        } catch (error: unknown) {
+            setSubmissionError((error as Error).message);
+            setShowErrorModal(true);
+        }
     };
 
     const handleCloseErrorModal = () => {
@@ -64,8 +57,11 @@ export default function LoginPage() {
                 <Container className='loginContainer'>
                     <Formik
                         onSubmit={handleSubmit}
-                        validateOnChange={true}
-                        initialValues={LoginUserInitialValues}
+                        initialValues={{
+                            user: { ...userLogin, username: '', email: '' },
+                            userOrEmail: '',
+                            password: '',
+                        }}
                         validationSchema={LoginUserSchema}
                     >
                         {({ values, errors, isSubmitting }) => (
@@ -113,7 +109,7 @@ export default function LoginPage() {
                     </Formik>
                 </Container>
             </CollapseWrapper>
-            <MFAModal show={showMFAModal} user={user} />
+            <MFAModal show={showMFAModal} user={userLogin} />
         </>
     );
 }

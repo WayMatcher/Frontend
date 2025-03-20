@@ -1,5 +1,5 @@
 import API from '@/api/api';
-import WMEvent from '@/types/Event/dto';
+import WMEvent from '@/types/objects/Event/dto';
 const api = new API();
 
 export const getEvents = async (request?: { eventIDs?: number[] }) => {
@@ -8,7 +8,7 @@ export const getEvents = async (request?: { eventIDs?: number[] }) => {
             const response = await api.axios.get<{
                 events: WMEvent[];
             }>('/events', { params: { ...request } });
-            return response.data;
+            return response;
         } catch (error) {
             api.handleApiError(error);
             throw error;
@@ -18,7 +18,7 @@ export const getEvents = async (request?: { eventIDs?: number[] }) => {
             const response = await api.axios.get<{
                 events: WMEvent;
             }>('/events');
-            return response.data;
+            return response;
         } catch (error) {
             api.handleApiError(error);
             throw error;
@@ -31,7 +31,7 @@ export const getEvent = async (request: { eventID: number }) => {
         const response = await api.axios.get<{
             event: WMEvent;
         }>('/event', { params: { ...request } });
-        return response.data;
+        return response;
     } catch (error) {
         api.handleApiError(error);
         throw error;
