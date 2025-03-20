@@ -6,47 +6,24 @@ import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/Vehicle/dto';
 import EditProps from '@/types/EditProps';
-import { apiGetVehicle, apiSetVehicle } from '@/api/vehicle';
+import { apiGetVehicle, apiSetVehicle } from '@/api/endpoints/vehicle';
 import EditButtons from '@/components/user/EditButtons';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import User from '@/types/User/dto';
 
 export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
     const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+    const authUser = useAuthUser<User>();
 
     useEffect(() => {
         const fetchVehicle = async () => {
-            apiGetVehicle()
-                .then((response: VehicleResponse) => {
-                    if (response.succeeded === true) {
-                        setVehicle(response.vehicle);
-                    } else {
-                        setSubmissionError(response.message);
-                        setShowErrorModal(true);
-                    }
-                })
-                .catch((error: unknown) => {
-                    console.error('Error fetching vehicle:', error);
-                    setSubmissionError((error as Error).message);
-                    setShowErrorModal(true);
-                });
+            if (authUser) apiGetVehicle({ username: authUser.username });
         };
         fetchVehicle();
     });
 
     const handleSubmit = (values: Vehicle) => {
-        apiSetVehicle(values)
-            .then((response: APIResponse) => {
-                if (response.succeeded === true) {
-                    setVehicle(values);
-                } else {
-                    setSubmissionError(response.message);
-                    setShowErrorModal(true);
-                }
-            })
-            .catch((error: unknown) => {
-                console.error('Error fetching vehicle:', error);
-                setSubmissionError((error as Error).message);
-                setShowErrorModal(true);
-            });
+        const response = apiSetVehicle({ vehicle: values });
     };
 
     const initialValues: Vehicle = {

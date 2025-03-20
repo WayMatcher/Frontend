@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form as FormikForm } from 'formik';
 import { Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 
-import { apiAuthUser, RequestUserLogin } from '@/types/User/api';
+import { apiAuthUser } from '@/api/endpoints/user';
 import classifyText from '@/utils/classifyText';
 
 import { LoginUserSchema } from '@/utils/formValidations';
-import { UserLogin } from '@/types/User/form';
+import { FormUserLogin } from '@/types/User/form';
 import ErrorModal from '@/components/ErrorModal';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import FormInput from '@/components/FormInput';
@@ -19,9 +19,9 @@ export default function LoginPage() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [showMFAModal, setShowMFAModal] = useState<boolean>(false);
-    const [userLogin, setUserLogin] = useState<UserLogin>();
+    const [userLogin, setUserLogin] = useState<{ username: string; email: string }>();
 
-    const handleSubmit = async (values: UserLogin) => {
+    const handleSubmit = async (values: FormUserLogin) => {
         // Reset error message
         setSubmissionError(null);
         if (!values.userOrEmail || !values.password) {
@@ -30,15 +30,18 @@ export default function LoginPage() {
             return;
         }
 
-        const userLogin: RequestUserLogin = {
+        const userLogin: { username: string; email: string; password: string } = {
             username: classifyText(values.userOrEmail) === 'username' ? values.userOrEmail : '',
             email: classifyText(values.userOrEmail) === 'email' ? values.userOrEmail : '',
             password: values.password,
         };
 
         try {
-            await apiAuthUser(userLogin);
-            setUserLogin(userLogin);
+            const response = await apiAuthUser(userLogin);
+            setUserLogin({
+                username: userLogin.username,
+                email: userLogin.email,
+            });
             setShowMFAModal(true);
         } catch (err: unknown) {
             setSubmissionError((err as Error).message);
@@ -54,7 +57,7 @@ export default function LoginPage() {
         setShowErrorModal(false);
     };
 
-    const initialValues: UserLogin = {
+    const initialValues: FormUserLogin = {
         userOrEmail: '',
         password: '',
     };

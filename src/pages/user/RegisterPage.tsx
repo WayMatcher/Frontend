@@ -1,4 +1,4 @@
-import '@/styles/RegisterPage.scss';
+import '@/pages/styles/RegisterPage.scss';
 
 import { Container } from 'react-bootstrap';
 import { useContext, useEffect, useState } from 'react';
@@ -10,7 +10,7 @@ import RegisterVehicle from '@/components/register/RegisterVehicle';
 import RegisterSummary from '@/components/register/RegisterSummary';
 import RegisterContext, { RegisterProvider } from '@/types/contexts/RegisterContext';
 import { RegisterSteps } from '@/types/User/form';
-import { apiRegisterUser } from '@/types/User/api';
+import { apiRegisterUser } from '@/api/endpoints/user';
 import { useNavigate } from 'react-router-dom';
 import ErrorModal from '@/components/ErrorModal';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';

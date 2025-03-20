@@ -6,61 +6,43 @@ import { useNavigate } from 'react-router-dom';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useState } from 'react';
 import API from '../../api/api';
-import { MFAResponse } from '../../types/API';
-import { UserLogin } from '../../types/dto/User';
-import MFAToken from '../../types/dto/MFAToken';
-import { MFATokenModel } from '../../types/apiModels/MFATokenModel';
-import { mfaAuthUser } from '../../api/endpoints/user/login';
+import { apiAuthMFA } from '@/api/endpoints/user';
+import User from '@/types/User/dto';
 
 const api = new API();
 
 interface MFAModalProps {
     show: boolean | undefined;
-    userLogin: UserLogin | undefined;
+    userLogin: User | undefined;
 }
 
 export default function MFAModal({ show, userLogin }: MFAModalProps) {
-    const initialValues: MFAToken = { mfaToken: '' };
+    const initialValues = { mfaToken: '' };
     const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
     const navigate = useNavigate();
     const signIn = useSignIn();
 
-    const handleSubmit = async (values: MFAToken): Promise<void> => {
+    const handleSubmit = async (values: { mfaToken: string }): Promise<void> => {
         setSubmissionError(null);
 
         if (userLogin && userLogin.email && userLogin.username) {
-            const mfaTokenModel: MFATokenModel = {
+            const mfaTokenModel = {
                 token: values.mfaToken,
                 email: userLogin?.email,
                 username: userLogin?.username,
             };
 
-            mfaAuthUser(mfaTokenModel)
-                .then((response: MFAResponse) => {
-                    if (response.succeeded === true && response.jwt) {
-                        if (
-                            signIn({
-                                auth: {
-                                    token: response.jwt,
-                                },
-                                userState: response.user,
-                            })
-                        ) {
-                            console.log('User signed in');
-                        } else {
-                            console.error('Failed to sign in user');
-                        }
-                        navigate('/user/edit');
-                    } else {
-                        setSubmissionError('MFA Failed: ' + response.message);
-                    }
-                })
-                .catch((err: unknown) => {
-                    api.handleApiError(err);
-                    setSubmissionError('Unknown error occured: ' + (err as Error).message);
-                });
-        } else {
-            setSubmissionError('No User given');
+            const response = await apiAuthMFA(mfaTokenModel);
+
+            signIn({
+                auth: {
+                    token: response.jwt,
+                    type: 'Bearer',
+                },
+                userState: response.user,
+            });
+
+            navigate('/');
         }
     };
 

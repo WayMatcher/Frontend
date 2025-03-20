@@ -5,9 +5,9 @@ import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
 import { RegisterVehicleSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
-import RegisterSteps from '@/types/RegisterSteps';
+import { RegisterSteps } from '@/types/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import Vehicle from '@/types/dto/Vehicle';
+import Vehicle from '@/types/Vehicle/dto';
 import RegisterNavButtons from '@/components/register/RegisterButtons';
 
 export default function RegisterVehicle(): React.ReactElement {

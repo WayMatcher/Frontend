@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Button, ButtonGroup, Container, Modal } from 'react-bootstrap';
-import './styles/EventsPage.scss';
+import '@/pages/styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '../components/events/EventCard';
 import SearchBar from '../components/events/SearchBar';

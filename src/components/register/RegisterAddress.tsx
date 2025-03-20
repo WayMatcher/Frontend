@@ -5,7 +5,7 @@ import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
 import { RegisterAddressSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
-import RegisterSteps from '@/types/RegisterSteps';
+import { RegisterSteps } from '@/types/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/Address/dto';
 import RegisterButtons from '@/components/register/RegisterButtons';

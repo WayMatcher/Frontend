@@ -4,3 +4,8 @@ export enum RegisterSteps {
     VEHICLE = 3,
     SUMMARY = 4,
 }
+
+export interface FormUserLogin {
+    userOrEmail: string;
+    password: string;
+}

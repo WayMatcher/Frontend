@@ -2,26 +2,12 @@ import API from '@/api/api';
 import WMEvent from '@/types/Event/dto';
 const api = new API();
 
-interface ResponseEvent {
-    events: WMEvent;
-}
-
-interface ResponseEvents {
-    events: WMEvent[];
-}
-
-interface RequestEvent {
-    eventID?: number;
-}
-
-interface RequestEvents {
-    eventIDs?: number[];
-}
-
-export const getEvents = async (request?: RequestEvents): Promise<ResponseEvents> => {
+export const getEvents = async (request?: { eventIDs?: number[] }) => {
     if (request) {
         try {
-            const response = await api.axios.get<ResponseEvents>('/events', { params: { ...request } });
+            const response = await api.axios.get<{
+                events: WMEvent[];
+            }>('/events', { params: { ...request } });
             return response.data;
         } catch (error) {
             api.handleApiError(error);
@@ -29,7 +15,9 @@ export const getEvents = async (request?: RequestEvents): Promise<ResponseEvents
         }
     } else {
         try {
-            const response = await api.axios.get<ResponseEvents>('/events');
+            const response = await api.axios.get<{
+                events: WMEvent;
+            }>('/events');
             return response.data;
         } catch (error) {
             api.handleApiError(error);
@@ -38,9 +26,11 @@ export const getEvents = async (request?: RequestEvents): Promise<ResponseEvents
     }
 };
 
-export const getEvent = async (request: RequestEvent): Promise<ResponseEvent> => {
+export const getEvent = async (request: { eventID: number }) => {
     try {
-        const response = await api.axios.get<ResponseEvent>('/events', { params: { ...request } });
+        const response = await api.axios.get<{
+            event: WMEvent;
+        }>('/event', { params: { ...request } });
         return response.data;
     } catch (error) {
         api.handleApiError(error);

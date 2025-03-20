@@ -6,7 +6,7 @@ import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import EditProps from '@/types/EditProps';
 import Address from '@/types/Address/dto';
-import { apiGetAddress, apiSetAddress } from '@/api/address';
+import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/User/dto';
