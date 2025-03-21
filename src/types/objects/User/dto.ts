@@ -16,6 +16,7 @@ export default interface User extends BaseUser {
     telephone?: string;
     address?: Address;
     vehicle?: Vehicle;
+    jwt?: string;
 }
 
 export interface UserLoginModel extends BaseUser {

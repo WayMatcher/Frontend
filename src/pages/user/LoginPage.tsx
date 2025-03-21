@@ -11,7 +11,6 @@ import ErrorModal from '@/components/ErrorModal';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import FormInput from '@/components/FormInput';
 import MFAModal from '@/components/user/MFAModal';
-import User from '@/types/objects/User/dto';
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -19,9 +18,9 @@ export default function LoginPage() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [showMFAModal, setShowMFAModal] = useState<boolean>(false);
-    const [userLogin, setUserLogin] = useState<{ username: string; email: string }>();
+    const [userLoginID, setUserLoginID] = useState<number>(0);
 
-    const handleSubmit = async (values: { user?: User; userOrEmail: string; password: string }) => {
+    const handleSubmit = async (values: { userOrEmail: string; password: string }) => {
         // Reset error message
         setSubmissionError(null);
         if (!values.userOrEmail || !values.password) {
@@ -31,14 +30,14 @@ export default function LoginPage() {
         }
 
         try {
-            const tempUser = {
+            let tempUser = {
                 username: classifyText(values.userOrEmail) === 'username' ? values.userOrEmail : '',
                 email: classifyText(values.userOrEmail) === 'email' ? values.userOrEmail : '',
             };
 
-            await apiAuthUser({ ...tempUser, password: values.password });
-
-            setUserLogin(tempUser);
+            const response = await apiAuthUser({ ...tempUser, password: values.password });
+            console.log(response.data);
+            setUserLoginID(response.data);
 
             setShowMFAModal(true);
         } catch (error: unknown) {
@@ -58,7 +57,6 @@ export default function LoginPage() {
                     <Formik
                         onSubmit={handleSubmit}
                         initialValues={{
-                            user: { ...userLogin, username: '', email: '' },
                             userOrEmail: '',
                             password: '',
                         }}
@@ -109,7 +107,7 @@ export default function LoginPage() {
                     </Formik>
                 </Container>
             </CollapseWrapper>
-            <MFAModal show={showMFAModal} user={userLogin} />
+            <MFAModal show={showMFAModal} userLoginID={userLoginID} />
         </>
     );
 }

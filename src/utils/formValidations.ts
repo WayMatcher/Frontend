@@ -64,9 +64,8 @@ export const LoginUserSchema = Yup.object({
  * Schema for validating MFA token during login.
  */
 export const LoginMFASchema = Yup.object({
-    mfaToken: Yup.string()
-        .required('Please enter MFA Token')
-        .matches(/^[0-9]{4}$/, 'MFA Token must be 4 digits'),
+    mfaToken: Yup.string().required('Please enter MFA Token'),
+    //.matches(/^[0-9]{4}$/, 'MFA Token must be 4 digits'),
 }); // MFA Page
 
 // --- Edit User Schemas --- //

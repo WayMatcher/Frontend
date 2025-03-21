@@ -26,18 +26,18 @@ export const apiSetUser = async (request: { username?: string; email?: string; u
     }
 };
 
-export const apiAuthMFA = async (request: { token: string; username: string; email: string }) => {
+export const apiAuthMFA = async (request: { token: string; userID: number }) => {
     try {
         const hashedMFAToken: {
             token: string;
-            username: string;
-            email: string;
+            userID: number;
         } = {
-            ...request,
-            token: bcrypt.hashSync(request.token, 10),
+            userID: request.userID,
+            //token: bcrypt.hashSync(request.token, 10),
+            token: request.token,
         };
 
-        const response = await api.axios.post<{ jwt: string; user: User }>('/MfA/MfAInput', hashedMFAToken);
+        const response = await api.axios.post<User>('/api/MfA/MfAInput', hashedMFAToken);
         return response;
     } catch (error) {
         api.handleApiError(error);
@@ -53,7 +53,7 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
             password: request.password,
         };
 
-        return await api.axios.post('http://waymatcher.hobedere.com/api/login/loginuser', hashedUserLogin);
+        return await api.axios.post<number>('/api/login/loginuser', hashedUserLogin);
     } catch (error) {
         api.handleApiError(error);
         throw error;

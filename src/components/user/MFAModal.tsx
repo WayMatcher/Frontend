@@ -6,38 +6,41 @@ import { useNavigate } from 'react-router-dom';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useState } from 'react';
 import { apiAuthMFA } from '@/api/endpoints/user';
-import User from '@/types/objects/User/dto';
 import { initialValuesMFAToken } from '@/types/objects/User/form';
 
 interface MFAModalProps {
     show: boolean | undefined;
-    user: User | undefined;
+    userLoginID: number;
 }
 
-export default function MFAModal({ show, user }: MFAModalProps) {
+export default function MFAModal({ show, userLoginID }: MFAModalProps) {
     const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
     const navigate = useNavigate();
     const signIn = useSignIn();
-
     const handleSubmit = async (values: { mfaToken: string }): Promise<void> => {
         setSubmissionError(null);
 
-        if (user && user.email && user.username) {
+        if (userLoginID != 0) {
             const response = await apiAuthMFA({
                 token: values.mfaToken,
-                email: user?.email,
-                username: user?.username,
+                userID: userLoginID,
             });
+
+            const { jwt, ...tempUser } = response.data;
+
+            if (!jwt) return;
 
             signIn({
                 auth: {
-                    token: response.data.jwt,
+                    token: jwt,
                     type: 'Bearer',
                 },
-                userState: response.data.user,
+                userState: tempUser,
             });
 
             navigate('/');
+        } else {
+            console.error("UserID doesn't exist", userLoginID);
         }
     };
 
