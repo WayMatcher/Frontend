@@ -16,7 +16,7 @@ export const getEvents = async (request?: { eventIDs?: number[] }) => {
     } else {
         try {
             const response = await api.axios.get<{
-                events: WMEvent;
+                events: WMEvent[];
             }>('/events');
             return response;
         } catch (error) {

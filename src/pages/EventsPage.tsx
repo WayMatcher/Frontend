@@ -7,7 +7,7 @@ import SearchBar from '../components/events/SearchBar';
 import { getEvents } from '@/api/endpoints/event';
 import WMEvent from '../types/objects/Event/dto';
 import EventDetails from '../components/events/EventDetails';
-import EventContext from '../types/contexts/EventContext';
+import EventContext from '@/contexts/EventContext';
 
 export default function EventPage() {
     const { eventid } = useParams();
@@ -22,11 +22,11 @@ export default function EventPage() {
         const fetchEvents = async () => {
             try {
                 const response = await getEvents();
-                setEvents(response.events);
-                setFilteredEvents(response.events);
+                setEvents(response.data.events);
+                setFilteredEvents(response.data.events);
                 if (eventid) {
                     const eventIdNumber = parseInt(eventid);
-                    const selected = response.events.find((event: WMEvent) => event.id === eventIdNumber);
+                    const selected = response.data.events.find((event: WMEvent) => event.id === eventIdNumber);
                     if (selected) {
                         setCurrentEvent(selected);
                         setShowModal(true);

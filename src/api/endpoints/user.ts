@@ -4,7 +4,6 @@ const api = new API();
 import bcrypt from 'bcryptjs';
 
 import User from '@/types/objects/User/dto';
-import Address from '@/types/objects/Address/dto';
 import Vehicle from '@/types/objects/Vehicle/dto';
 
 export const apiGetUser = async (request: { username?: string; email?: string; user?: User; userID?: number }) => {

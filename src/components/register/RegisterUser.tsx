@@ -9,7 +9,7 @@ import CollapseWrapper from '@/components/CollapseWrapper';
 import RegisterButtons from '@/components/register/RegisterButtons';
 
 export default function RegisterUser(): React.ReactElement {
-    const { registerUser, setRegisterUser, setStep } = useContext(RegisterContext);
+    const { setRegisterUser, setStep } = useContext(RegisterContext);
 
     const handleSubmit = async (values: FormUserRegister) => {
         setRegisterUser(values);

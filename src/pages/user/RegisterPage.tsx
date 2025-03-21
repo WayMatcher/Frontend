@@ -8,7 +8,7 @@ import RegisterUser from '@/components/register/RegisterUser';
 import RegisterAddress from '@/components/register/RegisterAddress';
 import RegisterVehicle from '@/components/register/RegisterVehicle';
 import RegisterSummary from '@/components/register/RegisterSummary';
-import RegisterContext, { RegisterProvider } from '@/types/contexts/RegisterContext';
+import RegisterContext, { RegisterProvider } from '@/contexts/RegisterContext';
 import { StepsRegister } from '@/types/objects/User/form';
 import { apiRegisterUser } from '@/api/endpoints/user';
 import { useNavigate } from 'react-router-dom';
