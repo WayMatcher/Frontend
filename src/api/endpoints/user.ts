@@ -61,12 +61,7 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
     }
 };
 
-export const apiRegisterUser = async (request: {
-    user: User;
-    address: Address;
-    vehicle: Vehicle;
-    password: string;
-}) => {
+export const apiRegisterUser = async (request: { user: User; vehicle: Vehicle; password: string }) => {
     try {
         const hashedRequest = {
             ...request,

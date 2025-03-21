@@ -2,7 +2,7 @@ import React, { createContext, useState, ReactNode } from 'react';
 import { UserRegisterModel } from '@/types/objects/User/dto';
 import Address from '@/types/objects/Address/dto';
 import Vehicle from '@/types/objects/Vehicle/dto';
-import { RegisterContextProps } from '../contexts';
+import { RegisterContextProps } from './contexts';
 
 const RegisterContext: React.Context<RegisterContextProps> = createContext<RegisterContextProps>({
     registerUser: null,

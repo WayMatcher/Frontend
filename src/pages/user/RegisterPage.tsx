@@ -43,8 +43,10 @@ function RegisterPageContent() {
 
         try {
             await apiRegisterUser({
-                user: registerUser,
-                address: registerAddress,
+                user: {
+                    ...registerUser,
+                    address: registerAddress,
+                },
                 vehicle: registerVehicle,
                 password: registerUser.password,
             });
