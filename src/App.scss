@@ -1,5 +1,4 @@
-@use '_colors.scss';
-@use '/node_modules/bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap.scss';
 
 main {
     padding: 20px 0px;
