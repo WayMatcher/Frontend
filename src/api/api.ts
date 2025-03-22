@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 export default class API {
-    public readonly BASE_URL: string = import.meta.env.API_BASE_URL;
+    public readonly BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
     public axios: AxiosInstance;
 
     constructor() {
