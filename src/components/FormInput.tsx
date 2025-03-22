@@ -2,20 +2,30 @@ import { Field } from 'formik';
 import { Form, Col } from 'react-bootstrap';
 import FormInputProps from '../types/FormInput';
 
-export default function FormInput({ label, name, type, placeholder, formikData }: FormInputProps): React.ReactElement {
+export default function FormInput({
+    label,
+    name,
+    type,
+    placeholder,
+    formikData,
+    props,
+}: FormInputProps): React.ReactElement {
+    const { value, error, isSubmitting } = formikData;
+
     return (
         <Form.Group as={Col}>
             <Form.Label>{label}</Form.Label>
             <Field
                 type={type}
                 name={name}
-                value={formikData.value}
+                value={value}
                 placeholder={placeholder}
-                className={`form-control ${formikData.error ? 'is-invalid' : ''}`}
+                className={`form-control ${error ? 'is-invalid' : ''}`}
                 component={type === 'textarea' ? 'textarea' : undefined}
-                disabled={formikData.isSubmitting}
+                disabled={isSubmitting}
+                {...props}
             />
-            <Form.Control.Feedback type='invalid'>{formikData.error}</Form.Control.Feedback>
+            <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback>
         </Form.Group>
     );
 }

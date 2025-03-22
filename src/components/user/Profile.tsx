@@ -1,6 +1,6 @@
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { apiGetUser } from '@/api/endpoints/user';
 import { useNavigate, useParams } from 'react-router-dom';
 import Vehicle from '@/types/objects/Vehicle/dto';
@@ -9,6 +9,7 @@ import { apiGetAddress } from '@/api/endpoints/address';
 import { apiGetVehicle } from '@/api/endpoints/vehicle';
 import { Button, Container, Table } from 'react-bootstrap';
 import Loading from '@/components/Loading';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
 
 export default function Profile() {
     const { username } = useParams<{ username: string }>();
@@ -21,6 +22,8 @@ export default function Profile() {
     const [user, setUser] = useState<User | null>(null);
     const [address, setAddress] = useState<Address | null>(null);
     const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+
+    const { showErrorModal } = useContext(ErrorModalContext);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,7 +42,7 @@ export default function Profile() {
                 setAddress(addressResponse.data);
                 setVehicle(vehicleResponse.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                showErrorModal(`Error fetching data: ${error}`);
             } finally {
                 setLoading(false);
             }

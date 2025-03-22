@@ -1,24 +1,13 @@
 import { Button, Card } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
-import { useContext } from 'react';
-import EventContext from '@/contexts/EventContext.tsx';
 
 interface EventCardProps {
     event: WMEvent;
-    openModal: () => void;
+    openEvent: (id: number) => void;
 }
 
-export default function EventCard({ event, openModal }: EventCardProps) {
-    const { setCurrentEvent } = useContext(EventContext);
-
-    const handleOpen = () => {
-        setCurrentEvent(event);
-        openModal();
-    };
-
-    if (!event) {
-        return <div>Event not found</div>;
-    }
+export default function EventCard({ event, openEvent: openModal }: EventCardProps) {
+    if (!event) return <h1>Event not found</h1>;
 
     return (
         <Card style={{ maxWidth: '18rem' }}>
@@ -26,7 +15,7 @@ export default function EventCard({ event, openModal }: EventCardProps) {
             <Card.Body>
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.description}</Card.Text>
-                <Button variant='primary' onClick={handleOpen}>
+                <Button variant='primary' onClick={() => openModal(event.id)}>
                     Join
                 </Button>
             </Card.Body>

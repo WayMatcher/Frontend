@@ -23,3 +23,7 @@ export interface EventContextProps {
     currentEvent: WMEvent | null;
     setCurrentEvent: (currentEvent: WMEvent | null) => void;
 }
+export interface ErrorModalContextProps {
+    hideErrorModal: () => void;
+    showErrorModal: (message: string) => void;
+}

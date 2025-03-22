@@ -8,7 +8,7 @@ import Vehicle from '@/types/objects/Vehicle/dto';
 
 export const apiGetUser = async (request: { username?: string; email?: string; user?: User; userID?: number }) => {
     try {
-        const response = await api.axios.get<User>('/getUserByID', { params: { ...request } });
+        const response = await api.axios.get<User>('/User/GetUser', { params: { ...request } });
         return response;
     } catch (error) {
         api.handleApiError(error);

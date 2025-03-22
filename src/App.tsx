@@ -9,36 +9,72 @@ import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/user/LoginPage';
 import RegisterPage from './pages/user/RegisterPage';
-import EventsPage from './pages/EventsPage';
+import EventsPage from './pages/events/EventsPage';
+import NewEvent from './pages/events/NewEvent';
 import ErrorBoundary from './components/ErrorBoundary';
 import Profile from './components/user/Profile';
 import UserPage from './pages/user/UserPage';
+import RequireAuth from '@auth-kit/react-router/RequireAuth';
+import { ErrorModalProvider } from './contexts/ErrorModalContext';
+import { Container, Modal } from 'react-bootstrap';
 
-export default function AppWrapper() {
+const Pages = () => {
     return (
-        <>
-            <BrowserRouter>
-                <ErrorBoundary fallback={<p>Something went wrong</p>}>
-                    <header className='App-Header'>
-                        <NavBar />
-                    </header>
-                    <main className='App-Main'>
-                        <Routes>
-                            <Route path='/' element={<LandingPage />} />
-                            <Route path='/login' element={<LoginPage />} />
-                            <Route path='/register' element={<RegisterPage />} />
-                            <Route path='/events' element={<EventsPage />} />
-                            <Route path='/events/:eventid' element={<EventsPage />} />
-                            <Route path='/profile/:username' element={<Profile />}>
-                                <Route path='/profile/:username/edit' element={<UserPage />} />
-                            </Route>
-                        </Routes>
-                    </main>
-                </ErrorBoundary>
+        <BrowserRouter>
+            <ErrorModalProvider>
+                <header className='App-Header'>
+                    <NavBar />
+                </header>
+                <main className='App-Main'>
+                    <Routes>
+                        <Route path='/' element={<LandingPage />} />
+                        <Route path='/login' element={<LoginPage />} />
+                        <Route path='/register' element={<RegisterPage />} />
+                        <Route path='/events' element={<EventsPage />} />
+                        <Route
+                            path={'/events/new'}
+                            element={
+                                <RequireAuth fallbackPath={'/login'}>
+                                    <NewEvent />
+                                </RequireAuth>
+                            }
+                        />
+                        <Route path='/events/:eventid' element={<EventsPage />} />
+                        <Route path='/profile/:username' element={<Profile />}>
+                            <Route path='/profile/:username/edit' element={<UserPage />} />
+                        </Route>
+                    </Routes>
+                </main>
                 <footer className='App-Footer'>
                     <Footer />
                 </footer>
-            </BrowserRouter>
-        </>
+            </ErrorModalProvider>
+        </BrowserRouter>
     );
+};
+
+export default function AppWrapper() {
+    const useErrorBoundary = import.meta.env.MODE === 'production';
+    console.log(useErrorBoundary);
+
+    if (useErrorBoundary) {
+        return (
+            <ErrorBoundary
+                fallback={
+                    <Container className='text-center error-boundary'>
+                        <Modal.Dialog>
+                            <h1>Critical Error</h1>
+                            <Modal.Body>
+                                <p>Something went wrong. Please try again later.</p>
+                            </Modal.Body>
+                        </Modal.Dialog>
+                    </Container>
+                }
+            >
+                <Pages />
+            </ErrorBoundary>
+        );
+    } else {
+        return <Pages />;
+    }
 }

@@ -42,7 +42,7 @@ export default function NavBar() {
                             >
                                 <NavDropdown.Item
                                     onClick={() => {
-                                        navigate('/edit');
+                                        navigate(`/profile/${authUser?.username}/edit`);
                                     }}
                                     aria-label='Edit Profile'
                                 >

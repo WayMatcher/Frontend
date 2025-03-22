@@ -4,10 +4,11 @@ export default interface FormInputProps {
     type: string;
     placeholder?: string | number;
     formikData: FormikData;
+    props?: any;
 }
 
 export interface FormikData {
-    value?: string | number;
+    value?: string | number | Date;
     error?: string;
     isSubmitting?: boolean;
 }

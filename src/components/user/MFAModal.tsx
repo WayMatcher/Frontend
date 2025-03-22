@@ -35,7 +35,7 @@ export default function MFAModal({ show, userLoginID }: MFAModalProps) {
                     token: jwt,
                     type: 'Bearer',
                 },
-                userState: tempUser,
+                userState: { ...tempUser, id: userLoginID },
             });
 
             navigate('/');
