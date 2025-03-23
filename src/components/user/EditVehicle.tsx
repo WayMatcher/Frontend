@@ -1,120 +1,124 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
+
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
-import { EditVehicleSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/objects/Vehicle/dto';
-import EditProps from '@/types/EditProps';
-import { apiGetVehicle, apiSetVehicle } from '@/api/endpoints/vehicle';
 import EditButtons from '@/components/user/EditButtons';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
+import { apiGetVehicleList, apiSetVehicle } from '@/api/endpoints/vehicle';
+import { RegisterVehicleSchema } from '@/utils/formValidations';
 import User from '@/types/objects/User/dto';
-import { useNavigate } from 'react-router-dom';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
-export default function EditVehicle({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
-    const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+export default function EditVehicle(): React.ReactElement {
+    const { showErrorModal } = useContext(ErrorModalContext);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [vehicles, setVehicles] = React.useState<Vehicle[]>([]);
     const authUser = useAuthUser<User>();
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchVehicle = async () => {
-            if (!authUser || !authUser.id) return;
-            const { data } = await apiGetVehicle({ userID: authUser.id });
-            setVehicle(data);
+    const validationSchema = RegisterVehicleSchema;
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (authUser?.id === undefined) {
+                    showErrorModal('No user logged in!');
+                    return;
+                }
+
+                const response = await apiGetVehicleList({ userID: authUser.id });
+                setVehicles(response.data);
+            } catch (error: unknown) {
+                showErrorModal((error as Error).message);
+            } finally {
+                setIsLoading(false);
+            }
         };
-        fetchVehicle();
-    });
+        fetchData();
+    }, []);
 
     const handleSubmit = async (values: Vehicle) => {
         try {
-            await apiSetVehicle({
-                vehicle: values,
-                userID: authUser?.id,
-            });
-            setVehicle(values);
+            const response = await apiSetVehicle({ vehicle: values });
+            console.log(response);
         } catch (error: unknown) {
-            setSubmissionError((error as Error).message);
-            setShowErrorModal(true);
+            showErrorModal((error as Error).message);
         }
     };
-    if (!vehicle) {
-        navigate('/login');
-        return <></>;
-    } else
-        return (
-            <>
-                <h2>Vehicle</h2>
-                <CollapseWrapper>
-                    <Container>
-                        <Formik initialValues={vehicle} validationSchema={EditVehicleSchema} onSubmit={handleSubmit}>
-                            {({ values, errors, isSubmitting }) => (
+
+    return (
+        <>
+            <h2>Vehicle</h2>
+            <CollapseWrapper>
+                <Container>
+                    {vehicles.map((vehicle) => (
+                        <Formik
+                            key={vehicle.id}
+                            initialValues={{
+                                make: vehicle.make || '',
+                                model: vehicle.model || '',
+                                year: vehicle.year || 2025,
+                                seats: vehicle.seats || 4,
+                                license_plate: vehicle.license_plate || '',
+                                additional_description: vehicle.additional_description || '',
+                            }}
+                            validationSchema={validationSchema}
+                            onSubmit={() => {
+                                handleSubmit(vehicle);
+                            }}
+                        >
+                            {(formikProps) => (
                                 <FormikForm>
-                                    <Row>
+                                    <Row className='mb-3'>
                                         <FormInput
                                             label='Make'
                                             name='make'
                                             type='text'
-                                            formikData={{
-                                                value: values.make,
-                                                error: errors.make,
-                                                isSubmitting: isSubmitting,
-                                            }}
+                                            isLoading={isLoading}
+                                            formikProps={formikProps}
                                         />
                                         <FormInput
                                             label='Model'
                                             name='model'
                                             type='text'
-                                            formikData={{
-                                                value: values.model,
-                                                error: errors.model,
-                                                isSubmitting: isSubmitting,
-                                            }}
+                                            isLoading={isLoading}
+                                            formikProps={formikProps}
                                         />
                                     </Row>
-                                    <Row>
+                                    <Row className='mb-3'>
                                         <FormInput
                                             label='Year'
                                             name='year'
                                             type='number'
-                                            formikData={{
-                                                value: values.year,
-                                                error: errors.year,
-                                                isSubmitting: isSubmitting,
-                                            }}
+                                            isLoading={isLoading}
+                                            formikProps={formikProps}
                                         />
                                         <FormInput
                                             label='Seats'
                                             name='seats'
                                             type='number'
-                                            formikData={{
-                                                value: values.seats,
-                                                error: errors.seats,
-                                                isSubmitting: isSubmitting,
-                                            }}
+                                            isLoading={isLoading}
+                                            formikProps={formikProps}
                                         />
                                     </Row>
-                                    <Row>
+                                    <Row className='mb-3'>
                                         <FormInput
                                             label='License Plate'
                                             name='license_plate'
                                             type='text'
-                                            formikData={{
-                                                value: values.license_plate,
-                                                error: errors.license_plate,
-                                                isSubmitting: isSubmitting,
-                                            }}
+                                            formikProps={formikProps}
                                         />
                                     </Row>
                                     <br />
-                                    <Row>
-                                        <EditButtons isSubmitting={isSubmitting} />
-                                    </Row>
+                                    <EditButtons isLoading={isLoading} isSubmitting={formikProps.isSubmitting} />
                                 </FormikForm>
                             )}
                         </Formik>
-                    </Container>
-                </CollapseWrapper>
-            </>
-        );
+                    ))}
+                </Container>
+            </CollapseWrapper>
+        </>
+    );
 }

@@ -10,10 +10,11 @@ const Event = ({ event }: { event: WMEvent; handleCloseModal: () => void }) => {
             <Modal.Body>
                 <p>{event.description}</p>
                 <p>
-                    <strong>Date:</strong> {event.start_time}
+                    <strong>Date:</strong> {event.startTimestamp}
                 </p>
                 <p>
-                    <strong>Start:</strong>
+                    <strong>Start:</strong> {event.stops[0].address.street} {event.stops[0].address.city}{' '}
+                    {event.stops[0].address.state} {event.stops[0].address.postal_code}
                 </p>
             </Modal.Body>
         </>
@@ -26,10 +27,11 @@ const OwnedEvent = ({ event }: { event: WMEvent; handleCloseModal: () => void })
             <Modal.Body>
                 <p>{event.description}</p>
                 <p>
-                    <strong>Date:</strong> {event.start_time}
+                    <strong>Date:</strong> {event.startTimestamp}
                 </p>
                 <p>
-                    <strong>Start:</strong>
+                    <strong>Start:</strong> {event.stops[0].address.street} {event.stops[0].address.city}{' '}
+                    {event.stops[0].address.state} {event.stops[0].address.postal_code}
                 </p>
             </Modal.Body>
         </>
@@ -65,9 +67,9 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
                     <Modal.Title>{currentEvent.title}</Modal.Title>
                 </Modal.Header>
                 {isOwnedEvent ? (
-                    <Event key={currentEvent.id} event={currentEvent} handleCloseModal={handleCloseModal} />
+                    <Event key={currentEvent.eventId} event={currentEvent} handleCloseModal={handleCloseModal} />
                 ) : (
-                    <OwnedEvent key={currentEvent.id} event={currentEvent} handleCloseModal={handleCloseModal} />
+                    <OwnedEvent key={currentEvent.eventId} event={currentEvent} handleCloseModal={handleCloseModal} />
                 )}
                 <Modal.Footer>
                     <ButtonGroup>

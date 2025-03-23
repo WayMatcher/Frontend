@@ -4,7 +4,7 @@ import { NavDropdown, Navbar, Nav, Container, ButtonGroup } from 'react-bootstra
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import User from '../types/objects/User/dto';
+import User from '@/types/objects/User/dto';
 
 export default function NavBar() {
     const signOut = useSignOut();

@@ -1,64 +1,90 @@
-import { useContext } from 'react';
-import RegisterContext from '@/contexts/RegisterContext';
 import { Col, Container, Row } from 'react-bootstrap';
-import React from 'react';
+import React, { useContext } from 'react';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import RegisterButtons from '@/components/register/RegisterButtons';
 import { StepsRegister } from '@/types/objects/User/form';
-import { Form as FormikForm, Formik } from 'formik';
+import User from '@/types/objects/User/dto';
+import Address from '@/types/objects/Address/dto';
+import Vehicle from '@/types/objects/Vehicle/dto';
+import { Formik, Form as FormikForm } from 'formik';
+import { apiRegisterUser } from '@/api/endpoints/user';
+import { useNavigate } from 'react-router-dom';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
 
 export default function RegisterSummary({
-    handleSubmit,
     step,
+    register,
 }: {
-    handleSubmit(): void;
     step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
+    register: { user: User & { password: string }; address: Address; vehicle: Vehicle };
 }): React.ReactElement {
-    const { registerAddress, registerUser, registerVehicle } = useContext(RegisterContext);
-    if (!registerUser || !registerAddress || !registerVehicle)
-        return <h2 className='warning'>Registration not completed!</h2>;
+    const navigate = useNavigate();
+    const { showErrorModal } = useContext(ErrorModalContext);
+    const { user, address, vehicle } = register;
+    const [_, setStep] = step;
+
+    const handleSubmit = async ({
+        user,
+        address,
+        vehicle,
+    }: {
+        user: User & { password: string };
+        address: Address;
+        vehicle: Vehicle;
+    }) => {
+        try {
+            await apiRegisterUser({
+                user: { ...user, address },
+                vehicle,
+                password: user.password,
+            });
+            navigate('/user/login');
+        } catch (error: unknown) {
+            if (error instanceof Error) showErrorModal('An error occurred: ' + (error as Error).message);
+        }
+    };
 
     return (
         <>
             <h2>Summary</h2>
             <CollapseWrapper>
                 <Container>
-                    <Formik initialValues={{}} onSubmit={handleSubmit}>
+                    <Formik initialValues={{ user, address, vehicle }} onSubmit={handleSubmit}>
                         {() => (
                             <FormikForm>
-                                <Row>
+                                <Row className='mb-3'>
                                     <Col>
                                         <h3>User</h3>
-                                        <p>Username: {registerUser.username}</p>
-                                        <p>Email: {registerUser.email}</p>
+                                        <p>Username: {user.username}</p>
+                                        <p>Email: {user.email}</p>
                                         <p>
-                                            Name: {registerUser.firstName} {registerUser.name}
+                                            Name: {user.firstName} {user.name}
                                         </p>
-                                        <p>Additional Description: {registerUser.additional_description}</p>
-                                        <p>Telephone: {registerUser.telephone}</p>
+                                        <p>Additional Description: {user.additional_description}</p>
+                                        <p>Telephone: {user.telephone}</p>
                                     </Col>
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <Col>
                                         <h3>Address</h3>
-                                        <p>Street: {registerAddress.street}</p>
-                                        <p>Postal Code: {registerAddress.postal_code}</p>
-                                        <p>Region: {registerAddress.region}</p>
-                                        <p>Country: {registerAddress.country}</p>
-                                        <p>State: {registerAddress.state}</p>
+                                        <p>Street: {address.street}</p>
+                                        <p>Postal Code: {address.postal_code}</p>
+                                        <p>Region: {address.region}</p>
+                                        <p>Country: {address.country}</p>
+                                        <p>State: {address.state}</p>
                                     </Col>
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <Col>
                                         <h3>Vehicle</h3>
-                                        <p>Make: {registerVehicle.make}</p>
-                                        <p>Model: {registerVehicle.model}</p>
-                                        <p>Year: {registerVehicle.year}</p>
-                                        <p>Seats: {registerVehicle.seats}</p>
-                                        <p>License Plate: {registerVehicle.license_plate}</p>
+                                        <p>Make: {vehicle.make}</p>
+                                        <p>Model: {vehicle.model}</p>
+                                        <p>Year: {vehicle.year}</p>
+                                        <p>Seats: {vehicle.seats}</p>
+                                        <p>License Plate: {vehicle.license_plate}</p>
                                     </Col>
                                 </Row>
-                                <RegisterButtons prevStep={StepsRegister.VEHICLE} />
+                                <RegisterButtons prevStep={StepsRegister.VEHICLE} setStep={setStep} />
                             </FormikForm>
                         )}
                     </Formik>

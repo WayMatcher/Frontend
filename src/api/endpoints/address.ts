@@ -11,7 +11,7 @@ export const apiGetAddress = async (request: {
     address?: Address;
 }) => {
     try {
-        const response = await api.axios.get<Address>('/getAddress', { params: { request } });
+        const response = await api.axios.get<Address>('/User/GetAddress', { params: { ...request } });
         return response;
     } catch (error) {
         api.handleApiError(error);

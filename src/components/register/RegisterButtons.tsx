@@ -1,7 +1,5 @@
 import { Button, Col, ButtonGroup, Row } from 'react-bootstrap';
 import { StepsRegister } from '@/types/objects/User/form';
-import RegisterContext from '@/contexts/RegisterContext';
-import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -14,11 +12,10 @@ import { useNavigate } from 'react-router-dom';
 interface RegisterNavButtonsProps {
     prevStep?: StepsRegister | undefined;
     nextStep?: StepsRegister | undefined;
+    setStep: (step: StepsRegister) => void;
 }
 
 const ButtonsRegister = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
-    const { registerUser, registerAddress, registerVehicle } = useContext(RegisterContext);
-    if (!registerUser || !registerAddress || !registerVehicle) return <></>;
     return (
         <>
             <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
@@ -62,14 +59,10 @@ const Buttons = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void
     );
 };
 
-export default function RegisterNavButtons({ prevStep, nextStep }: RegisterNavButtonsProps) {
-    const { setRegisterUser, setRegisterAddress, setRegisterVehicle, setStep } = useContext(RegisterContext);
+export default function RegisterNavButtons({ prevStep, nextStep, setStep }: RegisterNavButtonsProps) {
     const navigate = useNavigate();
 
     const cancel = () => {
-        setRegisterAddress(null);
-        setRegisterUser(null);
-        setRegisterVehicle(null);
         navigate('/');
     };
 

@@ -15,7 +15,7 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
             <Card.Body>
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.description}</Card.Text>
-                <Button variant='primary' onClick={() => openModal(event.id)}>
+                <Button variant='primary' onClick={() => openModal(event.eventId)}>
                     Join
                 </Button>
             </Card.Body>

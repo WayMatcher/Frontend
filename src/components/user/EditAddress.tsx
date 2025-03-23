@@ -1,194 +1,173 @@
-import { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
+
+import { Formik, Form as FormikForm } from 'formik';
 import { Container, Row } from 'react-bootstrap';
-import { Form as FormikForm, Formik } from 'formik';
-import { EditAddressSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import EditProps from '@/types/EditProps';
 import Address from '@/types/objects/Address/dto';
-import { FormAddress, initialValuesAddress } from '@/types/objects/Address/form';
-import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
-import EditButtons from '@/components/user/EditButtons';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
+import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
+import { RegisterAddressSchema } from '@/utils/formValidations';
+import EditButtons from './EditButtons';
 
-export default function EditAddress({ setShowErrorModal, setSubmissionError }: EditProps) {
-    const [address, setAddress] = useState<Address | null>(null);
+export default function EditAddress(): React.ReactElement {
+    const { showErrorModal } = useContext(ErrorModalContext);
+    const [isLoading, setIsLoading] = React.useState(true);
     const authUser = useAuthUser<User>();
 
-    useEffect(() => {
-        const fetchAddress = async () => {
-            if (!authUser || !authUser.id) return;
+    let initialValues: Address = {
+        street: '',
+        postal_code: '',
+        region: '',
+        country: '',
+        state: '',
+        city: '',
+        address_line1: '',
+        address_line2: '',
+        longitude: 0,
+        latitude: 0,
+    };
 
+    const validationSchema = RegisterAddressSchema;
+
+    React.useEffect(() => {
+        const fetchData = async () => {
             try {
+                if (authUser?.id === undefined) {
+                    showErrorModal('No user logged in!');
+                    return;
+                }
+
                 const response = await apiGetAddress({ userID: authUser.id });
-                setAddress(response.data);
+
+                initialValues = { ...initialValues, ...response.data };
             } catch (error: unknown) {
-                setSubmissionError((error as Error).message);
-                setShowErrorModal(true);
+                showErrorModal((error as Error).message);
+            } finally {
+                setIsLoading(false);
             }
         };
-        fetchAddress();
-    });
+        fetchData();
+    }, []);
 
-    const handleSubmit = async (values: Address) => {
-        if (!authUser || !authUser.id) return;
-        await apiSetAddress({
-            address: values,
-            userID: authUser.id,
-        });
+    const handleSubmit = async (values: typeof initialValues) => {
+        try {
+            if (authUser?.id === undefined) {
+                showErrorModal('No user logged in!');
+                return;
+            }
 
-        setAddress(values);
+            const response = await apiSetAddress({ address: values, userID: authUser?.id });
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const initialValues: FormAddress = {
-        address_line1: address?.address_line1 || initialValuesAddress.address_line1,
-        address_line2: address?.address_line2 || initialValuesAddress.address_line2,
-        city: address?.city || initialValuesAddress.city,
-        country: address?.country || initialValuesAddress.country,
-        latitude: address?.latitude || initialValuesAddress.latitude,
-        longitude: address?.longitude || initialValuesAddress.longitude,
-        postal_code: address?.postal_code || initialValuesAddress.postal_code,
-        region: address?.region || initialValuesAddress.region,
-        state: address?.state || initialValuesAddress.state,
-        street: address?.street || initialValuesAddress.street,
-    };
-
-    if (authUser === null) return <h2>Not logged in</h2>;
     return (
         <>
             <h2>Address</h2>
             <CollapseWrapper>
                 <Container>
-                    <Formik initialValues={initialValues} validationSchema={EditAddressSchema} onSubmit={handleSubmit}>
-                        {({ values, errors, isSubmitting }) => (
+                    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+                        {(formikProps) => (
                             <FormikForm>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Street'
                                         name='street'
                                         type='text'
                                         placeholder='1234 Main St'
-                                        formikData={{
-                                            value: values.street,
-                                            error: errors.street,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Postal Code'
                                         name='postal_code'
                                         type='text'
                                         placeholder='12345'
-                                        formikData={{
-                                            value: values.postal_code,
-                                            error: errors.postal_code,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='Region'
                                         name='region'
                                         type='text'
                                         placeholder='Region'
-                                        formikData={{
-                                            value: values.region,
-                                            error: errors.region,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Country'
                                         name='country'
                                         type='text'
                                         placeholder='Country'
-                                        formikData={{
-                                            value: values.country,
-                                            error: errors.country,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='State'
                                         name='state'
                                         type='text'
                                         placeholder='State'
-                                        formikData={{
-                                            value: values.state,
-                                            error: errors.state,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='City'
                                         name='city'
                                         type='text'
                                         placeholder='City'
-                                        formikData={{
-                                            value: values.city,
-                                            error: errors.city,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Address Line 1'
                                         name='address_line1'
                                         type='text'
                                         placeholder='Address Line 1'
-                                        formikData={{
-                                            value: values.address_line1,
-                                            error: errors.address_line1,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Address Line 2'
                                         name='address_line2'
                                         type='text'
                                         placeholder='Address Line 2'
-                                        formikData={{
-                                            value: values.address_line2,
-                                            error: errors.address_line2,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Longitude'
                                         name='longitude'
                                         type='number'
                                         placeholder={47.8117211}
-                                        formikData={{
-                                            value: values.longitude,
-                                            error: errors.longitude,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='Latitude'
                                         name='latitude'
                                         type='number'
                                         placeholder={13.0322547}
-                                        formikData={{
-                                            value: values.latitude,
-                                            error: errors.latitude,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        isLoading={isLoading}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
                                 <br />
-                                <Row>
-                                    <EditButtons isSubmitting={isSubmitting} />
-                                </Row>
+                                <EditButtons isLoading={isLoading} isSubmitting={formikProps.isSubmitting} />
                             </FormikForm>
                         )}
                     </Formik>

@@ -6,15 +6,16 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/user/LoginPage';
-import RegisterPage from './pages/user/RegisterPage';
-import EventsPage from './pages/events/EventsPage';
-import NewEvent from './pages/events/NewEvent';
-import ErrorBoundary from './components/ErrorBoundary';
-import Profile from './components/user/Profile';
-import UserPage from './pages/user/UserPage';
-import { ErrorModalProvider } from './contexts/ErrorModalContext';
+import LandingPage from '@/pages/LandingPage';
+import LoginPage from '@/pages/user/LoginPage';
+import RegisterPage from '@/pages/user/RegisterPage';
+import EventsPage from '@/pages/events/EventsPage';
+import NewEvent from '@/pages/events/NewEvent';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import Profile from '@/components/user/Profile';
+import EditPage from '@/pages/user/EditPage';
+import InboxPage from '@/pages/inbox/InboxPage';
+import { ErrorModalProvider } from '@/contexts/ErrorModalContext';
 import { Container, Modal } from 'react-bootstrap';
 
 const Pages = () => {
@@ -32,9 +33,10 @@ const Pages = () => {
                         <Route path='/events' element={<EventsPage />} />
                         <Route path='/events/new' element={<NewEvent />} />
                         <Route path='/events/:eventid' element={<EventsPage />} />
-                        <Route path='/profile/:username' element={<Profile />}>
-                            <Route path='/profile/:username/edit' element={<UserPage />} />
-                        </Route>
+                        <Route path='/profile' element={<Profile />} />
+                        <Route path='/profile/:username' element={<Profile />} />
+                        <Route path='/profile/:username/edit' element={<EditPage />} />
+                        <Route path='/inbox' element={<InboxPage />} />
                     </Routes>
                 </main>
                 <footer className='App-Footer'>

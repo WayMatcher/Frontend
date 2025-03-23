@@ -1,7 +1,7 @@
 import Address from '@/types/objects/Address/dto';
 import Vehicle from '@/types/objects/Vehicle/dto';
 import WMEvent from '@/types/objects/Event/dto';
-import { FormUserRegister } from '../objects/User/form';
+import { FormUserRegister } from '@/types/objects/User/form';
 
 export interface MFAContextProps {
     mfaToken: boolean;

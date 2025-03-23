@@ -1,7 +1,7 @@
 import { Modal, Button, Row } from 'react-bootstrap';
 
 import { Formik, Form as FormikForm } from 'formik';
-import FormInput from '../FormInput';
+import FormInput from '@/components/FormInput';
 import { useNavigate } from 'react-router-dom';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useState } from 'react';
@@ -47,7 +47,7 @@ export default function MFAModal({ show, userLoginID }: MFAModalProps) {
     return (
         <Modal show={show} centered>
             <Formik initialValues={initialValuesMFAToken} onSubmit={handleSubmit}>
-                {({ values, errors, isSubmitting }) => (
+                {(formikProps) => (
                     <FormikForm>
                         <Modal.Header>
                             <Modal.Title>Two Factor Authentication</Modal.Title>
@@ -59,14 +59,14 @@ export default function MFAModal({ show, userLoginID }: MFAModalProps) {
                                     name='mfaToken'
                                     type='text'
                                     placeholder='Enter 4-digit code'
-                                    formikData={{ value: values.mfaToken, error: errors.mfaToken, isSubmitting }}
+                                    formikProps={formikProps}
                                 />
                             </Row>
                             <Row></Row>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant='secondary'>Cancel</Button>
-                            <Button type='submit'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
+                            <Button type='submit'>{formikProps.isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                             {submissionError ? <p>{submissionError}</p> : null}
                         </Modal.Footer>
                     </FormikForm>

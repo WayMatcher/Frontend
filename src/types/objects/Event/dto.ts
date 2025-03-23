@@ -1,14 +1,15 @@
 import Stop from '@/types/objects/Stop/dto';
+import EventMember from '@/types/objects/EventMember/dto';
 
 export default interface WMEvent {
-    id: number;
+    eventId: number;
+    eventTypeId: number;
     created_by: number;
     title: string;
     description?: string;
-    start_time: string;
-    stops: Stop[];
+    startTimestamp: string;
     image?: string;
-    status: string;
-    created_at: string;
-    updated_at: string;
+    freeSeats: number;
+    stops: Stop[];
+    eventMembers: EventMember[];
 }

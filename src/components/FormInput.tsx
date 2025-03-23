@@ -1,31 +1,34 @@
-import { Field } from 'formik';
 import { Form, Col } from 'react-bootstrap';
-import FormInputProps from '../types/FormInput';
+import FormInputProps from '@/types/FormInput';
 
 export default function FormInput({
     label,
     name,
     type,
     placeholder,
-    formikData,
-    props,
-}: FormInputProps): React.ReactElement {
-    const { value, error, isSubmitting } = formikData;
+    isLoading,
+    formikProps,
+}: FormInputProps<any>): React.ReactElement {
+    const { values, errors, isSubmitting, handleChange, touched } = formikProps;
+
+    const error = errors[name];
+    const value = values[name];
 
     return (
-        <Form.Group as={Col}>
+        <Form.Group as={Col} controlId={`validationFormik${name}`}>
             <Form.Label>{label}</Form.Label>
-            <Field
+            <Form.Control
                 type={type}
                 name={name}
                 value={value}
-                placeholder={placeholder}
-                className={`form-control ${error ? 'is-invalid' : ''}`}
-                component={type === 'textarea' ? 'textarea' : undefined}
+                placeholder={typeof placeholder === 'number' ? placeholder?.toString() : placeholder}
                 disabled={isSubmitting}
-                {...props}
+                readOnly={isLoading ? true : undefined}
+                isValid={touched && !error}
+                onChange={handleChange}
             />
-            <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback>
+            {typeof error === 'string' ? <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback> : null}
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
     );
 }

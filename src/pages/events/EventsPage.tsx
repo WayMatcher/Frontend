@@ -4,7 +4,7 @@ import '@/pages/styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '@/components/events/EventCard';
 import SearchBar from '@/components/events/SearchBar';
-import { getEvent, getEvents } from '@/api/endpoints/event';
+import { apiGetEventList, getEvent } from '@/api/endpoints/event';
 import WMEvent from '@/types/objects/Event/dto';
 import EventDetails from '@/components/events/EventDetails';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
@@ -30,12 +30,12 @@ export default function EventPage() {
         const fetchEvents = async () => {
             try {
                 console.log('Fetching events');
-                const response = await getEvents();
+                const response = await apiGetEventList({});
                 setEvents(response.data);
                 setFilteredEvents(response.data);
                 if (eventid) {
                     const eventIdNumber = parseInt(eventid);
-                    const selected = response.data.find((event: WMEvent) => event.id === eventIdNumber);
+                    const selected = response.data.find((event: WMEvent) => event.eventId === eventIdNumber);
                     if (selected) {
                         setCurrentEvent(selected);
                         setShowModal(true);
@@ -66,10 +66,10 @@ export default function EventPage() {
         }
     }, [searchTerm]);
 
-    const openEvent = (id: number) => {
-        console.log('Opening event with id: ', id);
-        getEvent({ eventID: id }).then((response) => {
-            if (response.data?.id) {
+    const openEvent = (eventId: number) => {
+        console.log('Opening event with id: ', eventId);
+        getEvent({ eventid: eventId }).then((response) => {
+            if (response.data?.eventId) {
                 setCurrentEvent(response.data);
                 setShowModal(true);
             } else {
@@ -86,13 +86,22 @@ export default function EventPage() {
                 <br />
                 <Container className='EventGrid'>
                     {filteredEvents.map((event) => (
-                        <EventCard key={event.id} event={event} openEvent={openEvent} />
+                        <EventCard
+                            key={event.eventId}
+                            event={event}
+                            openEvent={() => {
+                                openEvent(event.eventId);
+                                console.log(event);
+                            }}
+                        />
                     ))}
                 </Container>
                 {isAuthenticated && (
                     <Container>
                         <br />
-                        <i className='bi bi-plus-square-fill add-button' onClick={() => navigate('/events/new')}></i>
+                        <Button variant='success' className='add-button' onClick={() => navigate('/events/new')}>
+                            <span className='bi bi-plus-lg'></span>
+                        </Button>
                     </Container>
                 )}
             </Container>

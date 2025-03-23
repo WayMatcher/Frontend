@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import RegisterContext from '@/contexts/RegisterContext';
+import React from 'react';
 
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
@@ -46,107 +45,95 @@ export default function RegisterAddress({
                         validationSchema={RegisterAddressSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, errors, isSubmitting }) => (
+                        {(formikProps) => (
                             <FormikForm>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Street'
                                         name='street'
                                         type='text'
                                         placeholder='1234 Main St'
-                                        formikData={{
-                                            value: values.street,
-                                            error: errors.street,
-                                            isSubmitting: isSubmitting,
-                                        }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Postal Code'
                                         name='postal_code'
                                         type='text'
                                         placeholder='12345'
-                                        formikData={{
-                                            value: values.postal_code,
-                                            error: errors.postal_code,
-                                            isSubmitting,
-                                        }}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='Region'
                                         name='region'
                                         type='text'
                                         placeholder='Region'
-                                        formikData={{ value: values.region, error: errors.region, isSubmitting }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Country'
                                         name='country'
                                         type='text'
                                         placeholder='Country'
-                                        formikData={{ value: values.country, error: errors.country, isSubmitting }}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='State'
                                         name='state'
                                         type='text'
                                         placeholder='State'
-                                        formikData={{ value: values.state, error: errors.state, isSubmitting }}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='City'
                                         name='city'
                                         type='text'
                                         placeholder='City'
-                                        formikData={{ value: values.city, error: errors.city, isSubmitting }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Address Line 1'
                                         name='address_line1'
                                         type='text'
                                         placeholder='Address Line 1'
-                                        formikData={{
-                                            value: values.address_line1,
-                                            error: errors.address_line1,
-                                            isSubmitting,
-                                        }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Address Line 2'
                                         name='address_line2'
                                         type='text'
                                         placeholder='Address Line 2'
-                                        formikData={{
-                                            value: values.address_line2,
-                                            error: errors.address_line2,
-                                            isSubmitting,
-                                        }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Longitude'
                                         name='longitude'
                                         type='number'
-                                        placeholder={47.8117211}
-                                        formikData={{ value: values.longitude, error: errors.longitude, isSubmitting }}
+                                        placeholder={'47.8117211'}
+                                        formikProps={formikProps}
                                     />
                                     <FormInput
                                         label='Latitude'
                                         name='latitude'
                                         type='number'
-                                        placeholder={13.0322547}
-                                        formikData={{ value: values.latitude, error: errors.latitude, isSubmitting }}
+                                        placeholder={'13.0322547'}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <RegisterButtons prevStep={StepsRegister.USER} nextStep={StepsRegister.VEHICLE} />
+                                <RegisterButtons
+                                    prevStep={StepsRegister.USER}
+                                    nextStep={StepsRegister.VEHICLE}
+                                    setStep={setStep}
+                                />
                             </FormikForm>
                         )}
                     </Formik>

@@ -1,15 +1,14 @@
 import '@/pages/styles/RegisterPage.scss';
 
-import { Container } from 'react-bootstrap';
-import { useContext, useState } from 'react';
+import { Button, Container } from 'react-bootstrap';
+import { useState } from 'react';
 
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import { StepsRegister } from '@/types/objects/User/form';
-import { apiRegisterUser } from '@/api/endpoints/user';
+
 import { useNavigate } from 'react-router-dom';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import ErrorModalContext from '@/contexts/ErrorModalContext';
 
 import User from '@/types/objects/User/dto';
 import RegisterUser from '@/components/register/RegisterUser';
@@ -23,30 +22,11 @@ import RegisterSummary from '@/components/register/RegisterSummary';
 const RegisterPage = () => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState<StepsRegister>(StepsRegister.USER);
-    const { showErrorModal } = useContext(ErrorModalContext);
     const isAuthenticated = useIsAuthenticated();
 
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<(User & { password: string }) | null>(null);
     const [address, setAddress] = useState<Address | null>(null);
     const [vehicle, setVehicle] = useState<Vehicle | null>(null);
-
-    const handleSubmit = async () => {
-        if (!user || !address || !vehicle) {
-            console.warn('Missing data in registration form');
-            return;
-        }
-
-        try {
-            await apiRegisterUser({
-                user: { ...user, address },
-                vehicle,
-                password: user.password,
-            });
-            navigate('/user/login');
-        } catch (err: unknown) {
-            showErrorModal('An error occurred: ' + (err as Error).message);
-        }
-    };
 
     if (isAuthenticated) {
         return (
@@ -54,6 +34,9 @@ const RegisterPage = () => {
                 <h1>Register</h1>
                 <Container>
                     <h2>You are already logged in!</h2>
+                    <Button variant='primary' onClick={() => navigate('/user')}>
+                        Go to your profile
+                    </Button>
                 </Container>
             </Container>
         );
@@ -67,7 +50,9 @@ const RegisterPage = () => {
                 <RegisterUser step={[currentStep, setCurrentStep]} setUser={setUser} />
                 <RegisterAddress step={[currentStep, setCurrentStep]} setAddress={setAddress} />
                 <RegisterVehicle step={[currentStep, setCurrentStep]} setVehicle={setVehicle} />
-                <RegisterSummary step={[currentStep, setCurrentStep]} handleSubmit={handleSubmit} />
+                {user && address && vehicle && (
+                    <RegisterSummary step={[currentStep, setCurrentStep]} register={{ user, address, vehicle }} />
+                )}
             </Container>
         </Container>
     );

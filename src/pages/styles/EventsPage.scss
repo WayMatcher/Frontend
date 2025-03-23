@@ -30,13 +30,11 @@ $mobile-percentage: 100%;
 
 .add-button {
     justify-self: right;
-    width: 50px;
-    font-size: 40pt;
     height: 50px;
-    border-radius: 50%;
+    width: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: green;
-    cursor: pointer;
+    text-align: center;
+    line-height: 50px;
 }

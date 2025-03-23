@@ -62,34 +62,34 @@ export default function LoginPage() {
                         }}
                         validationSchema={LoginUserSchema}
                     >
-                        {({ values, errors, isSubmitting }) => (
+                        {(formikProps) => (
                             <FormikForm className='loginForm'>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Email or Username'
                                         name='userOrEmail'
                                         type='text'
                                         placeholder='Enter username or e-mail address'
-                                        formikData={{
-                                            value: values.userOrEmail,
-                                            error: errors.userOrEmail,
-                                            isSubmitting,
-                                        }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
-                                <Row>
+                                <Row className='mb-3'>
                                     <FormInput
                                         label='Password'
                                         name='password'
                                         type='password'
                                         placeholder='Enter password'
-                                        formikData={{ value: values.password, error: errors.password, isSubmitting }}
+                                        formikProps={formikProps}
                                     />
                                 </Row>
                                 <br />
                                 <ButtonGroup>
-                                    <Button className='btn btn-primary' type='submit' disabled={isSubmitting}>
-                                        {isSubmitting ? 'Logging in...' : 'Login'}
+                                    <Button
+                                        className='btn btn-primary'
+                                        type='submit'
+                                        disabled={formikProps.isSubmitting}
+                                    >
+                                        {formikProps.isSubmitting ? 'Logging in...' : 'Login'}
                                     </Button>
                                     <Button
                                         className='btn btn-secondary'

@@ -2,9 +2,9 @@ import API from '@/api/api';
 const api = new API();
 import Vehicle from '@/types/objects/Vehicle/dto';
 
-export const apiGetVehicle = async (request: { vehicle?: Vehicle; userID?: number; username?: string }) => {
+export const apiGetVehicleList = async (request: { vehicle?: Vehicle; userID?: number; username?: string }) => {
     try {
-        const response = await api.axios.get<Vehicle>('/getVehicle', { params: { ...request } });
+        const response = await api.axios.get<Vehicle[]>('/User/GetVehicleList', { params: { ...request } });
         return response;
     } catch (error) {
         api.handleApiError(error);
@@ -12,9 +12,9 @@ export const apiGetVehicle = async (request: { vehicle?: Vehicle; userID?: numbe
     }
 };
 
-export const apiSetVehicle = async (request: { vehicle?: Vehicle; userID?: number; username?: string }) => {
+export const apiSetVehicle = async (request: { vehicle?: Vehicle }) => {
     try {
-        const response = await api.axios.put('/setVehicle', request);
+        const response = await api.axios.put('/Vehicle/SetVehicle', request);
         return response;
     } catch (error) {
         api.handleApiError(error);

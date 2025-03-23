@@ -1,6 +1,7 @@
 import { createEvent } from '@/api/endpoints/event';
 import FormInput from '@/components/FormInput';
 import EditButtons from '@/components/user/EditButtons';
+import WMEvent from '@/types/objects/Event/dto';
 import User from '@/types/objects/User/dto';
 import { Form as FormikForm, Formik } from 'formik';
 import { useEffect } from 'react';
@@ -32,10 +33,12 @@ const NewEvent = () => {
 
     const authUser = useAuthUser<User>();
 
-    const onSubmit = async (values: any) => {
+    const isLoading = false;
+
+    const onSubmit = async (values: WMEvent) => {
         if (!authUser) return;
-        const response = await createEvent(values, authUser);
-        navigate(`/events/${response.data.id}`);
+        const response = await createEvent({ user: authUser, wmevent: values, stops: [], schedule: { schedule: '' } });
+        navigate(`/events/${response.data.eventId}`);
     };
 
     useEffect(() => {
@@ -48,7 +51,7 @@ const NewEvent = () => {
     return (
         <Container>
             <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
-                {({ values, errors, isSubmitting }) => (
+                {(formikProps) => (
                     <FormikForm>
                         <Row className='mb-3'>
                             <FormInput
@@ -56,11 +59,7 @@ const NewEvent = () => {
                                 name='name'
                                 type='text'
                                 placeholder='An interesting Title'
-                                formikData={{
-                                    value: values.name,
-                                    error: errors.name,
-                                    isSubmitting,
-                                }}
+                                formikProps={formikProps}
                                 props={{ autoFocus: true }}
                             />
                         </Row>
@@ -70,7 +69,7 @@ const NewEvent = () => {
                                 name='description'
                                 type='textarea'
                                 placeholder='A detailed description'
-                                formikData={{ value: values.description, error: errors.description, isSubmitting }}
+                                formikProps={formikProps}
                             />
                         </Row>
                         <Row className='mb-3'>
@@ -79,7 +78,7 @@ const NewEvent = () => {
                                 name='location'
                                 type='text'
                                 placeholder='The destination'
-                                formikData={{ value: values.location, error: errors.location, isSubmitting }}
+                                formikProps={formikProps}
                             />
                         </Row>
                         <Row className='mb-3'>
@@ -88,7 +87,7 @@ const NewEvent = () => {
                                 name='date'
                                 type='date'
                                 placeholder={initialValues.date}
-                                formikData={{ value: values.date, error: errors.date, isSubmitting }}
+                                formikProps={formikProps}
                             />
                         </Row>
                         <Row className='mb-3'>
@@ -97,26 +96,18 @@ const NewEvent = () => {
                                 name='capacity'
                                 type='number'
                                 placeholder={3}
-                                formikData={{
-                                    value: values.capacity,
-                                    error: errors.capacity,
-                                    isSubmitting,
-                                }}
+                                formikProps={formikProps}
                             />
                             <FormInput
                                 label='Price'
                                 name='price'
                                 type='number'
                                 placeholder={45.99}
-                                formikData={{
-                                    value: values.price,
-                                    error: errors.price,
-                                    isSubmitting,
-                                }}
+                                formikProps={formikProps}
                             />
                         </Row>
                         <br />
-                        <EditButtons isSubmitting={isSubmitting} />
+                        <EditButtons isLoading={isLoading} isSubmitting={formikProps.isSubmitting} />
                     </FormikForm>
                 )}
             </Formik>

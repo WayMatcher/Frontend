@@ -1,6 +1,5 @@
 .NavBar {
-    background-color: #3d3d3d; // Dark background
-    color: #fff; // Light text
+    background-color: #f8f9fa; // Light gray background
     padding: 1rem 2rem; // Padding around the navbar
     display: flex; // Use flexbox for layout
     justify-content: space-between; // Space out logo/links and buttons
@@ -14,34 +13,7 @@
             font-size: 1.5rem; // Larger font size for logo
             font-weight: bold; // Bold text
             text-decoration: none; // Remove underlines
-            color: #fff; // White text
             cursor: pointer;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none; // Remove bullet points from list
-            margin: 0; // Remove default margin
-            padding: 0; // Remove default padding
-            gap: 1.5rem; // Spacing between links
-
-            a {
-                color: #fff; // White link text
-                text-decoration: none; // Remove underlines
-                padding: 0.5rem; // Add some padding for hover effect
-                border-radius: 4px; // Rounded corners
-                transition: background-color 0.2s ease; // Smooth transition
-
-                &:hover {
-                    background-color: #555; // Slightly lighter background on hover
-                }
-
-                &.active {
-                    // Optional: Style for the currently active link
-                    font-weight: bold;
-                    border-bottom: 2px solid #fff; // Example: Underline active link
-                }
-            }
         }
     }
 
@@ -63,7 +35,7 @@
         }
     }
     a {
-        color: #fff;
+        //color: #fff;
         text-decoration: none;
         padding: 0.5rem;
         border-radius: 4px;

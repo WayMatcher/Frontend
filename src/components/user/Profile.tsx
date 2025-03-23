@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Vehicle from '@/types/objects/Vehicle/dto';
 import Address from '@/types/objects/Address/dto';
 import { apiGetAddress } from '@/api/endpoints/address';
-import { apiGetVehicle } from '@/api/endpoints/vehicle';
+import { apiGetVehicleList } from '@/api/endpoints/vehicle';
 import { Button, Container, Table } from 'react-bootstrap';
 import Loading from '@/components/Loading';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
@@ -21,7 +21,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [address, setAddress] = useState<Address | null>(null);
-    const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
     const { showErrorModal } = useContext(ErrorModalContext);
 
@@ -36,11 +36,11 @@ export default function Profile() {
 
                 const userResponse = await apiGetUser({ username: effectiveUsername });
                 const addressResponse = await apiGetAddress({ username: effectiveUsername });
-                const vehicleResponse = await apiGetVehicle({ username: effectiveUsername });
+                const vehicleResponse = await apiGetVehicleList({ username: effectiveUsername });
 
                 setUser(userResponse.data);
                 setAddress(addressResponse.data);
-                setVehicle(vehicleResponse.data);
+                setVehicles(vehicleResponse.data);
             } catch (error) {
                 showErrorModal(`Error fetching data: ${error}`);
             } finally {
@@ -88,12 +88,14 @@ export default function Profile() {
                                 {address?.street} {address?.postal_code} {address?.city}
                             </td>
                         </tr>
-                        <tr>
-                            <td>Vehicle</td>
-                            <td>
-                                {vehicle?.make} {vehicle?.model}
-                            </td>
-                        </tr>
+                        {vehicles?.map((vehicle) => (
+                            <tr key={vehicle.id}>
+                                <td>Vehicle #{vehicle.id}</td>
+                                <td>
+                                    {vehicle?.make} {vehicle?.model} {vehicle?.year}
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </Table>
                 {authUser?.id === user?.id && <Button onClick={() => navigate('./edit')}>Edit</Button>}
