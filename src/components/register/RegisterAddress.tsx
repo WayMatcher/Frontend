@@ -10,27 +10,32 @@ import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
 import RegisterButtons from '@/components/register/RegisterButtons';
 
-export default function RegisterAddress(): React.ReactElement {
-    const { registerAddress, setRegisterAddress, setStep } = useContext(RegisterContext);
-
+export default function RegisterAddress({
+    step,
+    setAddress,
+}: {
+    step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
+    setAddress: React.Dispatch<React.SetStateAction<Address | null>>;
+}): React.ReactElement {
+    const [currentStep, setStep] = step;
     const handleSubmit = (values: Address) => {
-        setRegisterAddress(values);
+        setAddress(values);
         setStep(StepsRegister.VEHICLE);
     };
 
     const initialValues: Address = {
-        street: registerAddress?.street || '',
-        postal_code: registerAddress?.postal_code || '',
-        region: registerAddress?.region || '',
-        country: registerAddress?.country || '',
-        state: registerAddress?.state || '',
-        city: registerAddress?.city || '',
-        address_line1: registerAddress?.address_line1 || '',
-        address_line2: registerAddress?.address_line2 || '',
-        longitude: registerAddress?.longitude || 0,
-        latitude: registerAddress?.latitude || 0,
+        street: '',
+        postal_code: '',
+        region: '',
+        country: '',
+        state: '',
+        city: '',
+        address_line1: '',
+        address_line2: '',
+        longitude: 0,
+        latitude: 0,
     };
-
+    if (currentStep !== StepsRegister.ADDRESS) return <></>;
     return (
         <>
             <h2>Address</h2>

@@ -7,7 +7,13 @@ import RegisterButtons from '@/components/register/RegisterButtons';
 import { StepsRegister } from '@/types/objects/User/form';
 import { Form as FormikForm, Formik } from 'formik';
 
-export default function RegisterSummary({ handleSubmit }: { handleSubmit(): void }): React.ReactElement {
+export default function RegisterSummary({
+    handleSubmit,
+    step,
+}: {
+    handleSubmit(): void;
+    step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
+}): React.ReactElement {
     const { registerAddress, registerUser, registerVehicle } = useContext(RegisterContext);
     if (!registerUser || !registerAddress || !registerVehicle)
         return <h2 className='warning'>Registration not completed!</h2>;

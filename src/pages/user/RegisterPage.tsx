@@ -1,108 +1,76 @@
 import '@/pages/styles/RegisterPage.scss';
 
 import { Container } from 'react-bootstrap';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import RegisterUser from '@/components/register/RegisterUser';
-import RegisterAddress from '@/components/register/RegisterAddress';
-import RegisterVehicle from '@/components/register/RegisterVehicle';
-import RegisterSummary from '@/components/register/RegisterSummary';
-import RegisterContext, { RegisterProvider } from '@/contexts/RegisterContext';
+
 import { StepsRegister } from '@/types/objects/User/form';
 import { apiRegisterUser } from '@/api/endpoints/user';
 import { useNavigate } from 'react-router-dom';
-import ErrorModal from '@/components/ErrorModal';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
 
-export default function RegisterPage() {
-    return (
-        <RegisterProvider>
-            <RegisterPageContent />
-        </RegisterProvider>
-    );
-}
+import User from '@/types/objects/User/dto';
+import RegisterUser from '@/components/register/RegisterUser';
+import Address from '@/types/objects/Address/dto';
+import RegisterAddress from '@/components/register/RegisterAddress';
+import Vehicle from '@/types/objects/Vehicle/dto';
+import RegisterVehicle from '@/components/register/RegisterVehicle';
 
-function RegisterPageContent() {
-    const { registerUser, registerAddress, registerVehicle, step } = useContext(RegisterContext);
+import RegisterSummary from '@/components/register/RegisterSummary';
+
+const RegisterPage = () => {
     const navigate = useNavigate();
-    const [currentStep, setCurrentstep] = useState<StepsRegister>(StepsRegister.USER);
-    const [submissionError, setSubmissionError] = useState<string | null>(null);
-    const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+    const [currentStep, setCurrentStep] = useState<StepsRegister>(StepsRegister.USER);
+    const { showErrorModal } = useContext(ErrorModalContext);
     const isAuthenticated = useIsAuthenticated();
 
-    useEffect(() => {
-        setCurrentstep(step);
-    }, [step, currentStep, setCurrentstep]);
+    const [user, setUser] = useState<User | null>(null);
+    const [address, setAddress] = useState<Address | null>(null);
+    const [vehicle, setVehicle] = useState<Vehicle | null>(null);
 
     const handleSubmit = async () => {
-        if (!registerUser || !registerAddress || !registerVehicle) {
+        if (!user || !address || !vehicle) {
             console.warn('Missing data in registration form');
             return;
         }
 
         try {
             await apiRegisterUser({
-                user: {
-                    ...registerUser,
-                    address: registerAddress,
-                },
-                vehicle: registerVehicle,
-                password: registerUser.password,
+                user: { ...user, address },
+                vehicle,
+                password: user.password,
             });
             navigate('/user/login');
         } catch (err: unknown) {
-            setSubmissionError('An error occured: ' + (err as Error).message);
-            setShowErrorModal(true); // Shows error modal
+            showErrorModal('An error occurred: ' + (err as Error).message);
         }
     };
+
     if (isAuthenticated) {
         return (
-            <>
-                <Container className='register-page'>
-                    <h1>Register</h1>
-                    <Container>
-                        <br />
-                        <h2>You are already registered</h2>
-                        <br />
-                    </Container>
+            <Container className='register-page'>
+                <h1>Register</h1>
+                <Container>
+                    <h2>You are already logged in!</h2>
                 </Container>
-                <ErrorModal
-                    show={showErrorModal}
-                    handleClose={() => {
-                        setShowErrorModal(false);
-                    }}
-                >
-                    {submissionError}
-                </ErrorModal>
-                <br />
-            </>
-        );
-    } else {
-        return (
-            <>
-                <Container className='register-page'>
-                    <h1>Register</h1>
-                    <ProgressBar now={step * (1 / 4) * 100} />
-                    <Container>
-                        <br />
-                        {currentStep === StepsRegister.USER && <RegisterUser />}
-                        {currentStep === StepsRegister.ADDRESS && <RegisterAddress />}
-                        {currentStep === StepsRegister.VEHICLE && <RegisterVehicle />}
-                        {currentStep === StepsRegister.SUMMARY && <RegisterSummary handleSubmit={handleSubmit} />}
-                        <br />
-                    </Container>
-                </Container>
-                <ErrorModal
-                    show={showErrorModal}
-                    handleClose={() => {
-                        setShowErrorModal(false);
-                    }}
-                >
-                    {submissionError}
-                </ErrorModal>
-                <br />
-            </>
+            </Container>
         );
     }
-}
+
+    return (
+        <Container className='register-page'>
+            <h1>Register</h1>
+            <ProgressBar now={currentStep * 25} />
+            <Container>
+                <RegisterUser step={[currentStep, setCurrentStep]} setUser={setUser} />
+                <RegisterAddress step={[currentStep, setCurrentStep]} setAddress={setAddress} />
+                <RegisterVehicle step={[currentStep, setCurrentStep]} setVehicle={setVehicle} />
+                <RegisterSummary step={[currentStep, setCurrentStep]} handleSubmit={handleSubmit} />
+            </Container>
+        </Container>
+    );
+};
+
+export default RegisterPage;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
 import { EditUserSchema } from '@/utils/formValidations';
@@ -6,37 +6,33 @@ import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import User from '@/types/objects/User/dto';
 import { apiGetUser, apiSetUser } from '@/api/endpoints/user';
-import EditProps from '@/types/EditProps';
 import EditButtons from '@/components/user/EditButtons';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useNavigate } from 'react-router-dom';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
 
-export default function EditUser({ setShowErrorModal, setSubmissionError }: EditProps): React.ReactElement {
-    const [user, setUser] = useState<User>();
+export default function EditUser({
+    state,
+}: {
+    state: [User | null, React.Dispatch<React.SetStateAction<User | null>>];
+}): React.ReactElement {
     const authUser = useAuthUser<User>();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            if (!authUser || !authUser.id) return;
-            try {
-                const { data } = await apiGetUser({ userID: authUser.id });
-                setUser(data);
-            } catch (error: unknown) {
-                setShowErrorModal(true);
-                setSubmissionError((error as Error).message);
-            }
-        };
-        fetchUser();
-    });
+    const [user, setUser] = state;
 
     const handleSubmit = async (values: User) => {
         await apiSetUser(values);
         setUser(values);
     };
+
     if (!user) {
         navigate('/login');
-        return <></>;
+        return (
+            <Container>
+                <h1>You don't have permission to edit this user!</h1>
+            </Container>
+        );
     } else
         return (
             <>
@@ -154,7 +150,7 @@ export default function EditUser({ setShowErrorModal, setSubmissionError }: Edit
                                         />
                                     </Row>
                                     <Row>
-                                        <EditButtons isSubmitting={isSubmitting} />
+                                        <EditButtons isSubmitting={isSubmitting} isLoading={isLoading} />
                                     </Row>
                                 </FormikForm>
                             )}

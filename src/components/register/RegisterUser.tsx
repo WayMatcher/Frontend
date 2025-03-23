@@ -1,21 +1,26 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Container, Row } from 'react-bootstrap';
 import { RegisterUserSchema } from '@/utils/formValidations';
-import RegisterContext from '@/contexts/RegisterContext';
 import FormInput from '@/components/FormInput';
 import { FormUserRegister, initialValuesUserRegister, StepsRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import RegisterButtons from '@/components/register/RegisterButtons';
+import User from '@/types/objects/User/dto';
 
-export default function RegisterUser(): React.ReactElement {
-    const { setRegisterUser, setStep } = useContext(RegisterContext);
-
+export default function RegisterUser({
+    step,
+    setUser,
+}: {
+    step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}): React.ReactElement {
+    const [currentStep, setStep] = step;
     const handleSubmit = async (values: FormUserRegister) => {
-        setRegisterUser(values);
+        setUser(values);
         setStep(StepsRegister.ADDRESS);
     };
-
+    if (currentStep !== StepsRegister.USER) return <></>;
     return (
         <>
             <h2>User</h2>

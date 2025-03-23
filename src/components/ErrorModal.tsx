@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, ButtonGroup, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 interface ErrorModalProps {
     show: boolean;
@@ -8,6 +9,7 @@ interface ErrorModalProps {
 }
 
 const ErrorModal: React.FC<ErrorModalProps> = ({ show, handleClose, children }) => {
+    const navigate = useNavigate();
     return (
         <>
             <Modal show={show} onHide={handleClose}>
@@ -16,9 +18,14 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ show, handleClose, children }) 
                 </Modal.Header>
                 <Modal.Body>{children}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant='secondary' onClick={handleClose}>
-                        Close
-                    </Button>
+                    <ButtonGroup>
+                        <Button variant='primary' onClick={() => navigate(0)}>
+                            Refresh
+                        </Button>
+                        <Button variant='secondary' onClick={handleClose}>
+                            Close
+                        </Button>
+                    </ButtonGroup>
                 </Modal.Footer>
             </Modal>
         </>

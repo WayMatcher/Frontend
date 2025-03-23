@@ -6,5 +6,5 @@ interface LoadingProps {
 }
 
 export default function Loading({ loading, children }: LoadingProps) {
-    return <>{loading ? children : <Spinner animation='border' role='status' />}</>;
+    return <>{!loading ? children : <Spinner animation='border' role='status' />}</>;
 }

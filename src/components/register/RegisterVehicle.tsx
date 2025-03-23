@@ -10,20 +10,26 @@ import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/objects/Vehicle/dto';
 import RegisterNavButtons from '@/components/register/RegisterButtons';
 
-export default function RegisterVehicle(): React.ReactElement {
-    const { registerVehicle, setRegisterVehicle, setStep } = useContext(RegisterContext);
+export default function RegisterVehicle({
+    step,
+    setVehicle,
+}: {
+    step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
+    setVehicle: React.Dispatch<React.SetStateAction<Vehicle | null>>;
+}): React.ReactElement {
+    const [currentStep, setStep] = step;
 
     const handleSubmit = (values: Vehicle) => {
-        setRegisterVehicle(values);
+        setVehicle(values);
         setStep(StepsRegister.SUMMARY);
     };
 
     const initialValues: Vehicle = {
-        make: registerVehicle?.make || '',
-        model: registerVehicle?.model || '',
-        year: registerVehicle?.year || 2025,
-        seats: registerVehicle?.seats || 4,
-        license_plate: registerVehicle?.license_plate || '',
+        make: '',
+        model: '',
+        year: 2025,
+        seats: 4,
+        license_plate: '',
         additional_description: '',
     };
 

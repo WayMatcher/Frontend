@@ -3,6 +3,7 @@ import FormInput from '@/components/FormInput';
 import EditButtons from '@/components/user/EditButtons';
 import User from '@/types/objects/User/dto';
 import { Form as FormikForm, Formik } from 'formik';
+import { useEffect } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -37,12 +38,19 @@ const NewEvent = () => {
         navigate(`/events/${response.data.id}`);
     };
 
+    useEffect(() => {
+        if (!authUser) {
+            console.log('User not logged in, redirecting to login page');
+            navigate('/login');
+        }
+    }, [authUser, navigate]);
+
     return (
         <Container>
             <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
                 {({ values, errors, isSubmitting }) => (
                     <FormikForm>
-                        <Row>
+                        <Row className='mb-3'>
                             <FormInput
                                 label='Title'
                                 name='name'
@@ -56,7 +64,7 @@ const NewEvent = () => {
                                 props={{ autoFocus: true }}
                             />
                         </Row>
-                        <Row>
+                        <Row className='mb-3'>
                             <FormInput
                                 label='Description'
                                 name='description'
@@ -65,7 +73,7 @@ const NewEvent = () => {
                                 formikData={{ value: values.description, error: errors.description, isSubmitting }}
                             />
                         </Row>
-                        <Row>
+                        <Row className='mb-3'>
                             <FormInput
                                 label='Destination'
                                 name='location'
@@ -74,7 +82,7 @@ const NewEvent = () => {
                                 formikData={{ value: values.location, error: errors.location, isSubmitting }}
                             />
                         </Row>
-                        <Row>
+                        <Row className='mb-3'>
                             <FormInput
                                 label='Date'
                                 name='date'
@@ -83,7 +91,7 @@ const NewEvent = () => {
                                 formikData={{ value: values.date, error: errors.date, isSubmitting }}
                             />
                         </Row>
-                        <Row>
+                        <Row className='mb-3'>
                             <FormInput
                                 label='Capacity'
                                 name='capacity'

@@ -14,7 +14,6 @@ import NewEvent from './pages/events/NewEvent';
 import ErrorBoundary from './components/ErrorBoundary';
 import Profile from './components/user/Profile';
 import UserPage from './pages/user/UserPage';
-import RequireAuth from '@auth-kit/react-router/RequireAuth';
 import { ErrorModalProvider } from './contexts/ErrorModalContext';
 import { Container, Modal } from 'react-bootstrap';
 
@@ -31,14 +30,7 @@ const Pages = () => {
                         <Route path='/login' element={<LoginPage />} />
                         <Route path='/register' element={<RegisterPage />} />
                         <Route path='/events' element={<EventsPage />} />
-                        <Route
-                            path={'/events/new'}
-                            element={
-                                <RequireAuth fallbackPath={'/login'}>
-                                    <NewEvent />
-                                </RequireAuth>
-                            }
-                        />
+                        <Route path='/events/new' element={<NewEvent />} />
                         <Route path='/events/:eventid' element={<EventsPage />} />
                         <Route path='/profile/:username' element={<Profile />}>
                             <Route path='/profile/:username/edit' element={<UserPage />} />
@@ -55,7 +47,7 @@ const Pages = () => {
 
 export default function AppWrapper() {
     const useErrorBoundary = import.meta.env.MODE === 'production';
-    console.log(useErrorBoundary);
+    if (import.meta.env.MODE === 'development') console.warn('Error boundary is disabled in development mode');
 
     if (useErrorBoundary) {
         return (

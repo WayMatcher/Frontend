@@ -8,6 +8,7 @@ import { getEvent, getEvents } from '@/api/endpoints/event';
 import WMEvent from '@/types/objects/Event/dto';
 import EventDetails from '@/components/events/EventDetails';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 export default function EventPage() {
     const { eventid } = useParams();
@@ -16,7 +17,10 @@ export default function EventPage() {
     const [showModal, setShowModal] = useState(false);
     const [filteredEvents, setFilteredEvents] = useState<WMEvent[]>([]);
 
+    const isAuthenticated = useIsAuthenticated();
+
     const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const { showErrorModal } = useContext(ErrorModalContext);
 
@@ -25,6 +29,7 @@ export default function EventPage() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
+                console.log('Fetching events');
                 const response = await getEvents();
                 setEvents(response.data);
                 setFilteredEvents(response.data);
@@ -45,9 +50,9 @@ export default function EventPage() {
         };
 
         fetchEvents();
-    });
+    }, []); // Added empty dependency array to ensure it runs only once
 
-    const handleSearch = (searchTerm: string) => {
+    useEffect(() => {
         if (searchTerm === '') {
             setFilteredEvents(events);
         } else {
@@ -59,12 +64,11 @@ export default function EventPage() {
                 ),
             );
         }
-    };
+    }, [searchTerm]);
 
     const openEvent = (id: number) => {
         console.log('Opening event with id: ', id);
         getEvent({ eventID: id }).then((response) => {
-            console.log('Response: ', response);
             if (response.data?.id) {
                 setCurrentEvent(response.data);
                 setShowModal(true);
@@ -78,16 +82,19 @@ export default function EventPage() {
         <>
             <Container className='EventPage'>
                 <h2>Events</h2>
-                <SearchBar onSearch={handleSearch} />
+                <SearchBar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 <br />
                 <Container className='EventGrid'>
                     {filteredEvents.map((event) => (
                         <EventCard key={event.id} event={event} openEvent={openEvent} />
                     ))}
                 </Container>
-                <Button variant='primary' onClick={() => navigate('/events/new')}>
-                    Add new Event
-                </Button>
+                {isAuthenticated && (
+                    <Container>
+                        <br />
+                        <i className='bi bi-plus-square-fill add-button' onClick={() => navigate('/events/new')}></i>
+                    </Container>
+                )}
             </Container>
             <EventDetails event={currentEvent} showModal={showModal} />
         </>
