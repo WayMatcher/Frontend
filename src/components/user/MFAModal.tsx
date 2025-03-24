@@ -8,12 +8,7 @@ import { useState } from 'react';
 import { apiAuthMFA } from '@/api/endpoints/user';
 import { initialValuesMFAToken } from '@/types/objects/User/form';
 
-interface MFAModalProps {
-    show: boolean | undefined;
-    userLoginID: number;
-}
-
-export default function MFAModal({ show, userLoginID }: MFAModalProps) {
+export default function MFAModal({ show, userLoginID }: { show: boolean | undefined; userLoginID: number }) {
     const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
     const navigate = useNavigate();
     const signIn = useSignIn();
