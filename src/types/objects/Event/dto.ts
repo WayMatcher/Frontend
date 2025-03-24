@@ -10,6 +10,6 @@ export default interface WMEvent {
     startTimestamp: string;
     image?: string;
     freeSeats: number;
-    stops: Stop[];
+    stopList: Stop[];
     eventMembers: EventMember[];
 }

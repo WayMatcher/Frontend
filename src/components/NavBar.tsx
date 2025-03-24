@@ -1,6 +1,6 @@
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import './styles/NavBar.scss';
-import { NavDropdown, Navbar, Nav, Container, ButtonGroup } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Container, ButtonGroup, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
@@ -48,6 +48,7 @@ export default function NavBar() {
                                 >
                                     Edit Profile
                                 </NavDropdown.Item>
+                                <hr />
                                 <NavDropdown.Item
                                     onClick={() => {
                                         signOut();
@@ -60,12 +61,12 @@ export default function NavBar() {
                             </NavDropdown>
                         ) : (
                             <ButtonGroup>
-                                <Link className='btn btn-primary' to='/login'>
+                                <Button className='btn btn-primary' onClick={() => navigate('/login')}>
                                     Login
-                                </Link>
-                                <Link className='btn btn-secondary' to='/register'>
+                                </Button>
+                                <Button className='btn btn-secondary' onClick={() => navigate('/register')}>
                                     Register
-                                </Link>
+                                </Button>
                             </ButtonGroup>
                         )}
                     </Nav>

@@ -35,9 +35,14 @@ const NewEvent = () => {
 
     const isLoading = false;
 
-    const onSubmit = async (values: typeof initialValues) => {
+    const onSubmit = async (values: WMEvent) => {
         if (!authUser) return;
-        const response = await createEvent({ user: authUser, wmevent: values, stops: [], schedule: { schedule: '' } });
+        const response = await createEvent({
+            user: authUser,
+            wmevent: values,
+            stops: [],
+            schedule: { cronSchedule: '', scheduleId: 0 },
+        });
         navigate(`/events/${response.data.eventId}`);
     };
 

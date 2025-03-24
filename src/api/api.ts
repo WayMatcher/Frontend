@@ -27,7 +27,7 @@ export default class API {
      *
      * @throws {Error} Throws an error with a specific message based on the type of error encountered.
      */
-    handleApiError(error: unknown) {
+    handleApiError(error: unknown): unknown {
         if (axios.isAxiosError(error)) {
             // Handle Axios-specific errors (e.g., network issues, timeouts)
             if (error.response) {
@@ -48,20 +48,20 @@ export default class API {
                     // Other server errors (5xx)
                     console.error('Server Error:', error.response.status, error.response.data);
                 }
-                throw new Error(error.response.data.message || 'An error occurred with your request');
+                return error;
             } else if (error.request) {
                 // The request was made but no response was received
                 console.error('Network Error: No response received.', error.request);
-                throw new Error('Network Error: Could not connect to the server.');
+                return error;
             } else {
                 // Something happened in setting up the request that triggered an Error
                 console.error('Request Setup Error:', error.message);
-                throw new Error('An unexpected error occurred. Please try again later.');
+                return error;
             }
         } else {
             // Handle non-Axios errors (e.g., errors in your code)
             console.error('Generic Error:', error);
-            throw new Error('An unexpected error occurred. Please try again later.');
+            return error;
         }
     }
 }

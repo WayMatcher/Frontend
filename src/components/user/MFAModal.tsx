@@ -8,8 +8,15 @@ import { useState } from 'react';
 import { apiAuthMFA } from '@/api/endpoints/user';
 import { initialValuesMFAToken } from '@/types/objects/User/form';
 
-export default function MFAModal({ show, userLoginID }: { show: boolean | undefined; userLoginID: number }) {
+export default function MFAModal({
+    showState,
+    userLoginID,
+}: {
+    showState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+    userLoginID: number;
+}) {
     const [submissionError, setSubmissionError] = useState<string | null>(null); // Error message to display on submission failure
+    const [show, setShow] = showState;
     const navigate = useNavigate();
     const signIn = useSignIn();
     const handleSubmit = async (values: { mfaToken: string }): Promise<void> => {
@@ -60,7 +67,14 @@ export default function MFAModal({ show, userLoginID }: { show: boolean | undefi
                             <Row></Row>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant='secondary'>Cancel</Button>
+                            <Button
+                                variant='secondary'
+                                onClick={() => {
+                                    setShow(false);
+                                }}
+                            >
+                                Cancel
+                            </Button>
                             <Button type='submit'>{formikProps.isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                             {submissionError ? <p>{submissionError}</p> : null}
                         </Modal.Footer>

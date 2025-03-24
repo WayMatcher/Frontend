@@ -18,13 +18,13 @@ function InboxPage() {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!authUser?.id) {
+            if (!authUser?.userId) {
                 console.log('User is not logged in, redirecting to login page');
                 navigate('/login');
                 return <h2>User is not logged in</h2>;
             }
             try {
-                const response = await apiGetInbox({ userID: authUser.id });
+                const response = await apiGetInbox({ userID: authUser.userId });
                 console.log(response);
                 setNotifications(response.data);
             } catch (error: unknown) {
@@ -36,7 +36,7 @@ function InboxPage() {
         fetchData();
     }, []);
 
-    if (!authUser?.id) {
+    if (!authUser?.userId) {
         console.log('User is not logged in, redirecting to login page');
         navigate('/login');
         return <h2>User is not logged in</h2>;

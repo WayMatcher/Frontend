@@ -53,7 +53,7 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
             password: request.password,
         };
 
-        return await api.axios.post<number>('/login/loginuser', hashedUserLogin);
+        return await api.axios.post<number>('/Login/LoginUser', hashedUserLogin);
     } catch (error) {
         api.handleApiError(error);
         throw error;
@@ -67,8 +67,17 @@ export const apiRegisterUser = async (request: { user: User; vehicle: Vehicle; p
             password: bcrypt.hashSync(request.password, 10),
         };
 
-        const response = await api.axios.put('/register', hashedRequest);
+        const response = await api.axios.put('/User/RegisterUser', hashedRequest);
         return response;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiGetUsernameList = async () => {
+    try {
+        return await api.axios.get<string[]>('/User/GetUsernameList');
     } catch (error) {
         api.handleApiError(error);
         throw error;

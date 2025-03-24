@@ -1,7 +1,9 @@
+import User from '../User/dto';
+
 export default interface EventMember {
     memberId: number;
     eventRole: number;
-    userId: number;
+    user: User;
     eventId: number;
     statusId: number;
 }

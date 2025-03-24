@@ -7,7 +7,7 @@ interface BaseUser {
 }
 
 export default interface User extends BaseUser {
-    id?: number;
+    userId?: number;
     firstName?: string;
     name?: string;
     additional_description?: string;

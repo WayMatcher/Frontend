@@ -17,7 +17,8 @@ export default function LoginPage() {
 
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
-    const [showMFAModal, setShowMFAModal] = useState<boolean>(false);
+    const stateMFAModal = useState<boolean>(false);
+    const [_, setShowMFAModal] = stateMFAModal;
     const [userLoginID, setUserLoginID] = useState<number>(0);
 
     const handleSubmit = async (values: { userOrEmail: string; password: string }) => {
@@ -107,7 +108,7 @@ export default function LoginPage() {
                     </Formik>
                 </Container>
             </CollapseWrapper>
-            <MFAModal show={showMFAModal} userLoginID={userLoginID} />
+            <MFAModal showState={stateMFAModal} userLoginID={userLoginID} />
         </>
     );
 }
