@@ -20,7 +20,7 @@ export default function NavBar() {
                         navigate('/');
                     }}
                 >
-                    {import.meta.env.VITE_API_BASE_URL}
+                    WayMatcher
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls='basic-navbar-nav' />
                 <Navbar.Collapse id='basic-navbar-nav'>

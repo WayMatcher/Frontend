@@ -35,7 +35,7 @@ const NewEvent = () => {
 
     const isLoading = false;
 
-    const onSubmit = async (values: WMEvent) => {
+    const onSubmit = async (values: typeof initialValues) => {
         if (!authUser) return;
         const response = await createEvent({ user: authUser, wmevent: values, stops: [], schedule: { schedule: '' } });
         navigate(`/events/${response.data.eventId}`);

@@ -13,6 +13,7 @@ export default function FormInput({
 
     const error = errors[name];
     const value = values[name];
+    const touchedValue = touched[name];
 
     return (
         <Form.Group as={Col} controlId={`validationFormik${name}`}>
@@ -24,11 +25,10 @@ export default function FormInput({
                 placeholder={typeof placeholder === 'number' ? placeholder?.toString() : placeholder}
                 disabled={isSubmitting}
                 readOnly={isLoading ? true : undefined}
-                isValid={touched && !error}
+                isValid={touchedValue && !error}
                 onChange={handleChange}
             />
             {typeof error === 'string' ? <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback> : null}
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
     );
 }
