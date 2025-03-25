@@ -3,6 +3,7 @@ import { Button, ButtonGroup, Row } from 'react-bootstrap';
 import FormInput from '../FormInput';
 import { RegisterVehicleSchema } from '@/utils/formValidations';
 import Vehicle from '@/types/objects/Vehicle/dto';
+import { useEffect } from 'react';
 
 const VehicleEntry = ({
     vehicle,
@@ -14,16 +15,18 @@ const VehicleEntry = ({
     const [vehicleList, setVehicleList] = vehicleListState;
 
     const initialValues: Vehicle = {
-        make: '',
+        manufacturerName: '',
         model: '',
-        year: 2025,
-        seats: 4,
-        license_plate: '',
+        yearOfManufacture: 0,
+        seats: 1,
+        licensePlate: '',
+        fuelMilage: 0,
+        additionalInfo: '',
     };
 
     const onSubmit = (values: typeof initialValues, formikHelpers: FormikHelpers<Vehicle>) => {
         formikHelpers.setSubmitting(true);
-        const vehicleIndex = vehicleList.findIndex((v) => v.id === vehicle.id);
+        const vehicleIndex = vehicleList.findIndex((v) => v.vehicleId === vehicle.vehicleId);
         const updatedVehicles = [...vehicleList];
 
         if (vehicleIndex !== -1) {
@@ -37,7 +40,7 @@ const VehicleEntry = ({
     };
 
     const deleteSelf = () => {
-        const updatedVehicles = vehicleList.filter((v) => v.id !== vehicle.id);
+        const updatedVehicles = vehicleList.filter((v) => v.vehicleId !== vehicle.vehicleId);
         setVehicleList(updatedVehicles);
     };
 
@@ -45,31 +48,49 @@ const VehicleEntry = ({
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {(formikProps) => (
-                <FormikForm>
-                    <strong>Vehicle </strong>
-                    <i>{vehicle.license_plate}</i>
-                    <Row className='mb-3'>
-                        <FormInput label='Make' name='make' type='text' formikProps={formikProps} />
-                        <FormInput label='Model' name='model' type='text' formikProps={formikProps} />
-                    </Row>
-                    <Row className='mb-3'>
-                        <FormInput label='Year' name='year' type='number' formikProps={formikProps} />
-                        <FormInput label='Seats' name='seats' type='number' formikProps={formikProps} />
-                    </Row>
-                    <Row className='mb-3'>
-                        <FormInput label='License Plate' name='license_plate' type='text' formikProps={formikProps} />
-                    </Row>
-                    <Row>
-                        <ButtonGroup>
-                            <Button variant='warning' onClick={() => deleteSelf()}>
-                                Delete
-                            </Button>
-                            <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
-                        </ButtonGroup>
-                    </Row>
-                </FormikForm>
-            )}
+            {(formikProps) => {
+                const { setValues } = formikProps; // Access Formik context here
+
+                useEffect(() => {
+                    if (vehicle) {
+                        setValues({
+                            ...initialValues,
+                            ...vehicle,
+                        });
+                    }
+                }, [vehicle, setValues]);
+                return (
+                    <FormikForm>
+                        <strong>Vehicle </strong>
+                        <i>{vehicle.licensePlate}</i>
+                        <Row className='mb-3'>
+                            <FormInput label='Make' name='manufacturerName' type='text' formikProps={formikProps} />
+                            <FormInput label='Model' name='model' type='text' formikProps={formikProps} />
+                        </Row>
+                        <Row className='mb-3'>
+                            <FormInput label='Year' name='yearOfManufacture' type='number' formikProps={formikProps} />
+                            <FormInput label='Seats' name='seats' type='number' formikProps={formikProps} />
+                            <FormInput label='Fuel Milage' name='fuelMilage' type='number' formikProps={formikProps} />
+                        </Row>
+                        <Row className='mb-3'>
+                            <FormInput
+                                label='License Plate'
+                                name='licensePlate'
+                                type='text'
+                                formikProps={formikProps}
+                            />
+                        </Row>
+                        <Row>
+                            <ButtonGroup>
+                                <Button variant='warning' onClick={() => deleteSelf()}>
+                                    Delete
+                                </Button>
+                                <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
+                            </ButtonGroup>
+                        </Row>
+                    </FormikForm>
+                );
+            }}
         </Formik>
     );
 };

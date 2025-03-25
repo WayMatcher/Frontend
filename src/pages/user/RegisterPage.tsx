@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import ProgressBar from 'react-bootstrap/ProgressBar';
 
-import { useNavigate, Routes, Route, useLocation } from 'react-router-dom';
+import { useNavigate, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 import User from '@/types/objects/User/dto';
@@ -16,7 +16,7 @@ import Vehicle from '@/types/objects/Vehicle/dto';
 import RegisterVehicleList from '@/components/register/RegisterVehicleList';
 
 import RegisterSummary from '@/components/register/RegisterSummary';
-import RegisterNavButtons from '@/components/register/RegisterButtons';
+import RegisterNavigation from '@/components/register/RegisterButtons';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -32,6 +32,7 @@ const RegisterPage = () => {
     const [isVehicleListDone, setIsVehicleListDone] = useState(false);
 
     const registerObject = { user, address, vehicleList };
+    const doneStates = { user: isUserDone, address: isAddressDone, vehicle: isVehicleListDone };
 
     const steps = ['user', 'address', 'vehicles', 'summary'];
     const currentStepIndex = steps.indexOf(location.pathname.split('/').pop() || 'user');
@@ -55,61 +56,75 @@ const RegisterPage = () => {
         <Container className='register-page'>
             <h1>Register</h1>
             <ProgressBar now={progress} variant={currentStepIndex === steps.length - 1 ? 'success' : 'primary'} />
+            <br />
             <Container>
-                <Routes>
-                    <Route
-                        path={steps[0]}
-                        element={
-                            <RegisterUser
-                                userState={[user, setUser]}
-                                onComplete={(isDone: boolean) => setIsUserDone(isDone)}
-                            />
-                        }
-                    />
-                    <Route
-                        path={steps[1]}
-                        element={
-                            <RegisterAddress
-                                addressState={[address, setAddress]}
-                                onComplete={(isDone: boolean) => setIsAddressDone(isDone)} // Mark as done based on completion
-                            />
-                        }
-                    />
-                    <Route
-                        path={steps[2]}
-                        element={
-                            <RegisterVehicleList
-                                vehicleListState={[vehicleList, setVehicleList]}
-                                onComplete={(isDone: boolean) => setIsVehicleListDone(isDone)}
-                            />
-                        }
-                    />
-                    <Route
-                        path={steps[3]}
-                        element={
-                            registerObject.user !== null &&
-                            registerObject.address !== null &&
-                            registerObject.vehicleList.length > 0 ? (
-                                <RegisterSummary
-                                    register={
-                                        registerObject as {
-                                            user: User & { password: string };
-                                            address: Address;
-                                            vehicleList: Vehicle[];
-                                        }
-                                    }
-                                />
-                            ) : null
-                        }
-                    />
-                    <Route
-                        path='/'
-                        element={<Button onClick={() => navigate('/register/user')}>Start Registration</Button>}
-                    />
-                </Routes>
-                <RegisterNavButtons
+                <RegisterNavigation
                     doneStates={{ user: isUserDone, address: isAddressDone, vehicle: isVehicleListDone }}
-                />
+                >
+                    <Routes>
+                        <Route
+                            path={steps[0]}
+                            element={
+                                <RegisterUser
+                                    userState={[user, setUser]}
+                                    done={{
+                                        ...doneStates,
+                                        onComplete(isDone) {
+                                            setIsUserDone(isDone);
+                                        },
+                                    }}
+                                />
+                            }
+                        />
+                        <Route
+                            path={steps[1]}
+                            element={
+                                <RegisterAddress
+                                    addressState={[address, setAddress]}
+                                    done={{
+                                        ...doneStates,
+                                        onComplete(isDone) {
+                                            setIsAddressDone(isDone);
+                                        },
+                                    }}
+                                />
+                            }
+                        />
+                        <Route
+                            path={steps[2]}
+                            element={
+                                <RegisterVehicleList
+                                    vehicleListState={[vehicleList, setVehicleList]}
+                                    done={{
+                                        ...doneStates,
+                                        onComplete(isDone) {
+                                            setIsVehicleListDone(isDone);
+                                        },
+                                    }}
+                                />
+                            }
+                        />
+                        <Route
+                            path={steps[3]}
+                            element={
+                                registerObject.user !== null &&
+                                registerObject.address !== null &&
+                                registerObject.vehicleList.length > 0 ? (
+                                    <RegisterSummary
+                                        register={
+                                            registerObject as {
+                                                user: User & { password: string };
+                                                address: Address;
+                                                vehicleList: Vehicle[];
+                                            }
+                                        }
+                                    />
+                                ) : null
+                            }
+                        />
+                        <Route path='/*' element={<Navigate to={'/register/user'} replace />} />
+                    </Routes>
+                </RegisterNavigation>
             </Container>
         </Container>
     );

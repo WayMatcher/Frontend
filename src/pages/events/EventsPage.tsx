@@ -59,7 +59,7 @@ export default function EventPage() {
             setFilteredEvents(
                 events.filter(
                     (event) =>
-                        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (event.title ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                         event.description?.toLowerCase().includes(searchTerm.toLowerCase()),
                 ),
             );
@@ -90,7 +90,7 @@ export default function EventPage() {
                             key={event.eventId}
                             event={event}
                             openEvent={() => {
-                                openEvent(event.eventId);
+                                if (event.eventId) openEvent(event.eventId);
                                 console.log(event);
                             }}
                         />

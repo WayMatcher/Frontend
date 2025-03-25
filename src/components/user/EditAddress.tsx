@@ -35,12 +35,12 @@ export default function EditAddress(): React.ReactElement {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                if (authUser?.id === undefined) {
+                if (authUser?.userId === undefined) {
                     showErrorModal('No user logged in!');
                     return;
                 }
 
-                const response = await apiGetAddress({ userID: authUser.id });
+                const response = await apiGetAddress({ userID: authUser.userId });
 
                 initialValues = { ...initialValues, ...response.data };
             } catch (error: unknown) {
@@ -54,12 +54,12 @@ export default function EditAddress(): React.ReactElement {
 
     const handleSubmit = async (values: typeof initialValues) => {
         try {
-            if (authUser?.id === undefined) {
+            if (authUser?.userId === undefined) {
                 showErrorModal('No user logged in!');
                 return;
             }
 
-            const response = await apiSetAddress({ address: values, userID: authUser?.id });
+            const response = await apiSetAddress({ address: values, userId: authUser?.userId });
             console.log(response);
         } catch (error) {
             console.error(error);

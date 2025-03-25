@@ -1,9 +1,10 @@
 export default interface Vehicle {
-    id?: number;
+    vehicleId?: number;
     model?: string;
-    make?: string;
-    year?: number;
     seats?: number;
-    license_plate?: string;
-    additional_description?: string;
+    yearOfManufacture?: number;
+    manufacturerName?: string;
+    licensePlate?: string;
+    additionalInfo?: string;
+    fuelMilage?: number;
 }

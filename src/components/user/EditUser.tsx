@@ -32,12 +32,12 @@ export default function EditUser(): React.ReactElement {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                if (authUser?.id === undefined) {
+                if (authUser?.userId === undefined) {
                     showErrorModal('No user logged in!');
                     return;
                 }
 
-                const response = await apiGetUser({ userID: authUser.id });
+                const response = await apiGetUser({ userID: authUser.userId });
 
                 initialValues = { ...initialValues, ...response.data, password: '', password_confirm: '' };
             } catch (error: unknown) {
@@ -51,7 +51,7 @@ export default function EditUser(): React.ReactElement {
 
     const handleSubmit = async (values: typeof initialValues) => {
         try {
-            if (authUser?.id === undefined) {
+            if (authUser?.userId === undefined) {
                 showErrorModal('No user logged in!');
                 return;
             }

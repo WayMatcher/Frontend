@@ -1,8 +1,7 @@
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import RegisterButtons from '@/components/register/RegisterButtons';
 import User from '@/types/objects/User/dto';
 import Address from '@/types/objects/Address/dto';
 import Vehicle from '@/types/objects/Vehicle/dto';
@@ -19,11 +18,15 @@ export default function RegisterSummary({
     const { user, address, vehicleList } = register;
 
     const handleSubmit = async () => {
+        const { password, ...tempUser } = user;
         try {
             await apiRegisterUser({
-                user: { ...user, address },
+                user: {
+                    ...tempUser,
+                    address: address,
+                },
                 vehicleList,
-                password: user.password,
+                password: password,
             });
             navigate('/user/login');
         } catch (error: unknown) {
@@ -62,13 +65,15 @@ export default function RegisterSummary({
                         <Col>
                             <h3>Vehicles</h3>
                             {vehicleList.map((vehicle) => (
-                                <p key={`vehicle-${vehicle.id}`}>
-                                    Make: {vehicle.make}, Model: {vehicle.model}, Year: {vehicle.year}, Seats:
-                                    {vehicle.seats}, License Plate: {vehicle.license_plate}
+                                <p key={`vehicle-${vehicle.vehicleId}`}>
+                                    Make: {vehicle.manufacturerName}, Model: {vehicle.model}, Year:{' '}
+                                    {vehicle.yearOfManufacture}, Seats:
+                                    {vehicle.seats}, License Plate: {vehicle.licensePlate}
                                 </p>
                             ))}
                         </Col>
                     </Row>
+                    <Button onClick={handleSubmit}>Submit</Button>
                 </Container>
             </CollapseWrapper>
         </>

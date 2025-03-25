@@ -24,7 +24,7 @@ export const apiGetAddress = async (request: {
     }
 };
 
-export const apiSetAddress = async (request: { address: Address; userID: number }) => {
+export const apiSetAddress = async (request: { address: Address; userId: number }) => {
     try {
         const response = await api.axios.put<AxiosResponse>('/setAddress', request);
         return response;

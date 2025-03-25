@@ -39,7 +39,6 @@ export const EventInvite = ({
 
     const handleInvite = async (values: { username?: string; message?: string }) => {
         if (!authUser?.userId) return;
-
         const apiCall =
             owner && values.username
                 ? () =>

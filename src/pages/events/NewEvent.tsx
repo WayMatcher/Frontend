@@ -1,7 +1,6 @@
 import { createEvent } from '@/api/endpoints/event';
 import FormInput from '@/components/FormInput';
 import EditButtons from '@/components/user/EditButtons';
-import WMEvent from '@/types/objects/Event/dto';
 import User from '@/types/objects/User/dto';
 import { Form as FormikForm, Formik } from 'formik';
 import { useEffect } from 'react';
@@ -20,14 +19,11 @@ const validationSchema = Yup.object({
 });
 
 const initialValues = {
-    name: '',
+    title: '',
     description: '',
-    date: '',
-    location: '',
-    capacity: 3,
-    price: '',
+    freeSeats: 3,
+    startTimestamp: '',
 };
-
 const NewEvent = () => {
     const navigate = useNavigate();
 
@@ -35,7 +31,7 @@ const NewEvent = () => {
 
     const isLoading = false;
 
-    const onSubmit = async (values: WMEvent) => {
+    const onSubmit = async (values: typeof initialValues) => {
         if (!authUser) return;
         const response = await createEvent({
             user: authUser,
@@ -61,7 +57,7 @@ const NewEvent = () => {
                         <Row className='mb-3'>
                             <FormInput
                                 label='Title'
-                                name='name'
+                                name='title'
                                 type='text'
                                 placeholder='An interesting Title'
                                 formikProps={formikProps}
@@ -79,26 +75,8 @@ const NewEvent = () => {
                         </Row>
                         <Row className='mb-3'>
                             <FormInput
-                                label='Destination'
-                                name='location'
-                                type='text'
-                                placeholder='The destination'
-                                formikProps={formikProps}
-                            />
-                        </Row>
-                        <Row className='mb-3'>
-                            <FormInput
-                                label='Date'
-                                name='date'
-                                type='date'
-                                placeholder={initialValues.date}
-                                formikProps={formikProps}
-                            />
-                        </Row>
-                        <Row className='mb-3'>
-                            <FormInput
-                                label='Capacity'
-                                name='capacity'
+                                label='Free Seats'
+                                name='freeSeats'
                                 type='number'
                                 placeholder={3}
                                 formikProps={formikProps}

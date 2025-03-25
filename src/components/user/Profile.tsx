@@ -89,16 +89,16 @@ export default function Profile() {
                             </td>
                         </tr>
                         {vehicles?.map((vehicle) => (
-                            <tr key={vehicle.id}>
-                                <td>Vehicle #{vehicle.id}</td>
+                            <tr key={vehicle.vehicleId}>
+                                <td>Vehicle #{vehicle.vehicleId}</td>
                                 <td>
-                                    {vehicle?.make} {vehicle?.model} {vehicle?.year}
+                                    {vehicle?.manufacturerName} {vehicle?.model} {vehicle?.yearOfManufacture}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
-                {authUser?.id === user?.id && <Button onClick={() => navigate('./edit')}>Edit</Button>}
+                {authUser?.userId === user?.userId && <Button onClick={() => navigate('./edit')}>Edit</Button>}
             </Container>
         </Loading>
     );

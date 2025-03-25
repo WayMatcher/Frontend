@@ -1,22 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Container, ListGroup } from 'react-bootstrap';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/objects/Vehicle/dto';
 import VehicleEntry from './RegisterVehicle';
-import RegisterNavButtons from './RegisterButtons';
+import { useNavigate } from 'react-router-dom';
 
 export default function RegisterVehicleList({
-    setVehicleState,
-    onComplete,
+    vehicleListState,
+    done,
 }: {
-    setVehicleState: [Vehicle[], React.Dispatch<React.SetStateAction<Vehicle[]>>];
-    onComplete: (isDone: boolean) => void;
+    vehicleListState: [Vehicle[], React.Dispatch<React.SetStateAction<Vehicle[]>>];
+    done: {
+        user: boolean;
+        address: boolean;
+        vehicle: boolean;
+        onComplete: (isDone: boolean) => void;
+    };
 }): React.ReactElement {
+    const navigate = useNavigate();
+    if (done.user === false && done.address === false) {
+        navigate('/register/user');
+    } else if (done.user === true && done.address === false) {
+        navigate('/register/address');
+    }
+
     useEffect(() => {
-        if (setVehicleState[0].length > 0) {
-            onComplete(true);
+        if (vehicleListState[0].length > 0) {
+            done.onComplete(true);
         }
-    }, [setVehicleState, onComplete]);
+    }, [vehicleListState, done.onComplete]);
+
+    const handleAddVehicle = () => {
+        const newVehicle: Vehicle = {
+            vehicleId: Date.now(), // Example unique ID
+            // Add other default properties for a new vehicle here
+        };
+        vehicleListState[1]((prevVehicles) => [...prevVehicles, newVehicle]);
+    };
 
     return (
         <>
@@ -24,13 +44,13 @@ export default function RegisterVehicleList({
             <CollapseWrapper>
                 <Container>
                     <ListGroup>
-                        {setVehicleState[0].map((vehicle: Vehicle) => (
-                            <ListGroup.Item key={`vehicle-${vehicle.id}`}>
-                                <VehicleEntry vehicle={vehicle} vehicleListState={setVehicleState} />
+                        {vehicleListState[0].map((vehicle: Vehicle) => (
+                            <ListGroup.Item key={`vehicle-${vehicle.vehicleId}`}>
+                                <VehicleEntry vehicle={vehicle} vehicleListState={vehicleListState} />
                             </ListGroup.Item>
                         ))}
                         <ListGroup.Item>
-                            <Button>Add Vehicle</Button>
+                            <Button onClick={handleAddVehicle}>Add Vehicle</Button>
                         </ListGroup.Item>
                     </ListGroup>
                 </Container>

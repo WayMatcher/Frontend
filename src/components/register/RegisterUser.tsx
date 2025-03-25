@@ -1,42 +1,54 @@
 import React from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Button, Container, Row } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import { RegisterUserSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
 import { FormUserRegister, initialValuesUserRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import User from '@/types/objects/User/dto';
+import { useEffect } from 'react';
 
 export default function RegisterUser({
     userState,
-    onComplete,
+    done,
 }: {
     userState: [
         (User & { password: string }) | null,
         React.Dispatch<React.SetStateAction<(User & { password: string }) | null>>,
     ];
-    onComplete: (isDone: boolean) => void;
+    done: {
+        user: boolean;
+        address: boolean;
+        vehicle: boolean;
+        onComplete: (isDone: boolean) => void;
+    };
 }): React.ReactElement {
-    const navigate = useNavigate();
-
     const handleSubmit = async (values: FormUserRegister) => {
         userState[1](values);
-        onComplete(true);
-        navigate('/register/address');
+        done.onComplete(true);
     };
 
     return (
-        <>
-            <h2>User</h2>
-            <CollapseWrapper>
-                <Container>
-                    <Formik
-                        initialValues={initialValuesUserRegister}
-                        validationSchema={RegisterUserSchema}
-                        onSubmit={handleSubmit}
-                    >
-                        {(formikProps) => (
+        <CollapseWrapper>
+            <Container>
+                <Formik
+                    initialValues={initialValuesUserRegister}
+                    validationSchema={RegisterUserSchema}
+                    onSubmit={handleSubmit}
+                >
+                    {(formikProps) => {
+                        const { setValues } = formikProps; // Access Formik context here
+
+                        useEffect(() => {
+                            if (userState[0]) {
+                                setValues({
+                                    ...initialValuesUserRegister,
+                                    ...userState[0],
+                                });
+                            }
+                        }, [userState, setValues]);
+
+                        return (
                             <FormikForm>
                                 <Row className='mb-3'>
                                     <FormInput
@@ -69,7 +81,6 @@ export default function RegisterUser({
                                     />
                                 </Row>
                                 <hr />
-                                <h3>Optional Information</h3>
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='First Name'
@@ -115,10 +126,10 @@ export default function RegisterUser({
                                 </Row>
                                 <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
                             </FormikForm>
-                        )}
-                    </Formik>
-                </Container>
-            </CollapseWrapper>
-        </>
+                        );
+                    }}
+                </Formik>
+            </Container>
+        </CollapseWrapper>
     );
 }

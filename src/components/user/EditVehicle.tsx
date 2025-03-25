@@ -23,12 +23,12 @@ export default function EditVehicle(): React.ReactElement {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                if (authUser?.id === undefined) {
+                if (authUser?.userId === undefined) {
                     showErrorModal('No user logged in!');
                     return;
                 }
 
-                const response = await apiGetVehicleList({ userID: authUser.id });
+                const response = await apiGetVehicleList({ userID: authUser.userId });
                 setVehicles(response.data);
             } catch (error: unknown) {
                 showErrorModal((error as Error).message);
@@ -55,14 +55,14 @@ export default function EditVehicle(): React.ReactElement {
                 <Container>
                     {vehicles.map((vehicle) => (
                         <Formik
-                            key={vehicle.id}
+                            key={vehicle.vehicleId}
                             initialValues={{
-                                make: vehicle.make || '',
+                                make: vehicle.manufacturerName || '',
                                 model: vehicle.model || '',
-                                year: vehicle.year || 2025,
+                                year: vehicle.yearOfManufacture || 2025,
                                 seats: vehicle.seats || 4,
-                                license_plate: vehicle.license_plate || '',
-                                additional_description: vehicle.additional_description || '',
+                                license_plate: vehicle.licensePlate || '',
+                                additional_description: vehicle.additionalInfo || '',
                             }}
                             validationSchema={validationSchema}
                             onSubmit={() => {

@@ -1,11 +1,10 @@
-import { Button, ButtonGroup, Col, ListGroup, Modal, Row, Stack } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, ListGroup, Modal, Row } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import { useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import EventMap from './EventMap';
 import EventMember from '@/types/objects/EventMember/dto';
-import { apiSendInvite } from '@/api/endpoints/invite';
 import EventInvite from './EventInvite';
 
 const Event = ({

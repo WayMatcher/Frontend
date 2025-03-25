@@ -7,7 +7,7 @@ const StopList = ({ stops }: { stops: Stop[] }) => {
             {stops.map((stop: Stop) => (
                 <>
                     <ListGroup.Item>
-                        {stop.stop_sequence} {stop.address.state} {stop.address.city} {stop.address.street}{' '}
+                        {stop.stopSequenceNumber} {stop.address.state} {stop.address.city} {stop.address.street}{' '}
                         {stop.address.postal_code}
                     </ListGroup.Item>
                 </>
@@ -15,3 +15,5 @@ const StopList = ({ stops }: { stops: Stop[] }) => {
         </ListGroup>
     );
 };
+
+export default StopList;

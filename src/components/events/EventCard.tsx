@@ -42,7 +42,13 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                 </ListGroup.Item>
             </ListGroup>
             <Card.Footer>
-                <Button variant='primary' onClick={() => openModal(event.eventId)}>
+                <Button
+                    variant='primary'
+                    onClick={() => {
+                        event.eventId && openModal(event.eventId);
+                    }}
+                    disabled={event.freeSeats < 1 || event.eventId === undefined}
+                >
                     Match
                 </Button>
             </Card.Footer>

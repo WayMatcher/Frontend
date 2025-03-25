@@ -65,28 +65,7 @@ function MapURL({ stopList, width, height }: Props) {
             const path = `path=color:0x0000ff|weight:5|${[start, ...waypoints, end].map((p) => `${p.latitude},${p.longitude}`).join('|')}`;
 
             const baseUrl = `https://maps.googleapis.com/maps/api/staticmap?size=${width}x${height}&${startMarker}&${endMarker}${waypointMarkers && '&' + waypointMarkers}&${path}&key=${apiKey}`;
-            /* https://maps.googleapis.com/
-                maps/
-                api/
-                staticmap
-                ?center=63.259591,-144.667969
-                &zoom=6&size=400x400
-                &markers=color:blue%7Clabel:S%7C62.107733,-145.541936
-                &markers=size:tiny%7Ccolor:green%7CDelta+Junction,AK
-                &markers=size:mid%7Ccolor:0xFFFF00%7Clabel:C%7CTok,AK%22
-                &key=AIzaSyDxT0mzJKNVt5fKK-uWM6wCNZ7x4AYvLDI
-                */
 
-            /* https://maps.googleapis.com/
-                maps/
-                api/
-                staticmap
-                ?size=600x400
-                &markers=color:green|label:S|34.0522,-118.2437
-                &markers=color:red|label:E|34.0522,-118.2437
-                &path=color:0x0000ff|weight:5|34.0522,-118.2437|34.0522,-118.2437
-                &key=AIzaSyDxT0mzJKNVt5fKK-uWM6wCNZ7x4AYvLDI
-             */
             setImageUrl(baseUrl);
         };
 
