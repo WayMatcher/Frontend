@@ -26,3 +26,4 @@ dist-ssr
 *storybook.log
 
 tsconfig.tsbuildinfo
+.million/store.json
