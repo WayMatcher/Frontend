@@ -14,6 +14,9 @@ import NewEvent from '@/pages/events/NewEvent';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import Profile from '@/components/user/Profile';
 import EditPage from '@/pages/user/EditPage';
+import PasswordForget from '@/pages/password/PasswordForget';
+import PasswordChange from '@/pages/password/PasswordChange';
+import AcceptInvite from '@/pages/invites/Accept';
 import InboxPage from '@/pages/inbox/InboxPage';
 import { ErrorModalProvider } from '@/contexts/ErrorModalContext';
 import { Container, Modal } from 'react-bootstrap';
@@ -29,7 +32,10 @@ const Pages = () => {
                     <Routes>
                         <Route path='/' element={<LandingPage />} />
                         <Route path='/login' element={<LoginPage />} />
-                        <Route path='/register' element={<RegisterPage />} />
+                        <Route path='/password/forget' element={<PasswordForget />} />
+                        <Route path='/password/change' element={<PasswordChange />} />
+                        <Route path='/invites/accept' element={<AcceptInvite />} />
+                        <Route path='/register/*' element={<RegisterPage />} />
                         <Route path='/events' element={<EventsPage />} />
                         <Route path='/events/new' element={<NewEvent />} />
                         <Route path='/events/:eventid' element={<EventsPage />} />

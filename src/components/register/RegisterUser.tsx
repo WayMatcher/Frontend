@@ -1,26 +1,31 @@
 import React from 'react';
 import { Form as FormikForm, Formik } from 'formik';
-import { Container, Row } from 'react-bootstrap';
+import { Button, Container, Row } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { RegisterUserSchema } from '@/utils/formValidations';
 import FormInput from '@/components/FormInput';
-import { FormUserRegister, initialValuesUserRegister, StepsRegister } from '@/types/objects/User/form';
+import { FormUserRegister, initialValuesUserRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
-import RegisterButtons from '@/components/register/RegisterButtons';
 import User from '@/types/objects/User/dto';
 
 export default function RegisterUser({
-    step,
-    setUser,
+    userState,
+    onComplete,
 }: {
-    step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
-    setUser: React.Dispatch<React.SetStateAction<(User & { password: string }) | null>>;
+    userState: [
+        (User & { password: string }) | null,
+        React.Dispatch<React.SetStateAction<(User & { password: string }) | null>>,
+    ];
+    onComplete: (isDone: boolean) => void;
 }): React.ReactElement {
-    const [currentStep, setStep] = step;
+    const navigate = useNavigate();
+
     const handleSubmit = async (values: FormUserRegister) => {
-        setUser(values);
-        setStep(StepsRegister.ADDRESS);
+        userState[1](values);
+        onComplete(true);
+        navigate('/register/address');
     };
-    if (currentStep !== StepsRegister.USER) return <></>;
+
     return (
         <>
             <h2>User</h2>
@@ -108,7 +113,7 @@ export default function RegisterUser({
                                         formikProps={formikProps}
                                     />
                                 </Row>
-                                <RegisterButtons nextStep={StepsRegister.ADDRESS} setStep={setStep} />
+                                <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
                             </FormikForm>
                         )}
                     </Formik>

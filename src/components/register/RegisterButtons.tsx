@@ -1,81 +1,31 @@
 import { Button, Col, ButtonGroup, Row } from 'react-bootstrap';
-import { StepsRegister } from '@/types/objects/User/form';
 import { useNavigate } from 'react-router-dom';
 
-/**
- * Props for the RegisterNavButtons component.
- *
- * @interface RegisterNavButtonsProps
- * @property {StepsRegister} [prevStep] - The previous step in the registration process. Optional.
- * @property {StepsRegister} [nextStep] - The next step in the registration process. Optional.
- */
-interface RegisterNavButtonsProps {
-    prevStep?: StepsRegister | undefined;
-    nextStep?: StepsRegister | undefined;
-    setStep: (step: StepsRegister) => void;
-}
-
-const ButtonsRegister = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
-    return (
-        <>
-            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
-                Previous
-            </Button>
-            <Button type='submit'>Register</Button>
-        </>
-    );
-};
-
-const ButtonsNext = () => {
-    return (
-        <>
-            <Button type='button' variant='secondary' disabled={true}>
-                Previous
-            </Button>
-            <Button type='submit'>Next</Button>
-        </>
-    );
-};
-
-const ButtonsPrev = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
-    return (
-        <>
-            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
-                Previous
-            </Button>
-            <Button type='submit'>Submit</Button>
-        </>
-    );
-};
-
-const Buttons = (prevStep: StepsRegister, setStep: (step: StepsRegister) => void) => {
-    return (
-        <>
-            <Button type='button' variant='secondary' onClick={() => setStep(prevStep)}>
-                Previous
-            </Button>
-            <Button type='submit'>Next</Button>
-        </>
-    );
-};
-
-export default function RegisterNavButtons({ prevStep, nextStep, setStep }: RegisterNavButtonsProps) {
+export default function RegisterNavButtons({
+    doneStates,
+}: {
+    doneStates: { user: boolean; address: boolean; vehicle: boolean };
+}) {
     const navigate = useNavigate();
 
     const cancel = () => {
         navigate('/');
     };
 
-    let buttons;
-    if (prevStep === StepsRegister.VEHICLE) {
-        buttons = ButtonsRegister(prevStep, setStep);
-    } else if (prevStep && nextStep) {
-        buttons = Buttons(prevStep, setStep);
-    } else if (prevStep && !nextStep) {
-        buttons = ButtonsPrev(prevStep, setStep);
-    } else if (!prevStep && nextStep) {
-        buttons = ButtonsNext();
-    }
+    const buttonLabels: Record<string, string> = {
+        '/register/user': 'Next: Address',
+        '/register/address': 'Next: Vehicles',
+        '/register/vehicles': 'Finish Registration',
+    };
+
+    const currentPath = window.location.pathname;
+    const buttonVariant = currentPath === '/register/vehicles' ? 'success' : 'primary';
+
+    const buttons = buttonLabels[currentPath] ? (
+        <Button type='submit' variant={buttonVariant}>
+            {buttonLabels[currentPath]}
+        </Button>
+    ) : null;
 
     return (
         <>
@@ -83,8 +33,15 @@ export default function RegisterNavButtons({ prevStep, nextStep, setStep }: Regi
             <Row>
                 <Col>
                     <ButtonGroup>
-                        <Button onClick={cancel} variant='secondary'>
+                        <Button onClick={cancel} variant='danger'>
                             Cancel
+                        </Button>
+                        <Button
+                            variant='secondary'
+                            disabled={currentPath === '/register/user'}
+                            onClick={() => navigate(-1)}
+                        >
+                            Back
                         </Button>
                         {buttons}
                     </ButtonGroup>

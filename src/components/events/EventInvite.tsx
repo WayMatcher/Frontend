@@ -89,7 +89,7 @@ export const EventInvite = ({
                                     <Form.Label>Message</Form.Label>
                                     <Form.Control
                                         aria-label='Message to send'
-                                        type={'textarea'}
+                                        as={'textarea'}
                                         name={'message'}
                                         value={formikProps.values.message}
                                         placeholder={

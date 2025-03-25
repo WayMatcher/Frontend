@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Col, ListGroup, Modal, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, ListGroup, Modal, Row, Stack } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import { useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
@@ -21,27 +21,22 @@ const Event = ({
                 <Row>
                     <Col>
                         <ListGroup>
-                            <ListGroup.Item>
-                                <EventMap width={900} height={1200} stopList={event.stopList} />
-                            </ListGroup.Item>
-                            <ListGroup.Item>
-                                <strong>Stops:</strong>
-                                <ListGroup>
-                                    {event.stopList.map((stop) => (
-                                        <ListGroup horizontal key={stop.stopId}>
-                                            <ListGroup.Item key={'seq' + stop.stopId}>
-                                                <strong>#{stop.stopSequenceNumber}: </strong>
-                                            </ListGroup.Item>
-                                            <ListGroup.Item key={'addr' + stop.stopId}>
-                                                {stop.address.street} {stop.address.city} {stop.address.state}{' '}
-                                                {stop.address.postal_code}
-                                            </ListGroup.Item>
-                                        </ListGroup>
-                                    ))}
+                            <EventMap width={900} height={1200} stopList={event.stopList} />
+                            <strong>Stops:</strong>
+                            {event.stopList.map((stop) => (
+                                <ListGroup horizontal>
+                                    <ListGroup.Item key={'seq' + stop.stopId}>
+                                        <strong>#{stop.stopSequenceNumber}: </strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item key={'addr' + stop.stopId}>
+                                        {stop.address.street} {stop.address.city} {stop.address.state}{' '}
+                                        {stop.address.postal_code}
+                                    </ListGroup.Item>
                                 </ListGroup>
-                            </ListGroup.Item>
+                            ))}
                         </ListGroup>
                     </Col>
+
                     <Col>
                         <ListGroup>
                             <ListGroup.Item>{event.description}</ListGroup.Item>
@@ -102,27 +97,7 @@ const OwnedEvent = ({
             <Modal.Body>
                 <Row>
                     <Col>
-                        <ListGroup>
-                            <ListGroup.Item>
-                                <EventMap width={900} height={1200} stopList={event.stopList} />
-                            </ListGroup.Item>
-                            <ListGroup.Item>
-                                <strong>Stops:</strong>
-                                <ListGroup>
-                                    {event.stopList.map((stop) => (
-                                        <ListGroup horizontal key={stop.stopId}>
-                                            <ListGroup.Item key={'seq' + stop.stopId}>
-                                                <strong>#{stop.stopSequenceNumber}: </strong>
-                                            </ListGroup.Item>
-                                            <ListGroup.Item key={'addr' + stop.stopId}>
-                                                {stop.address.street} {stop.address.city} {stop.address.state}{' '}
-                                                {stop.address.postal_code}
-                                            </ListGroup.Item>
-                                        </ListGroup>
-                                    ))}
-                                </ListGroup>
-                            </ListGroup.Item>
-                        </ListGroup>
+                        <EventMap width={300} height={400} stopList={event.stopList} />
                     </Col>
                     <Col>
                         <ListGroup>
@@ -167,6 +142,25 @@ const OwnedEvent = ({
                         </ListGroup>
                     </Col>
                 </Row>
+                <Row>
+                    <Col>
+                        <strong>Stops:</strong>
+                        <ListGroup>
+                            {event.stopList.map((stop) => (
+                                <>
+                                    <ListGroup.Item key={'seq' + stop.stopId}>
+                                        <strong>#{stop.stopSequenceNumber}: </strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item key={'addr' + stop.stopId}>
+                                        {stop.address.street} {stop.address.city} {stop.address.state}{' '}
+                                        {stop.address.postal_code}
+                                    </ListGroup.Item>
+                                </>
+                            ))}
+                        </ListGroup>
+                    </Col>
+                </Row>
+                <i>This event is owned by you</i>
             </Modal.Body>
         </>
     );

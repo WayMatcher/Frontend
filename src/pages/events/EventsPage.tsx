@@ -81,7 +81,7 @@ export default function EventPage() {
     return (
         <>
             <Container className='EventPage'>
-                <h2>Events</h2>
+                <h2>Ways</h2>
                 <SearchBar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 <br />
                 <Container className='EventGrid'>

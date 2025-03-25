@@ -29,7 +29,7 @@ export default function NavBar() {
                             Home
                         </Link>
                         <Link to='/events' className='nav-link'>
-                            Events
+                            Ways
                         </Link>
                     </Nav>
                     <Nav>

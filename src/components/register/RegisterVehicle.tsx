@@ -1,27 +1,17 @@
-import React from 'react';
-
-import { Form as FormikForm, Formik } from 'formik';
-import { Container, Row } from 'react-bootstrap';
+import { Formik, Form as FormikForm, FormikHelpers } from 'formik';
+import { Button, ButtonGroup, Row } from 'react-bootstrap';
+import FormInput from '../FormInput';
 import { RegisterVehicleSchema } from '@/utils/formValidations';
-import FormInput from '@/components/FormInput';
-import { StepsRegister } from '@/types/objects/User/form';
-import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/objects/Vehicle/dto';
-import RegisterNavButtons from '@/components/register/RegisterButtons';
 
-export default function RegisterVehicle({
-    step,
-    setVehicle,
+const VehicleEntry = ({
+    vehicle,
+    vehicleListState,
 }: {
-    step: [StepsRegister, React.Dispatch<React.SetStateAction<StepsRegister>>];
-    setVehicle: React.Dispatch<React.SetStateAction<Vehicle | null>>;
-}): React.ReactElement {
-    const [_, setStep] = step;
-
-    const handleSubmit = (values: Vehicle) => {
-        setVehicle(values);
-        setStep(StepsRegister.SUMMARY);
-    };
+    vehicle: Vehicle;
+    vehicleListState: [Vehicle[], React.Dispatch<React.SetStateAction<Vehicle[]>>];
+}) => {
+    const [vehicleList, setVehicleList] = vehicleListState;
 
     const initialValues: Vehicle = {
         make: '',
@@ -29,48 +19,59 @@ export default function RegisterVehicle({
         year: 2025,
         seats: 4,
         license_plate: '',
-        additional_description: '',
     };
 
+    const onSubmit = (values: typeof initialValues, formikHelpers: FormikHelpers<Vehicle>) => {
+        formikHelpers.setSubmitting(true);
+        const vehicleIndex = vehicleList.findIndex((v) => v.id === vehicle.id);
+        const updatedVehicles = [...vehicleList];
+
+        if (vehicleIndex !== -1) {
+            updatedVehicles[vehicleIndex] = values;
+        } else {
+            updatedVehicles.push(values);
+        }
+
+        setVehicleList(updatedVehicles);
+        formikHelpers.setSubmitting(false);
+    };
+
+    const deleteSelf = () => {
+        const updatedVehicles = vehicleList.filter((v) => v.id !== vehicle.id);
+        setVehicleList(updatedVehicles);
+    };
+
+    const validationSchema = RegisterVehicleSchema;
+
     return (
-        <>
-            <h2>Vehicle</h2>
-            <CollapseWrapper>
-                <Container>
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={RegisterVehicleSchema}
-                        onSubmit={handleSubmit}
-                    >
-                        {(formikProps) => (
-                            <FormikForm>
-                                <Row className='mb-3'>
-                                    <FormInput label='Make' name='make' type='text' formikProps={formikProps} />
-                                    <FormInput label='Model' name='model' type='text' formikProps={formikProps} />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput label='Year' name='year' type='number' formikProps={formikProps} />
-                                    <FormInput label='Seats' name='seats' type='number' formikProps={formikProps} />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='License Plate'
-                                        name='license_plate'
-                                        type='text'
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <br />
-                                <RegisterNavButtons
-                                    prevStep={StepsRegister.USER}
-                                    nextStep={StepsRegister.SUMMARY}
-                                    setStep={setStep}
-                                />
-                            </FormikForm>
-                        )}
-                    </Formik>
-                </Container>
-            </CollapseWrapper>
-        </>
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+            {(formikProps) => (
+                <FormikForm>
+                    <strong>Vehicle </strong>
+                    <i>{vehicle.license_plate}</i>
+                    <Row className='mb-3'>
+                        <FormInput label='Make' name='make' type='text' formikProps={formikProps} />
+                        <FormInput label='Model' name='model' type='text' formikProps={formikProps} />
+                    </Row>
+                    <Row className='mb-3'>
+                        <FormInput label='Year' name='year' type='number' formikProps={formikProps} />
+                        <FormInput label='Seats' name='seats' type='number' formikProps={formikProps} />
+                    </Row>
+                    <Row className='mb-3'>
+                        <FormInput label='License Plate' name='license_plate' type='text' formikProps={formikProps} />
+                    </Row>
+                    <Row>
+                        <ButtonGroup>
+                            <Button variant='warning' onClick={() => deleteSelf()}>
+                                Delete
+                            </Button>
+                            <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
+                        </ButtonGroup>
+                    </Row>
+                </FormikForm>
+            )}
+        </Formik>
     );
-}
+};
+
+export default VehicleEntry;
