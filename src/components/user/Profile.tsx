@@ -55,12 +55,12 @@ export default function Profile() {
         <Loading loading={loading}>
             <Container className='profile'>
                 <Container className='profile-picture'>
-                    <p>{user?.profile_picture}</p>
+                    <p>Here goes the profile picture</p>
                 </Container>
                 <h1>
                     {user?.firstName} {user?.name}
                 </h1>
-                <p>{user?.additional_description}</p>
+                <p>{user?.additionaldescription}</p>
                 <br />
                 <Table responsive striped bordered hover>
                     <thead>
@@ -85,7 +85,7 @@ export default function Profile() {
                         <tr>
                             <td>Address</td>
                             <td>
-                                {address?.street} {address?.postal_code} {address?.city}
+                                {address?.street} {address?.postalcode} {address?.city}
                             </td>
                         </tr>
                         {vehicles?.map((vehicle) => (

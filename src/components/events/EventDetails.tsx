@@ -29,7 +29,7 @@ const Event = ({
                                     </ListGroup.Item>
                                     <ListGroup.Item key={'addr' + stop.stopId}>
                                         {stop.address.street} {stop.address.city} {stop.address.state}{' '}
-                                        {stop.address.postal_code}
+                                        {stop.address.postalcode}
                                     </ListGroup.Item>
                                 </ListGroup>
                             ))}
@@ -45,7 +45,7 @@ const Event = ({
                             <ListGroup.Item>
                                 <strong>Start:</strong> {event.stopList[0].address.street}{' '}
                                 {event.stopList[0].address.city} {event.stopList[0].address.state}{' '}
-                                {event.stopList[0].address.postal_code}
+                                {event.stopList[0].address.postalcode}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Free Seats:</strong> {event.freeSeats}
@@ -107,7 +107,7 @@ const OwnedEvent = ({
                             <ListGroup.Item>
                                 <strong>Start:</strong> {event.stopList[0].address.street}{' '}
                                 {event.stopList[0].address.city} {event.stopList[0].address.state}{' '}
-                                {event.stopList[0].address.postal_code}
+                                {event.stopList[0].address.postalcode}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Free Seats:</strong> {event.freeSeats}
@@ -152,7 +152,7 @@ const OwnedEvent = ({
                                     </ListGroup.Item>
                                     <ListGroup.Item key={'addr' + stop.stopId}>
                                         {stop.address.street} {stop.address.city} {stop.address.state}{' '}
-                                        {stop.address.postal_code}
+                                        {stop.address.postalcode}
                                     </ListGroup.Item>
                                 </>
                             ))}

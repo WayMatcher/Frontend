@@ -110,7 +110,7 @@ export default function RegisterUser({
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='Additional Information'
-                                        name='additional_description'
+                                        name='additionaldescription'
                                         type='textarea'
                                         placeholder='Tell us about yourself'
                                         formikProps={formikProps}
@@ -119,7 +119,7 @@ export default function RegisterUser({
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='Profile Picture'
-                                        name='profile_picture'
+                                        name='profilepicture'
                                         type='file'
                                         formikProps={formikProps}
                                     />

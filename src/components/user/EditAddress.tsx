@@ -19,13 +19,13 @@ export default function EditAddress(): React.ReactElement {
 
     let initialValues: Address = {
         street: '',
-        postal_code: '',
+        postalcode: '',
         region: '',
-        country: '',
+        countrycode: '',
         state: '',
         city: '',
-        address_line1: '',
-        address_line2: '',
+        addressLine1: '',
+        addressLine2: '',
         longitude: 0,
         latitude: 0,
     };
@@ -105,7 +105,7 @@ export default function EditAddress(): React.ReactElement {
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='Country'
-                                        name='country'
+                                        name='countrycode'
                                         type='text'
                                         placeholder='Country'
                                         isLoading={isLoading}

@@ -1,5 +1,5 @@
 import { Formik, Form as FormikForm, FormikHelpers } from 'formik';
-import { Button, ButtonGroup, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, Row } from 'react-bootstrap';
 import FormInput from '../FormInput';
 import { RegisterVehicleSchema } from '@/utils/formValidations';
 import Vehicle from '@/types/objects/Vehicle/dto';
@@ -61,8 +61,12 @@ const VehicleEntry = ({
                 }, [vehicle, setValues]);
                 return (
                     <FormikForm>
-                        <strong>Vehicle </strong>
-                        <i>{vehicle.licensePlate}</i>
+                        {vehicle.licensePlate && (
+                            <>
+                                <strong>Vehicle </strong>
+                                <i>{vehicle.licensePlate}</i>
+                            </>
+                        )}
                         <Row className='mb-3'>
                             <FormInput label='Make' name='manufacturerName' type='text' formikProps={formikProps} />
                             <FormInput label='Model' name='model' type='text' formikProps={formikProps} />
@@ -80,13 +84,26 @@ const VehicleEntry = ({
                                 formikProps={formikProps}
                             />
                         </Row>
+                        <Row className='mb-3'>
+                            <FormInput
+                                label='Additional Info'
+                                name='additionalInfo'
+                                type='text'
+                                placeholder={'e.g. color, special features'}
+                                formikProps={formikProps}
+                            />
+                        </Row>
                         <Row>
-                            <ButtonGroup>
-                                <Button variant='warning' onClick={() => deleteSelf()}>
-                                    Delete
-                                </Button>
-                                <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
-                            </ButtonGroup>
+                            <Col>
+                                <ButtonGroup>
+                                    <Button variant='outline-secondary' onClick={() => deleteSelf()}>
+                                        Delete
+                                    </Button>
+                                    <Button type='submit' variant='primary'>
+                                        {formikProps.isSubmitting ? 'Saving...' : 'Save'}
+                                    </Button>
+                                </ButtonGroup>
+                            </Col>
                         </Row>
                     </FormikForm>
                 );

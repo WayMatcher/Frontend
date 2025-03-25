@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Container, ListGroup } from 'react-bootstrap';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
@@ -17,20 +17,18 @@ export default function RegisterAddress({
     };
 }): React.ReactElement {
     const [address, setAddress] = addressState;
-    const [showAddressModal, setShowAddressModal] = useState<boolean>(false);
 
     // Mark as done based on completion
     useEffect(() => done.onComplete(!!address), [address, done.onComplete]);
 
     return (
         <>
-            <h2>Address</h2>
             <CollapseWrapper>
                 <Container>
                     {address ? (
                         <ListGroup>
                             <ListGroup.Item>Street: {address.street}</ListGroup.Item>
-                            <ListGroup.Item>Postal Code: {address.postal_code}</ListGroup.Item>
+                            <ListGroup.Item>Postal Code: {address.postalcode}</ListGroup.Item>
                             <ListGroup.Item>Region: {address.region}</ListGroup.Item>
                             <ListGroup.Item>City: {address.city}</ListGroup.Item>
                             <ListGroup.Item>Country: {address.country}</ListGroup.Item>
@@ -48,11 +46,10 @@ export default function RegisterAddress({
                             </ListGroup.Item>
                         </ListGroup>
                     ) : (
-                        <Button onClick={() => setShowAddressModal(true)}>Add Address</Button>
+                        <AddressAdd setAddress={setAddress} />
                     )}
                 </Container>
             </CollapseWrapper>
-            <AddressAdd showState={[showAddressModal, setShowAddressModal]} setAddress={setAddress} />
         </>
     );
 }

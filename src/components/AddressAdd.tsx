@@ -1,20 +1,13 @@
 import Address, { HereApiItem } from '@/types/objects/Address/dto';
 import { Formik, Form as FormikForm } from 'formik';
 import { useContext } from 'react';
-import { Button, ButtonGroup, Modal } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import FormInput from './FormInput';
 import * as Yup from 'yup';
 import { getHEREAddress } from '@/api/endpoints/address';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 
-const AddressAddModal = ({
-    showState,
-    setAddress,
-}: {
-    showState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-    setAddress: React.Dispatch<React.SetStateAction<Address | null>>;
-}) => {
-    const [show, setShow] = showState;
+const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetStateAction<Address | null>> }) => {
     const { showErrorModal } = useContext(ErrorModalContext);
     const getAddress = async (address: string): Promise<Address> => {
         try {
@@ -22,10 +15,11 @@ const AddressAddModal = ({
             const item: HereApiItem = response.data.items[0];
 
             return {
-                address_line1: item.address.label,
+                addressLine1: item.address.label,
                 city: item.address.city || '',
-                postal_code: item.address.postalCode || '',
-                country: item.address.countryCode,
+                postalcode: item.address.postalCode || '',
+                country: item.address.countryName,
+                countrycode: item.address.countryCode,
                 region: item.address.state,
                 state: item.address.state,
                 longitude: item.position.lng,
@@ -48,7 +42,6 @@ const AddressAddModal = ({
         try {
             const response = await getAddress(values.address);
             setAddress(response);
-            setShow(false);
         } catch (error: unknown) {
             if (error instanceof Error) showErrorModal(error.message);
             throw error;
@@ -57,39 +50,26 @@ const AddressAddModal = ({
 
     return (
         <>
-            <Modal show={show} onHide={() => setShow(false)}>
-                <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
-                    {(formikProps) => (
-                        <FormikForm>
-                            <Modal.Header>
-                                <Modal.Title>Add Address</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <FormInput
-                                    type='text'
-                                    label='Address'
-                                    name='address'
-                                    placeholder='Enter address'
-                                    formikProps={formikProps}
-                                />
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <ButtonGroup>
-                                    <Button type='submit'>Save</Button>
-                                    <Button
-                                        variant='secondary'
-                                        onClick={() => {
-                                            setShow(false);
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </ButtonGroup>
-                            </Modal.Footer>
-                        </FormikForm>
-                    )}
-                </Formik>
-            </Modal>
+            <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
+                {(formikProps) => (
+                    <FormikForm>
+                        <Row className='mb-3'>
+                            <FormInput
+                                type='text'
+                                label='Address'
+                                name='address'
+                                placeholder='Enter address'
+                                formikProps={formikProps}
+                            />
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Button type='submit'>Save</Button>
+                            </Col>
+                        </Row>
+                    </FormikForm>
+                )}
+            </Formik>
         </>
     );
 };

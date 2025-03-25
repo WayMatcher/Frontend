@@ -47,7 +47,7 @@ export default function RegisterSummary({
                             <p>
                                 Name: {user.firstName} {user.name}
                             </p>
-                            <p>Additional Description: {user.additional_description}</p>
+                            <p>Additional Description: {user.additionaldescription}</p>
                             <p>Telephone: {user.telephone}</p>
                         </Col>
                     </Row>
@@ -55,7 +55,7 @@ export default function RegisterSummary({
                         <Col>
                             <h3>Address</h3>
                             <p>Street: {address.street}</p>
-                            <p>Postal Code: {address.postal_code}</p>
+                            <p>Postal Code: {address.postalcode}</p>
                             <p>Region: {address.region}</p>
                             <p>Country: {address.country}</p>
                             <p>State: {address.state}</p>

@@ -31,8 +31,10 @@ export default function RegisterVehicleList({
     }, [vehicleListState, done.onComplete]);
 
     const handleAddVehicle = () => {
+        const lastVehicleId =
+            vehicleListState[0].length > 0 ? vehicleListState[0][vehicleListState[0].length - 1].vehicleId : 0;
         const newVehicle: Vehicle = {
-            vehicleId: Date.now(), // Example unique ID
+            vehicleId: (lastVehicleId ?? 0) + 1, // Increment the last vehicle's ID
             // Add other default properties for a new vehicle here
         };
         vehicleListState[1]((prevVehicles) => [...prevVehicles, newVehicle]);

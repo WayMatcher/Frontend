@@ -42,10 +42,10 @@ export const RegisterAddressSchema = Yup.object({
  * Schema for validating vehicle registration form.
  */
 export const RegisterVehicleSchema = Yup.object({
-    make: Yup.string(),
-    model: Yup.string(),
-    year: Yup.number().min(1900).max(2025),
-    seats: Yup.number(),
+    manufacturerName: Yup.string().required('Please enter the manufacturer name'),
+    model: Yup.string().required('Please enter the model name'),
+    year: Yup.number().min(1900).max(2125),
+    seats: Yup.number().min(2).required('Please enter the number of seats'),
     license_plate: Yup.string(),
     additional_description: Yup.string(),
 }); // Vehicle Page

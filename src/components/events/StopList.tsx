@@ -8,7 +8,7 @@ const StopList = ({ stops }: { stops: Stop[] }) => {
                 <>
                     <ListGroup.Item>
                         {stop.stopSequenceNumber} {stop.address.state} {stop.address.city} {stop.address.street}{' '}
-                        {stop.address.postal_code}
+                        {stop.address.postalcode}
                     </ListGroup.Item>
                 </>
             ))}

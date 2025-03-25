@@ -1,16 +1,17 @@
 export default interface Address {
-    id?: number;
+    adressId?: number;
     city: string;
-    postal_code: string;
+    postalcode: string;
     street: string;
-    country: string;
+    country?: string;
+    countrycode?: string;
     region?: string;
     state?: string;
     longitude: number;
     latitude: number;
-    address_line1?: string;
-    address_line2?: string;
-    status?: string;
+    addressLine1?: string;
+    addressLine2?: string;
+    statusid?: number;
 }
 
 /**

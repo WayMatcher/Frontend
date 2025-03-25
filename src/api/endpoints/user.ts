@@ -67,8 +67,8 @@ export const apiRegisterUser = async (request: { user: User; vehicleList?: Vehic
             password: await hashString(request.password),
         };
 
-        const response = await api.axios.put('/User/RegisterUser', hashedRequest);
-        return response;
+        console.log(hashedRequest);
+        return await api.axios.post('/Register/NewUser', hashedRequest);
     } catch (error) {
         api.handleApiError(error);
         throw error;
