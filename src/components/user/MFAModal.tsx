@@ -40,7 +40,7 @@ export default function MFAModal({
                 userState: { ...tempUser, id: userLoginID },
             });
 
-            navigate('/');
+            navigate('/events');
         } else {
             console.error("UserID doesn't exist", userLoginID);
         }

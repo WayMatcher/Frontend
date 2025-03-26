@@ -31,9 +31,6 @@ function MapURL({ stopList, width, height }: Props) {
             const end: Address = stopList[stopList.length - 1].address;
             const waypoints: Address[] = stopList.slice(1, stopList.length - 1).map((stop) => stop.address);
 
-            console.log('Start: ', start.longitude, start.latitude);
-            console.log('End: ', end.longitude, end.latitude);
-
             // Check if Latitude is specified in degrees within the range [-90, 90]. Longitude is specified in degrees within the range [-180, 180]
             if (
                 start.latitude < -90 ||
@@ -71,8 +68,9 @@ function MapURL({ stopList, width, height }: Props) {
 
         generateStaticMap();
     }, []);
-    if (!imageUrl) return null;
-    return <Card.Img variant='top' src={imageUrl} />;
+
+    if (imageUrl != '') return <Card.Img variant='top' src={imageUrl} />;
+    return null;
 }
 
 export default MapURL;

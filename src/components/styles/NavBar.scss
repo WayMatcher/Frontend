@@ -1,41 +1,13 @@
-.NavBar {
-    background-color: #f8f9fa; // Light gray background
-    padding: 1rem 2rem; // Padding around the navbar
-    display: flex; // Use flexbox for layout
-    justify-content: space-between; // Space out logo/links and buttons
-    align-items: center; // Vertically center items
-    position: sticky; // Stick to the top (optional, but common for navbars)
-    top: 0;
-    z-index: 100; // Ensure it's above other content
-    box-shadow: #555 0px 2px 5px; // Add a shadow for depth
-    .container {
+.navbar {
+    .container-fluid {
         .navbar-brand {
-            font-size: 1.5rem; // Larger font size for logo
-            font-weight: bold; // Bold text
-            text-decoration: none; // Remove underlines
+            font-weight: bold;
+            text-decoration: none;
             cursor: pointer;
         }
     }
 
-    //  For smaller screen size.
-    @media (max-width: 768px) {
-        flex-direction: column; // Stack items vertically
-        align-items: stretch; // Stretch items to full width
-
-        .nav-links {
-            flex-direction: column; // Stack links vertically
-            text-align: center; // Center-align links
-            gap: 0.5rem; // Reduce gap in links
-            margin-top: 1rem; // Add space between logo and links
-
-            a {
-                display: block; // Make links full-width
-                padding: 0.8rem; // Increase padding for touch targets
-            }
-        }
-    }
     a {
-        //color: #fff;
         text-decoration: none;
         padding: 0.5rem;
         border-radius: 4px;

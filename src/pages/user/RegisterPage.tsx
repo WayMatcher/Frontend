@@ -107,9 +107,7 @@ const RegisterPage = () => {
                         <Route
                             path={steps[3]}
                             element={
-                                registerObject.user !== null &&
-                                registerObject.address !== null &&
-                                registerObject.vehicleList.length > 0 ? (
+                                registerObject.user !== null && registerObject.address !== null ? (
                                     <RegisterSummary
                                         register={
                                             registerObject as {

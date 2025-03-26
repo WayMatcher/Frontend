@@ -3,6 +3,7 @@ const api = new API();
 
 import User from '@/types/objects/User/dto';
 import Vehicle from '@/types/objects/Vehicle/dto';
+import axios from 'axios';
 
 const hashString = async (string: string): Promise<string> => {
     const buffer = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(string));
@@ -13,17 +14,26 @@ const hashString = async (string: string): Promise<string> => {
 
 export const apiGetUser = async (request: { username?: string; email?: string; user?: User; userID?: number }) => {
     try {
-        const response = await api.axios.get<User>('/User/GetUser', { params: { ...request } });
-        return response;
+        return await api.axios.get<User>('/User/GetUser', { params: { ...request } });
     } catch (error) {
         api.handleApiError(error);
         throw error;
     }
 };
 
-export const apiSetUser = async (request: { username?: string; email?: string; user?: User; userID?: number }) => {
+export const apiSetUser = async (request: { user: User; vehicleList?: Vehicle[]; password: string }) => {
     try {
-        const response = await api.axios.put<User>('/putUser', request);
+        // Sets the picture equal to a random cat picture if no picture is set
+        if (request.user.profilepicture === undefined) {
+            request.user.profilepicture = await apiGetCatPicture();
+        }
+
+        const hashedRequest = {
+            ...request,
+            password: await hashString(request.password),
+        };
+
+        const response = await api.axios.post<User>('/User/EditUser', hashedRequest);
         return response;
     } catch (error) {
         api.handleApiError(error);
@@ -62,12 +72,15 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
 
 export const apiRegisterUser = async (request: { user: User; vehicleList?: Vehicle[]; password: string }) => {
     try {
+        // Sets the picture equal to a random cat picture if no picture is set
+        if (request.user.profilepicture === undefined) {
+            request.user.profilepicture = await apiGetCatPicture();
+        }
+
         const hashedRequest = {
             ...request,
             password: await hashString(request.password),
         };
-
-        console.log(hashedRequest);
         return await api.axios.post('/Register/NewUser', hashedRequest);
     } catch (error) {
         api.handleApiError(error);
@@ -96,6 +109,17 @@ export const apiRequestPasswordReset = async (input: string, inputType: 'email' 
 export const apiSetPassword = async (userId: string, password: string) => {
     try {
         return await api.axios.post('/User/RequestPasswordReset', { userId: userId, password: hashString(password) });
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiGetCatPicture = async (size?: number): Promise<Blob> => {
+    try {
+        return await axios.get('https://api.ai-cats.net/v1/cat', {
+            params: { size: size ? size.toString() : '512', theme: 'all' },
+        });
     } catch (error) {
         api.handleApiError(error);
         throw error;

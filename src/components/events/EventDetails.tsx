@@ -6,6 +6,7 @@ import User from '@/types/objects/User/dto';
 import EventMap from './EventMap';
 import EventMember from '@/types/objects/EventMember/dto';
 import EventInvite from './EventInvite';
+import '@/components/styles/EventDetails.scss';
 
 const Event = ({
     event,
@@ -38,7 +39,6 @@ const Event = ({
 
                     <Col>
                         <ListGroup>
-                            <ListGroup.Item>{event.description}</ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Date:</strong> {event.startTimestamp}
                             </ListGroup.Item>
@@ -102,7 +102,7 @@ const OwnedEvent = ({
                         <ListGroup>
                             <ListGroup.Item>{event.description}</ListGroup.Item>
                             <ListGroup.Item>
-                                <strong>Date:</strong> {event.startTimestamp}
+                                <strong>Date:</strong> {new Date(event.startTimestamp).toLocaleDateString('de-AT')}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Start:</strong> {event.stopList[0].address.street}{' '}
@@ -142,22 +142,7 @@ const OwnedEvent = ({
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
-                        <strong>Stops:</strong>
-                        <ListGroup>
-                            {event.stopList.map((stop) => (
-                                <>
-                                    <ListGroup.Item key={'seq' + stop.stopId}>
-                                        <strong>#{stop.stopSequenceNumber}: </strong>
-                                    </ListGroup.Item>
-                                    <ListGroup.Item key={'addr' + stop.stopId}>
-                                        {stop.address.street} {stop.address.city} {stop.address.state}{' '}
-                                        {stop.address.postalcode}
-                                    </ListGroup.Item>
-                                </>
-                            ))}
-                        </ListGroup>
-                    </Col>
+                    <Col></Col>
                 </Row>
                 <i>This event is owned by you</i>
             </Modal.Body>
@@ -199,9 +184,9 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
     if (currentEvent) {
         return (
             <>
-                <Modal show={show} onHide={handleCloseModal}>
+                <Modal show={show} onHide={handleCloseModal} dialogClassName='modal-wide'>
                     <Modal.Header closeButton>
-                        <Modal.Title>{currentEvent.title}</Modal.Title>
+                        <Modal.Title>{currentEvent.description}</Modal.Title>
                     </Modal.Header>
                     {isOwnedEvent ? (
                         <Event key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />

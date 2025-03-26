@@ -18,7 +18,7 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
     const prettyTime = new Date(event.startTimestamp).toLocaleTimeString('de-AT');
 
     return (
-        <Card style={{ maxWidth: '18rem' }} border={'primary'}>
+        <Card style={{ maxWidth: '18rem' }}>
             <EventMap width={600} height={400} stopList={event.stopList} />
             <Card.Body>
                 <Card.Title>{event.title}</Card.Title>

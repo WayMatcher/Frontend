@@ -20,16 +20,20 @@ import AcceptInvite from '@/pages/invites/Accept';
 import InboxPage from '@/pages/inbox/InboxPage';
 import { ErrorModalProvider } from '@/contexts/ErrorModalContext';
 import { Container, Modal } from 'react-bootstrap';
+import NotFoundPage from './pages/NotFoundPage';
+import { UserProfilePopupProvider } from '@/contexts/UserProfilePopupContext';
+import UserProfilePopup from '@/components/UserProfilePopup';
 
 const Pages = () => {
     return (
         <BrowserRouter>
+            <header className='App-Header'>
+                <NavBar />
+            </header>
             <ErrorModalProvider>
-                <header className='App-Header'>
-                    <NavBar />
-                </header>
                 <main className='App-Main'>
                     <Routes>
+                        <Route path='*' element={<NotFoundPage />} />
                         <Route path='/' element={<LandingPage />} />
                         <Route path='/login' element={<LoginPage />} />
                         <Route path='/password/forget' element={<PasswordForget />} />
@@ -41,14 +45,14 @@ const Pages = () => {
                         <Route path='/events/:eventid' element={<EventsPage />} />
                         <Route path='/profile' element={<Profile />} />
                         <Route path='/profile/:username' element={<Profile />} />
-                        <Route path='/profile/:username/edit' element={<EditPage />} />
+                        <Route path='/profile/:username/edit/*' element={<EditPage />} />
                         <Route path='/inbox' element={<InboxPage />} />
                     </Routes>
                 </main>
-                <footer className='App-Footer'>
-                    <Footer />
-                </footer>
             </ErrorModalProvider>
+            <footer className='App-Footer'>
+                <Footer />
+            </footer>
         </BrowserRouter>
     );
 };
@@ -57,24 +61,29 @@ export default function AppWrapper() {
     const useErrorBoundary = import.meta.env.MODE === 'production';
     if (import.meta.env.MODE === 'development') console.warn('Error boundary is disabled in development mode');
 
-    if (useErrorBoundary) {
-        return (
-            <ErrorBoundary
-                fallback={
-                    <Container className='text-center error-boundary'>
-                        <Modal.Dialog>
-                            <h1>Critical Error</h1>
-                            <Modal.Body>
-                                <p>Something went wrong. Please try again later.</p>
-                            </Modal.Body>
-                        </Modal.Dialog>
-                    </Container>
-                }
-            >
-                <Pages />
-            </ErrorBoundary>
-        );
-    } else {
-        return <Pages />;
-    }
+    const AppContent = useErrorBoundary ? (
+        <ErrorBoundary
+            fallback={
+                <Container className='text-center error-boundary'>
+                    <Modal.Dialog>
+                        <h1>Critical Error</h1>
+                        <Modal.Body>
+                            <p>Something went wrong. Please try again later.</p>
+                        </Modal.Body>
+                    </Modal.Dialog>
+                </Container>
+            }
+        >
+            <Pages />
+        </ErrorBoundary>
+    ) : (
+        <Pages />
+    );
+
+    return (
+        <UserProfilePopupProvider>
+            {AppContent}
+            <UserProfilePopup />
+        </UserProfilePopupProvider>
+    );
 }

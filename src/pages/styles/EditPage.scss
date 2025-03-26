@@ -1,0 +1,23 @@
+.edit-page {
+    display: flex;
+    flex-direction: row;
+    height: 100vh; // Full viewport height for the layout
+}
+
+.edit-nav {
+    width: 20%; // Adjust width as needed for the nav
+    padding: 1rem;
+    max-width: 200px;
+}
+
+.edit-content {
+    flex: 1; // Take up the remaining space
+    padding: 2rem;
+    overflow-y: auto; // Scrollable if content overflows
+}
+
+.profile-picture {
+    img {
+        border-radius: 0.375rem;
+    }
+}

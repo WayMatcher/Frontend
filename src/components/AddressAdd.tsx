@@ -1,14 +1,16 @@
 import Address, { HereApiItem } from '@/types/objects/Address/dto';
 import { Formik, Form as FormikForm } from 'formik';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import FormInput from './FormInput';
 import * as Yup from 'yup';
 import { getHEREAddress } from '@/api/endpoints/address';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
+import LoadingOverlay from './LoadingOverlay';
 
 const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetStateAction<Address | null>> }) => {
     const { showErrorModal } = useContext(ErrorModalContext);
+    const [isLoading, setIsLoading] = useState(false);
     const getAddress = async (address: string): Promise<Address> => {
         try {
             const response = await getHEREAddress({ q: address });
@@ -40,8 +42,10 @@ const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetS
 
     const onSubmit = async (values: typeof initialValues) => {
         try {
+            setIsLoading(true);
             const response = await getAddress(values.address);
             setAddress(response);
+            setIsLoading(false);
         } catch (error: unknown) {
             if (error instanceof Error) showErrorModal(error.message);
             throw error;
@@ -49,7 +53,7 @@ const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetS
     };
 
     return (
-        <>
+        <LoadingOverlay isLoading={isLoading}>
             <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
                 {(formikProps) => (
                     <FormikForm>
@@ -64,13 +68,15 @@ const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetS
                         </Row>
                         <Row>
                             <Col>
-                                <Button type='submit'>Save</Button>
+                                <Button type='submit' disabled={formikProps.isSubmitting}>
+                                    {formikProps.isSubmitting ? 'Saving...' : 'Save'}
+                                </Button>
                             </Col>
                         </Row>
                     </FormikForm>
                 )}
             </Formik>
-        </>
+        </LoadingOverlay>
     );
 };
 

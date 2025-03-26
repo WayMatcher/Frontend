@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { Formik, Form as FormikForm } from 'formik';
-import { Container, Row } from 'react-bootstrap';
+import { Button, ListGroup, Row } from 'react-bootstrap';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
@@ -11,6 +11,8 @@ import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
 import { RegisterAddressSchema } from '@/utils/formValidations';
 import EditButtons from './EditButtons';
+import LoadingOverlay from '../LoadingOverlay';
+import AddressAdd from '../AddressAdd';
 
 export default function EditAddress(): React.ReactElement {
     const { showErrorModal } = useContext(ErrorModalContext);
@@ -30,7 +32,7 @@ export default function EditAddress(): React.ReactElement {
         latitude: 0,
     };
 
-    const validationSchema = RegisterAddressSchema;
+    const [address, setAddress] = React.useState<Address | null>(null);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -52,126 +54,53 @@ export default function EditAddress(): React.ReactElement {
         fetchData();
     }, []);
 
-    const handleSubmit = async (values: typeof initialValues) => {
-        try {
-            if (authUser?.userId === undefined) {
-                showErrorModal('No user logged in!');
-                return;
-            }
+    useEffect(() => {
+        const set = async (address: Address) => {
+            try {
+                if (authUser?.userId === undefined) {
+                    showErrorModal('No user logged in!');
+                    return;
+                }
 
-            const response = await apiSetAddress({ address: values, userId: authUser?.userId });
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+                setIsLoading(true);
+                await apiSetAddress({ address: address, userId: authUser?.userId });
+                setIsLoading(false);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        if (address) set(address);
+    }, [address]);
 
     return (
         <>
             <h2>Address</h2>
             <CollapseWrapper>
-                <Container>
-                    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                        {(formikProps) => (
-                            <FormikForm>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='Street'
-                                        name='street'
-                                        type='text'
-                                        placeholder='1234 Main St'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='Postal Code'
-                                        name='postal_code'
-                                        type='text'
-                                        placeholder='12345'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                    <FormInput
-                                        label='Region'
-                                        name='region'
-                                        type='text'
-                                        placeholder='Region'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='Country'
-                                        name='countrycode'
-                                        type='text'
-                                        placeholder='Country'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                    <FormInput
-                                        label='State'
-                                        name='state'
-                                        type='text'
-                                        placeholder='State'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                    <FormInput
-                                        label='City'
-                                        name='city'
-                                        type='text'
-                                        placeholder='City'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='Address Line 1'
-                                        name='address_line1'
-                                        type='text'
-                                        placeholder='Address Line 1'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='Address Line 2'
-                                        name='address_line2'
-                                        type='text'
-                                        placeholder='Address Line 2'
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <Row className='mb-3'>
-                                    <FormInput
-                                        label='Longitude'
-                                        name='longitude'
-                                        type='number'
-                                        placeholder={47.8117211}
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                    <FormInput
-                                        label='Latitude'
-                                        name='latitude'
-                                        type='number'
-                                        placeholder={13.0322547}
-                                        isLoading={isLoading}
-                                        formikProps={formikProps}
-                                    />
-                                </Row>
-                                <br />
-                                <EditButtons isLoading={isLoading} isSubmitting={formikProps.isSubmitting} />
-                            </FormikForm>
-                        )}
-                    </Formik>
-                </Container>
+                <LoadingOverlay isLoading={isLoading}>
+                    {address ? (
+                        <ListGroup>
+                            <ListGroup.Item>Street: {address.street}</ListGroup.Item>
+                            <ListGroup.Item>Postal Code: {address.postalcode}</ListGroup.Item>
+                            <ListGroup.Item>Region: {address.region}</ListGroup.Item>
+                            <ListGroup.Item>City: {address.city}</ListGroup.Item>
+                            <ListGroup.Item>Country: {address.country}</ListGroup.Item>
+                            <ListGroup.Item>Longitude: {address.latitude}</ListGroup.Item>
+                            <ListGroup.Item>Latitude: {address.longitude}</ListGroup.Item>
+                            <ListGroup.Item>
+                                <Button
+                                    variant='outline-danger'
+                                    onClick={() => {
+                                        setAddress(null);
+                                    }}
+                                >
+                                    Unset Address
+                                </Button>
+                            </ListGroup.Item>
+                        </ListGroup>
+                    ) : (
+                        <AddressAdd setAddress={setAddress} />
+                    )}
+                </LoadingOverlay>
             </CollapseWrapper>
         </>
     );

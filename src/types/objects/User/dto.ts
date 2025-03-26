@@ -8,9 +8,9 @@ interface BaseUser {
 
 export default interface User extends BaseUser {
     userId?: number;
-    firstName?: string;
+    firstname?: string;
     name?: string;
-    additionaldescription?: string;
+    additionalDescription?: string;
     license_verified?: boolean;
     profilepicture?: Blob;
     telephone?: string;

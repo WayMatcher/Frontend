@@ -9,6 +9,7 @@ import WMEvent from '@/types/objects/Event/dto';
 import EventDetails from '@/components/events/EventDetails';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export default function EventPage() {
     const { eventid } = useParams();
@@ -24,13 +25,16 @@ export default function EventPage() {
 
     const { showErrorModal } = useContext(ErrorModalContext);
 
+    const [isLoading, setLoading] = useState(true);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                console.log('Fetching events');
+                setLoading(true);
                 const response = await apiGetEventList({});
+                setLoading(false);
                 setEvents(response.data);
                 setFilteredEvents(response.data);
                 if (eventid) {
@@ -50,7 +54,7 @@ export default function EventPage() {
         };
 
         fetchEvents();
-    }, []); // Added empty dependency array to ensure it runs only once
+    }, []);
 
     useEffect(() => {
         if (searchTerm === '') {
@@ -80,7 +84,7 @@ export default function EventPage() {
 
     return (
         <>
-            <Container className='EventPage'>
+            <LoadingOverlay isLoading={isLoading} className='EventPage'>
                 <h2>Ways</h2>
                 <SearchBar onSearch={(searchTerm) => setSearchTerm(searchTerm)} />
                 <br />
@@ -104,7 +108,7 @@ export default function EventPage() {
                         </Button>
                     </Container>
                 )}
-            </Container>
+            </LoadingOverlay>
             <EventDetails event={currentEvent} showModal={showModal} />
         </>
     );

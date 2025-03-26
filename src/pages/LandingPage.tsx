@@ -9,10 +9,10 @@ export default function LandingPage() {
         <Container fluid className='landing-page'>
             <Row className='justify-content-center align-items-center text-center'>
                 <Col md={8}>
-                    <h1>Welcome to WayMatcher</h1>
-                    <p>Your journey to finding the best paths starts here.</p>
+                    <h1 className='display-3'>WayMatcher</h1>
+                    <p className='lead'>Find your way together</p>
                     <Button variant='primary' size='lg' onClick={() => navigate('/register')}>
-                        Get Started
+                        Start matching
                     </Button>
                 </Col>
             </Row>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { Form as FormikForm, Formik } from 'formik';
-import { Container, Row } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/objects/Vehicle/dto';
@@ -11,6 +11,7 @@ import { apiGetVehicleList, apiSetVehicle } from '@/api/endpoints/vehicle';
 import { RegisterVehicleSchema } from '@/utils/formValidations';
 import User from '@/types/objects/User/dto';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import LoadingOverlay from '../LoadingOverlay';
 
 export default function EditVehicle(): React.ReactElement {
     const { showErrorModal } = useContext(ErrorModalContext);
@@ -52,7 +53,7 @@ export default function EditVehicle(): React.ReactElement {
         <>
             <h2>Vehicle</h2>
             <CollapseWrapper>
-                <Container>
+                <LoadingOverlay isLoading={isLoading}>
                     {vehicles.map((vehicle) => (
                         <Formik
                             key={vehicle.vehicleId}
@@ -117,7 +118,7 @@ export default function EditVehicle(): React.ReactElement {
                             )}
                         </Formik>
                     ))}
-                </Container>
+                </LoadingOverlay>
             </CollapseWrapper>
         </>
     );

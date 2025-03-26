@@ -35,6 +35,9 @@ importers:
       formik:
         specifier: ^2.4.6
         version: 2.4.6(react@19.0.0-rc.1)
+      holderjs:
+        specifier: ^2.9.9
+        version: 2.9.9
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -4661,6 +4664,9 @@ packages:
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+
+  holderjs@2.9.9:
+    resolution: {integrity: sha512-ceWPz1MrR3dxOoZXiom+G48+l1VPG3TcjBw9fq5iwCiZAMvYX8Aia13GOxT7DoV/AcSyTH7Vvr11ygjZP9qn4w==}
 
   hono@4.7.5:
     resolution: {integrity: sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ==}
@@ -13254,6 +13260,8 @@ snapshots:
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
+
+  holderjs@2.9.9: {}
 
   hono@4.7.5: {}
 

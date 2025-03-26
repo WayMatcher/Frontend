@@ -37,7 +37,6 @@ export default function LoginPage() {
             };
 
             const response = await apiAuthUser({ ...tempUser, password: values.password });
-            console.log(response.data);
             setUserLoginID(response.data);
 
             setShowMFAModal(true);
