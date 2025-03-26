@@ -1,5 +1,7 @@
 import Stop from '@/types/objects/Stop/dto';
 import EventMember from '@/types/objects/EventMember/dto';
+import Schedule from '../Schedule/dto';
+import User from '../User/dto';
 
 export default interface WMEvent {
     eventId?: number;
@@ -12,4 +14,6 @@ export default interface WMEvent {
     freeSeats: number;
     stopList: Stop[];
     eventMembers: EventMember[];
+    schedule: Schedule;
+    owner: User;
 }

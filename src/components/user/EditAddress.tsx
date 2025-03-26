@@ -1,16 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-
-import { Formik, Form as FormikForm } from 'formik';
-import { Button, ListGroup, Row } from 'react-bootstrap';
-import FormInput from '@/components/FormInput';
+import { Button, ListGroup } from 'react-bootstrap';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
 import User from '@/types/objects/User/dto';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
-import { RegisterAddressSchema } from '@/utils/formValidations';
-import EditButtons from './EditButtons';
 import LoadingOverlay from '../LoadingOverlay';
 import AddressAdd from '../AddressAdd';
 
@@ -19,20 +14,8 @@ export default function EditAddress(): React.ReactElement {
     const [isLoading, setIsLoading] = React.useState(true);
     const authUser = useAuthUser<User>();
 
-    let initialValues: Address = {
-        street: '',
-        postalcode: '',
-        region: '',
-        countrycode: '',
-        state: '',
-        city: '',
-        addressLine1: '',
-        addressLine2: '',
-        longitude: 0,
-        latitude: 0,
-    };
-
     const [address, setAddress] = React.useState<Address | null>(null);
+    const [newAddress, setNewAddress] = React.useState<Address | null>(null);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -44,7 +27,7 @@ export default function EditAddress(): React.ReactElement {
 
                 const response = await apiGetAddress({ userID: authUser.userId });
 
-                initialValues = { ...initialValues, ...response.data };
+                setAddress(response.data);
             } catch (error: unknown) {
                 showErrorModal((error as Error).message);
             } finally {
@@ -55,7 +38,7 @@ export default function EditAddress(): React.ReactElement {
     }, []);
 
     useEffect(() => {
-        const set = async (address: Address) => {
+        const set = async () => {
             try {
                 if (authUser?.userId === undefined) {
                     showErrorModal('No user logged in!');
@@ -63,14 +46,17 @@ export default function EditAddress(): React.ReactElement {
                 }
 
                 setIsLoading(true);
-                await apiSetAddress({ address: address, userId: authUser?.userId });
+                if (newAddress && newAddress !== address) {
+                    await apiSetAddress({ address: newAddress, userId: authUser?.userId });
+                    setAddress(newAddress);
+                }
                 setIsLoading(false);
             } catch (error) {
-                console.error(error);
+                showErrorModal((error as Error).message);
             }
         };
-        if (address) set(address);
-    }, [address]);
+        if (newAddress) set();
+    }, [newAddress]);
 
     return (
         <>
@@ -98,7 +84,7 @@ export default function EditAddress(): React.ReactElement {
                             </ListGroup.Item>
                         </ListGroup>
                     ) : (
-                        <AddressAdd setAddress={setAddress} />
+                        <AddressAdd setAddress={setNewAddress} />
                     )}
                 </LoadingOverlay>
             </CollapseWrapper>

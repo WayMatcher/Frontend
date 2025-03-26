@@ -1,16 +1,35 @@
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import './styles/NavBar.scss';
-import { NavDropdown, Navbar, Nav, Container, ButtonGroup, Button, Offcanvas } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Container, ButtonGroup, Button, Offcanvas, Badge } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import User from '@/types/objects/User/dto';
-
+import { useEffect, useState } from 'react';
+import { apiGetInbox } from '@/api/endpoints/inbox';
+import Notification from '@/types/objects/Notification/dto';
 export default function NavBar() {
     const signOut = useSignOut();
     const authUser = useAuthUser<User>();
     const isAuthenticated = useIsAuthenticated();
     const navigate = useNavigate();
+    const [inbox, setInbox] = useState<Notification[]>([]);
+    const [notificationCount, setNotificationCount] = useState<number>(0);
+
+    useEffect(() => {
+        const getNotifications = async () => {
+            if (isAuthenticated) {
+                const response = await apiGetInbox({ userId: authUser?.userId });
+                if (response.data) setInbox(response.data);
+            }
+        };
+
+        getNotifications();
+    }, [isAuthenticated]);
+
+    useEffect(() => {
+        setNotificationCount(inbox.filter((notification) => !notification.read).length);
+    }, [inbox]);
 
     return (
         <Navbar className='bg-body-tertiary mb-3' expand='lg'>
@@ -43,39 +62,47 @@ export default function NavBar() {
                         </Nav>
                         <Nav>
                             {isAuthenticated ? (
-                                <NavDropdown
-                                    title={authUser?.username}
-                                    id='basic-nav-dropdown'
-                                    aria-label='User Options'
-                                    className='justify-content-end'
-                                >
-                                    <NavDropdown.Item
-                                        onClick={() => {
-                                            navigate(`/profile/${authUser?.username}/edit`);
-                                        }}
-                                        aria-label='Edit Profile'
+                                <>
+                                    <NavDropdown
+                                        title={authUser?.username}
+                                        id='basic-nav-dropdown'
+                                        aria-label='User Options'
+                                        className='justify-content-end'
                                     >
-                                        Edit Profile
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item
-                                        onClick={() => {
-                                            navigate(`/profile/${authUser?.username}/ways`);
-                                        }}
-                                        aria-label='My Ways'
-                                    >
-                                        My Ways
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item
-                                        onClick={() => {
-                                            signOut();
-                                            navigate('/login');
-                                        }}
-                                        aria-label='Logout'
-                                    >
-                                        Logout
-                                    </NavDropdown.Item>
-                                </NavDropdown>
+                                        <NavDropdown.Item
+                                            onClick={() => {
+                                                navigate(`/profile/${authUser?.username}/edit`);
+                                            }}
+                                            aria-label='Edit Profile'
+                                        >
+                                            Edit Profile
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Item
+                                            onClick={() => {
+                                                navigate(`/profile/${authUser?.username}/ways`);
+                                            }}
+                                            aria-label='My Ways'
+                                        >
+                                            My Ways
+                                        </NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            onClick={() => {
+                                                signOut();
+                                                navigate('/login');
+                                            }}
+                                            aria-label='Logout'
+                                        >
+                                            Logout
+                                        </NavDropdown.Item>
+                                    </NavDropdown>
+
+                                    <Link to='/inbox' className='nav-link'>
+                                        <Badge>
+                                            <span className={'bi bi-inbox-fill'}> {notificationCount}</span>
+                                        </Badge>
+                                    </Link>
+                                </>
                             ) : (
                                 <ButtonGroup>
                                     <Button className='btn btn-primary' onClick={() => navigate('/login')}>

@@ -18,45 +18,67 @@ export const EventInvite = ({
     owner?: boolean;
     event: WMEvent;
 }) => {
-    const { showErrorModal } = useContext(ErrorModalContext);
-    const [usernameList, setUsernameList] = useState<string[]>([]);
+    const [usernameList, setUsernameList] = useState<{ userId: number; username: string }[]>([]);
+
     const [show, setShow] = showState;
 
     const authUser = useAuthUser<User>();
+
+    if (!authUser) return null;
 
     useEffect(() => {
         const fetchUsernames = async () => {
             const response = await apiGetUsernameList();
 
-            // Remove duplicates from Usernamelist
-            const uniqueUsernames = [...new Set(response.data)];
+            const uniqueUsernames = response.data
+                .filter((user: User) => user.userId !== undefined)
+                .map((user: User) => ({
+                    userId: user.userId || -1,
+                    username: user.username,
+                }));
+
             setUsernameList(uniqueUsernames);
         };
-        if (!owner) {
+        if (owner) {
             fetchUsernames();
         }
     }, []);
 
-    const handleInvite = async (values: { username?: string; message?: string }) => {
-        if (!authUser?.userId) return;
-        const apiCall =
-            owner && values.username
-                ? () =>
-                      apiSendInvite({
-                          ownerUsername: authUser.username,
-                          username: values.username || '',
-                          eventId: event.eventId,
-                          message: values.message,
-                      })
-                : () =>
-                      apiRequestInvite({
-                          username: authUser.username,
-                          eventId: event.eventId,
-                          message: values.message,
-                      });
+    return (
+        <Modal show={show} onHide={() => setShow(false)}>
+            {owner === true ? (
+                <Invite event={event} setShow={setShow} userList={usernameList} />
+            ) : (
+                <Request event={event} authUser={authUser} setShow={setShow} />
+            )}
+        </Modal>
+    );
+};
 
+const Invite = ({
+    event,
+    userList,
+    setShow,
+}: {
+    event: WMEvent;
+    userList: {
+        userId: number;
+        username: string;
+    }[];
+    setShow: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+    const { showErrorModal } = useContext(ErrorModalContext);
+
+    const userIdArray = userList.map((user) => user.userId);
+
+    const handleInvite = async (values: { userId: number; message: string; isPilot: boolean }) => {
         try {
-            await apiCall();
+            await apiSendInvite({
+                userId: values.userId,
+                eventId: event.eventId,
+                message: values.message,
+                isPilot: values.isPilot,
+            });
             setShow(false);
         } catch (error) {
             showErrorModal(error instanceof Error ? error.message : 'An error occurred');
@@ -65,89 +87,179 @@ export const EventInvite = ({
 
     const validationSchema = Yup.object({
         message: Yup.string(),
-        ...(owner && {
-            username: Yup.string().oneOf(usernameList).min(1).required('User is required'),
-        }),
+        userId: Yup.number().oneOf(userIdArray).min(1).required('User is required'),
     });
 
     return (
-        <Modal show={show} onHide={() => setShow(false)}>
-            <Formik
-                initialValues={{ username: owner ? '' : undefined, message: '' }}
-                onSubmit={handleInvite}
-                validationSchema={validationSchema}
-            >
-                {(formikProps) => (
-                    <FormikForm>
-                        <Modal.Header closeButton>
-                            <Modal.Title>{owner ? 'Request Invite' : 'Invite User'}</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <Row className='mb-3'>
-                                <Form.Group as={Col} controlId={`validationFormik_message`}>
-                                    <Form.Label>Message</Form.Label>
-                                    <Form.Control
-                                        aria-label='Message to send'
-                                        as={'textarea'}
-                                        name={'message'}
-                                        value={formikProps.values.message}
-                                        placeholder={
-                                            owner
-                                                ? 'Enter a message you want to send to the owner'
-                                                : 'Enter a message you want to send to the user'
-                                        }
-                                        disabled={formikProps.isSubmitting}
-                                        isValid={formikProps.touched.message && !formikProps.errors.message}
-                                        onChange={formikProps.handleChange}
-                                    />
-                                    {typeof formikProps.errors.message === 'string' ? (
-                                        <Form.Control.Feedback type='invalid'>
-                                            {formikProps.errors.message}
-                                        </Form.Control.Feedback>
-                                    ) : null}
-                                </Form.Group>
-                            </Row>
-                            {!owner && (
-                                <Row className='mb-3'>
-                                    <Form.Group as={Col} controlId={`validationFormik_username`}>
-                                        <Form.Label>Username</Form.Label>
-                                        <Form.Select
-                                            aria-label='Username select'
-                                            name='username'
-                                            value={formikProps.values.username}
-                                            disabled={formikProps.isSubmitting}
-                                            isValid={formikProps.touched.username && !formikProps.errors.username}
-                                            onChange={formikProps.handleChange}
-                                        >
-                                            {usernameList.map((username) => (
-                                                <option aria-description={username} value={username}>
-                                                    {username}
-                                                </option>
-                                            ))}
-                                        </Form.Select>
-                                        {typeof formikProps.errors.username === 'string' ? (
-                                            <Form.Control.Feedback type='invalid'>
-                                                {formikProps.errors.username}
-                                            </Form.Control.Feedback>
-                                        ) : null}
-                                    </Form.Group>
-                                </Row>
-                            )}
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <ButtonGroup>
-                                <Button variant='secondary' onClick={() => setShow(false)}>
-                                    Close
-                                </Button>
-                                <Button type='submit' disabled={!!formikProps.errors || !formikProps.touched}>
-                                    {owner ? 'Request' : 'Invite'}
-                                </Button>
-                            </ButtonGroup>
-                        </Modal.Footer>
-                    </FormikForm>
-                )}
-            </Formik>
-        </Modal>
+        <Formik
+            initialValues={{ userId: -1, message: '', isPilot: false }}
+            onSubmit={handleInvite}
+            validationSchema={validationSchema}
+        >
+            {(formikProps) => (
+                <FormikForm>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{'Invite User'}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row className='mb-3'>
+                            <Form.Group as={Col} controlId={`validationFormik_message`}>
+                                <Form.Label>Message</Form.Label>
+                                <Form.Control
+                                    aria-label='Message to send'
+                                    as={'textarea'}
+                                    name={'message'}
+                                    value={formikProps.values.message}
+                                    placeholder={'Enter a message you want to send to the user'}
+                                    disabled={formikProps.isSubmitting}
+                                    isValid={formikProps.touched.message && !formikProps.errors.message}
+                                    onChange={formikProps.handleChange}
+                                />
+                                {typeof formikProps.errors.message === 'string' ? (
+                                    <Form.Control.Feedback type='invalid'>
+                                        {formikProps.errors.message}
+                                    </Form.Control.Feedback>
+                                ) : null}
+                            </Form.Group>
+                        </Row>
+
+                        <Row className='mb-3'>
+                            <Form.Group as={Col} controlId={`validationFormik_username`}>
+                                <Form.Label>Username</Form.Label>
+                                <Form.Select
+                                    aria-label='Username select'
+                                    name='userId'
+                                    value={formikProps.values.userId}
+                                    disabled={formikProps.isSubmitting}
+                                    isValid={formikProps.touched.userId && !formikProps.errors.userId}
+                                    onChange={formikProps.handleChange}
+                                >
+                                    {userList.map(({ userId, username }) => (
+                                        <option aria-description={username} value={userId} key={userId}>
+                                            {username}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                                {typeof formikProps.errors.userId === 'string' ? (
+                                    <Form.Control.Feedback type='invalid'>
+                                        {formikProps.errors.userId}
+                                    </Form.Control.Feedback>
+                                ) : null}
+                            </Form.Group>
+                        </Row>
+                        <Row>
+                            <Form.Group as={Col} controlId={`validationFormik_isPilot`}>
+                                <Form.Switch type='switch' id='isPilot' name='isPilot' label='Invite as Pilot Role' />
+                            </Form.Group>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <ButtonGroup>
+                            <Button variant='secondary' onClick={() => setShow(false)}>
+                                Close
+                            </Button>
+                            <Button type='submit'>{'Invite'}</Button>
+                        </ButtonGroup>
+                    </Modal.Footer>
+                </FormikForm>
+            )}
+        </Formik>
     );
 };
+
+const Request = ({
+    authUser,
+    event,
+    setShow,
+}: {
+    authUser: User;
+    event: WMEvent;
+    setShow: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+    const { showErrorModal } = useContext(ErrorModalContext);
+    const handleRequest = async (values: { message: string; isPilot: boolean }) => {
+        try {
+            if (authUser.userId === undefined) throw new Error('No user ID provided');
+
+            await apiRequestInvite({
+                userId: authUser.userId,
+                eventId: event.eventId,
+                message: values.message,
+                isPilot: values.isPilot,
+            });
+            setShow(false);
+        } catch (error) {
+            showErrorModal(error instanceof Error ? error.message : 'An error occurred');
+        }
+    };
+
+    const validationSchema = Yup.object({
+        message: Yup.string(),
+        isPilot: Yup.boolean(),
+    });
+
+    return (
+        <Formik
+            initialValues={{ message: '', isPilot: false }}
+            onSubmit={handleRequest}
+            validationSchema={validationSchema}
+        >
+            {(formikProps) => (
+                <FormikForm>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{'Request Match'}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row className='mb-3'>
+                            <Form.Group as={Col} controlId={`validationFormik_message`}>
+                                <Form.Label>Message</Form.Label>
+                                <Form.Control
+                                    aria-label='Message to send'
+                                    as={'textarea'}
+                                    name={'message'}
+                                    value={formikProps.values.message}
+                                    placeholder={'Enter a message you want to send to the Owner'}
+                                    disabled={formikProps.isSubmitting}
+                                    isValid={formikProps.touched.message && !formikProps.errors.message}
+                                    onChange={formikProps.handleChange}
+                                />
+                                {typeof formikProps.errors.message === 'string' ? (
+                                    <Form.Control.Feedback type='invalid'>
+                                        {formikProps.errors.message}
+                                    </Form.Control.Feedback>
+                                ) : null}
+                            </Form.Group>
+
+                            <Row>
+                                <Form.Group as={Col} controlId={`validationFormik_isPilot`}>
+                                    <Form.Switch
+                                        type='switch'
+                                        id='isPilot'
+                                        name='isPilot'
+                                        onChange={() =>
+                                            formikProps.setValues({
+                                                ...formikProps.values,
+                                                isPilot: !formikProps.values.isPilot,
+                                            })
+                                        }
+                                        label='Request as Pilot Role'
+                                    />
+                                </Form.Group>
+                            </Row>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <ButtonGroup>
+                            <Button variant='secondary' onClick={() => setShow(false)}>
+                                Close
+                            </Button>
+                            <Button type='submit'>{'Request'}</Button>
+                        </ButtonGroup>
+                    </Modal.Footer>
+                </FormikForm>
+            )}
+        </Formik>
+    );
+};
+
 export default EventInvite;

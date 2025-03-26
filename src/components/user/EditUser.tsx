@@ -35,13 +35,19 @@ export default function EditUser(): React.ReactElement {
                 return;
             }
 
-            const { password_confirm, ...tempData } = values;
+            const { password_confirm, password, ...tempData } = values;
 
-            const response = await apiSetUser({
-                ...tempData,
-                username: authUser.username,
-                email: authUser.email,
-            });
+            const hydratedData = {
+                user: {
+                    ...tempData,
+                    userId: authUser.userId,
+                    username: authUser.username,
+                    email: authUser.email,
+                },
+                password: password ? password : '',
+            };
+
+            const response = await apiSetUser(hydratedData);
             console.log(response);
         } catch (error: unknown) {
             if (error instanceof Error) {

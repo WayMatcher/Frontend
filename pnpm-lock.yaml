@@ -29,15 +29,15 @@ importers:
       bootstrap-icons:
         specifier: ^1.11.3
         version: 1.11.3
+      cron-parser:
+        specifier: ^5.0.6
+        version: 5.0.6
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
       formik:
         specifier: ^2.4.6
         version: 2.4.6(react@19.0.0-rc.1)
-      holderjs:
-        specifier: ^2.9.9
-        version: 2.9.9
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -3554,6 +3554,10 @@ packages:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
     engines: {node: '>=10'}
 
+  cron-parser@5.0.6:
+    resolution: {integrity: sha512-KtZxEaO4XtQwQ6q2Val3gX09TxM/1Okz0BIqkm6Wwc582gAHTnjBP1rtYEgWcVOUPRIg2CeirOTiUSu7A2I+HQ==}
+    engines: {node: '>=18'}
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -4665,9 +4669,6 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  holderjs@2.9.9:
-    resolution: {integrity: sha512-ceWPz1MrR3dxOoZXiom+G48+l1VPG3TcjBw9fq5iwCiZAMvYX8Aia13GOxT7DoV/AcSyTH7Vvr11ygjZP9qn4w==}
-
   hono@4.7.5:
     resolution: {integrity: sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ==}
     engines: {node: '>=16.9.0'}
@@ -5485,6 +5486,10 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  luxon@3.6.0:
+    resolution: {integrity: sha512-WE7p0p7W1xji9qxkLYsvcIxZyfP48GuFrWIBQZIsbjCyf65dG1rv4n83HcOyEyhvzxJCrUoObCRNFgRNIQ5KNA==}
+    engines: {node: '>=12'}
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -11929,6 +11934,10 @@ snapshots:
       path-type: 4.0.0
       yaml: 1.10.2
 
+  cron-parser@5.0.6:
+    dependencies:
+      luxon: 3.6.0
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -13261,8 +13270,6 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  holderjs@2.9.9: {}
-
   hono@4.7.5: {}
 
   hoopy@0.1.4: {}
@@ -14308,6 +14315,8 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  luxon@3.6.0: {}
 
   lz-string@1.5.0: {}
 

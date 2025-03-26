@@ -1,12 +1,12 @@
-import { Button, ButtonGroup, Col, ListGroup, Modal, Row } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Image, ListGroup, Modal, Row } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import { useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import EventMap from './EventMap';
-import EventMember from '@/types/objects/EventMember/dto';
 import EventInvite from './EventInvite';
 import '@/components/styles/EventDetails.scss';
+import { Link } from 'react-router-dom';
 
 const Event = ({
     event,
@@ -15,6 +15,7 @@ const Event = ({
     event: WMEvent;
     showInviteState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }) => {
+    const authUser = useAuthUser<User>();
     return (
         <>
             <Modal.Body>
@@ -56,7 +57,21 @@ const Event = ({
                                 <ListGroup horizontal>
                                     {event.eventMembers.map((member) => (
                                         <ListGroup.Item key={member.memberId}>
-                                            <Button disabled>{member.memberId}</Button>
+                                            <Button variant='outline-secondary' disabled>
+                                                {member.user.profilepicture ? (
+                                                    <Image
+                                                        roundedCircle={true}
+                                                        src={URL.createObjectURL(member.user.profilepicture)}
+                                                        width={64}
+                                                    ></Image>
+                                                ) : (
+                                                    <Image
+                                                        roundedCircle={true}
+                                                        src='https://api.ai-cats.net/v1/cat?size=256&theme=All'
+                                                        width={64}
+                                                    ></Image>
+                                                )}
+                                            </Button>
                                         </ListGroup.Item>
                                     ))}
                                     {(() => {
@@ -65,16 +80,26 @@ const Event = ({
                                             items.push(
                                                 <ListGroup.Item key={`seat-${i}`}>
                                                     <Button
+                                                        disabled={authUser === null}
                                                         onClick={() => {
                                                             showInviteState[1](true);
                                                         }}
-                                                    >{`${i + 1}`}</Button>
+                                                    >
+                                                        <span className='bi bi-plus-lg'></span>
+                                                    </Button>
                                                 </ListGroup.Item>,
                                             );
                                         }
                                         return items;
                                     })()}
                                 </ListGroup>
+                                <br />
+                                {!authUser && (
+                                    <Alert variant='info'>
+                                        Please <Link to='/register'>register</Link> or <Link to='/login'>log in</Link>{' '}
+                                        to be able to join this Way!
+                                    </Alert>
+                                )}
                             </ListGroup.Item>
                         </ListGroup>
                     </Col>
@@ -91,6 +116,7 @@ const OwnedEvent = ({
     event: WMEvent;
     showInviteState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }) => {
+    const authUser = useAuthUser<User>();
     return (
         <>
             <Modal.Body>
@@ -127,6 +153,7 @@ const OwnedEvent = ({
                                             items.push(
                                                 <ListGroup.Item key={`seat-${i}`}>
                                                     <Button
+                                                        disabled={authUser === null}
                                                         onClick={() => {
                                                             showInviteState[1](true);
                                                         }}
@@ -141,9 +168,6 @@ const OwnedEvent = ({
                         </ListGroup>
                     </Col>
                 </Row>
-                <Row>
-                    <Col></Col>
-                </Row>
                 <i>This event is owned by you</i>
             </Modal.Body>
         </>
@@ -153,7 +177,6 @@ const OwnedEvent = ({
 const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolean }) => {
     const [show, setShow] = useState<boolean>(showModal);
     const showInvite = useState<boolean>(false);
-    const showRequest = useState<boolean>(false);
     const [isOwnedEvent, setIsOwnedEvent] = useState<boolean>(false);
     const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
     const authUser = useAuthUser<User>();
@@ -167,14 +190,7 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
     }, [showModal, event]);
 
     useEffect(() => {
-        // find member that is the owner of the event
-        currentEvent?.eventMembers.forEach((member: EventMember) => {
-            if (member.eventRole === 0 && member.memberId === member?.user.userId) {
-                setIsOwnedEvent(true);
-            }
-        });
-
-        if (authUser?.userId !== currentEvent?.eventMembers[0].memberId) {
+        if (authUser?.userId === currentEvent?.owner.userId) {
             setIsOwnedEvent(true);
         } else {
             setIsOwnedEvent(false);
@@ -189,21 +205,24 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
                         <Modal.Title>{currentEvent.description}</Modal.Title>
                     </Modal.Header>
                     {isOwnedEvent ? (
-                        <Event key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
-                    ) : (
                         <OwnedEvent key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
+                    ) : (
+                        <Event key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
                     )}
                     <Modal.Footer>
                         <ButtonGroup>
-                            {!isOwnedEvent && <Button variant='primary'>Edit</Button>}
+                            {isOwnedEvent === true ? <Button variant='primary'>Edit</Button> : null}
                             <Button variant='secondary' onClick={handleCloseModal}>
                                 Close
                             </Button>
                         </ButtonGroup>
                     </Modal.Footer>
                 </Modal>
-                <EventInvite showState={showInvite} event={currentEvent} owner />
-                <EventInvite showState={showRequest} event={currentEvent} />
+                <EventInvite
+                    showState={showInvite}
+                    event={currentEvent}
+                    owner={isOwnedEvent === true ? true : undefined}
+                />
             </>
         );
     } else {

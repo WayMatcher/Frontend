@@ -24,8 +24,7 @@ function InboxPage() {
                 return <h2>User is not logged in</h2>;
             }
             try {
-                const response = await apiGetInbox({ userID: authUser.userId });
-                console.log(response);
+                const response = await apiGetInbox({ userId: authUser.userId });
                 setNotifications(response.data);
             } catch (error: unknown) {
                 if (error instanceof Error) {

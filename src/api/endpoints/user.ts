@@ -21,16 +21,15 @@ export const apiGetUser = async (request: { username?: string; email?: string; u
     }
 };
 
-export const apiSetUser = async (request: { user: User; vehicleList?: Vehicle[]; password: string }) => {
+export const apiSetUser = async (request: { user: User; password?: string }) => {
     try {
         // Sets the picture equal to a random cat picture if no picture is set
         if (request.user.profilepicture === undefined) {
             request.user.profilepicture = await apiGetCatPicture();
         }
-
         const hashedRequest = {
             ...request,
-            password: await hashString(request.password),
+            password: request.password ? await hashString(request.password) : '',
         };
 
         const response = await api.axios.post<User>('/User/EditUser', hashedRequest);
@@ -90,7 +89,7 @@ export const apiRegisterUser = async (request: { user: User; vehicleList?: Vehic
 
 export const apiGetUsernameList = async () => {
     try {
-        return await api.axios.get<string[]>('/User/GetUsernameList');
+        return await api.axios.get<User[]>('/Event/GetUserToInvite');
     } catch (error) {
         api.handleApiError(error);
         throw error;

@@ -1,5 +1,5 @@
 export default interface Notification {
-    notificationID: number;
+    notificationId: number;
     read: boolean;
     message: string;
     entitytype?: string;

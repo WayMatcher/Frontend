@@ -2,6 +2,7 @@ import { Button, Card, ListGroup } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import EventMemberDisplay from './EventMemberDisplay';
 import EventMap from './EventMap';
+import cronParser from 'cron-parser';
 
 interface EventCardProps {
     event: WMEvent;
@@ -16,6 +17,14 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
 
     const prettyDate = new Date(event.startTimestamp).toLocaleDateString('de-AT');
     const prettyTime = new Date(event.startTimestamp).toLocaleTimeString('de-AT');
+    const prettySchedule = (cron: string) => {
+        try {
+            const interval = cronParser.parse(cron, { tz: 'Europe/Vienna' });
+            return `Next occurrence: ${interval.next().toString()}`;
+        } catch (err) {
+            return 'Invalid schedule';
+        }
+    };
 
     return (
         <Card style={{ maxWidth: '18rem' }}>
@@ -35,6 +44,11 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                 <ListGroup.Item>
                     <p>
                         Starts on: <strong>{prettyDate}</strong> <strong>{prettyTime}</strong>
+                    </p>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                    <p>
+                        Schedule: <strong>{prettySchedule(event.schedule.cronSchedule)}</strong>
                     </p>
                 </ListGroup.Item>
                 <ListGroup.Item>

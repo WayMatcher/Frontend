@@ -3,24 +3,29 @@ const api = new API();
 
 // Owner sends an invite to a user
 export const apiSendInvite = async (request: {
-    ownerUsername: string;
-    username: string;
+    userId: number;
     eventId?: number;
     message?: string;
+    isPilot: boolean;
 }) => {
     try {
         if (!request.eventId) throw new Error('No event ID provided');
-        return await api.axios.post('/Invite/SendInvite', { ...request });
+        return await api.axios.post('/Event/SendEventInvite', { ...request });
     } catch (error) {
         throw api.handleApiError(error);
     }
 };
 
 // User asks to join an event
-export const apiRequestInvite = async (request: { username: string; eventId?: number; message?: string }) => {
+export const apiRequestInvite = async (request: {
+    userId: number;
+    eventId?: number;
+    message?: string;
+    isPilot: boolean;
+}) => {
     try {
         if (!request.eventId) throw new Error('No event ID provided');
-        return await api.axios.post('/Invite/RequestInvite', { ...request });
+        return await api.axios.post('/Event/RequestEventInvite', { ...request });
     } catch (error) {
         throw api.handleApiError(error);
     }
