@@ -1,0 +1,25 @@
+.stop-list {
+    .list-group-item {
+        display: flex;
+        align-items: center; // Center content vertically
+        position: relative;
+        padding-left: 2.5rem; // Add space for the dot and line
+
+        .dot-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 1rem; // Space between dots and address
+        }
+
+        .bi-dot {
+            font-size: 3rem; // Make the dot larger
+            z-index: 1; // Ensure the dot is above the line
+        }
+
+        &.swap-animation {
+            transition: transform 0.3s ease-in-out;
+        }
+    }
+}

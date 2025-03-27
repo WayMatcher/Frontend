@@ -2,7 +2,7 @@ import Address, { HereApiItem } from '@/types/objects/Address/dto';
 import { Formik, Form as FormikForm } from 'formik';
 import { useContext } from 'react';
 import { Button, ButtonGroup, Modal } from 'react-bootstrap';
-import FormInput from './FormInput';
+import FormInput from '@/components/FormInput';
 import * as Yup from 'yup';
 import { getHEREAddress } from '@/api/endpoints/address';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
@@ -25,6 +25,7 @@ const AddressAddModal = ({
                 addressLine1: item.address.label,
                 city: item.address.city || '',
                 postalcode: item.address.postalCode || '',
+                country: item.address.countryName,
                 countrycode: item.address.countryCode,
                 region: item.address.state,
                 state: item.address.state,

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Container, ListGroup } from 'react-bootstrap';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
-import AddressAdd from '@/components/AddressAdd';
+import AddressAdd from '@/components/address/AddressAdd';
 
 export default function RegisterAddress({
     addressState,

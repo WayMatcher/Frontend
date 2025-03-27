@@ -4,5 +4,5 @@ export default interface Stop {
     stopId?: number;
     stopSequenceNumber: number;
     address: Address;
-    eventId: number;
+    eventId?: number;
 }

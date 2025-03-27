@@ -6,7 +6,7 @@ import User from '@/types/objects/User/dto';
 import EventMap from './EventMap';
 import EventInvite from './EventInvite';
 import '@/components/styles/EventDetails.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Event = ({
     event,
@@ -175,12 +175,16 @@ const OwnedEvent = ({
 };
 
 const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolean }) => {
+    const navigate = useNavigate();
     const [show, setShow] = useState<boolean>(showModal);
     const showInvite = useState<boolean>(false);
     const [isOwnedEvent, setIsOwnedEvent] = useState<boolean>(false);
     const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
     const authUser = useAuthUser<User>();
-    const handleCloseModal = () => setShow(false);
+    const handleCloseModal = () => {
+        setShow(false);
+        navigate('/events');
+    };
 
     useEffect(() => {
         setShow(showModal);

@@ -2,11 +2,11 @@ import Address, { HereApiItem } from '@/types/objects/Address/dto';
 import { Formik, Form as FormikForm } from 'formik';
 import { useContext, useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import FormInput from './FormInput';
+import FormInput from '@/components/FormInput';
 import * as Yup from 'yup';
 import { getHEREAddress } from '@/api/endpoints/address';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
-import LoadingOverlay from './LoadingOverlay';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetStateAction<Address | null>> }) => {
     const { showErrorModal } = useContext(ErrorModalContext);

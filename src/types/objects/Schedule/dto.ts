@@ -1,4 +1,5 @@
 export default interface Schedule {
-    scheduleId: number;
+    scheduleId?: number;
+    userId: number;
     cronSchedule: string;
 }

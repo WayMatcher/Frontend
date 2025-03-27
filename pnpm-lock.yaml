@@ -50,6 +50,9 @@ importers:
       react-bootstrap:
         specifier: ^2.10.9
         version: 2.10.9(@types/react@19.0.12)(react-dom@19.0.0-rc.1(react@19.0.0-rc.1))(react@19.0.0-rc.1)
+      react-cron-generator:
+        specifier: ^2.0.19
+        version: 2.0.19(react-dom@19.0.0-rc.1(react@19.0.0-rc.1))(react@19.0.0-rc.1)
       react-dom:
         specifier: 19.0.0-rc.1
         version: 19.0.0-rc.1(react@19.0.0-rc.1)
@@ -117,6 +120,9 @@ importers:
       '@types/node':
         specifier: ^22.13.10
         version: 22.13.11
+      '@types/prop-types':
+        specifier: ^15.7.14
+        version: 15.7.14
       '@types/react':
         specifier: ^19.0.12
         version: 19.0.12
@@ -3558,6 +3564,10 @@ packages:
     resolution: {integrity: sha512-KtZxEaO4XtQwQ6q2Val3gX09TxM/1Okz0BIqkm6Wwc582gAHTnjBP1rtYEgWcVOUPRIg2CeirOTiUSu7A2I+HQ==}
     engines: {node: '>=18'}
 
+  cronstrue@2.57.0:
+    resolution: {integrity: sha512-gQOfxJa1RA9uDT4hx37NshhX4dW9t9zTCtIYu15LUziH+mkpuLXYcSEyM8ZewMJ2p8UVuHGjI3n4hGpu3HtCbg==}
+    hasBin: true
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -6556,6 +6566,12 @@ packages:
     engines: {node: '>=16'}
     peerDependencies:
       react: ^16.3.0 || ^17.0.1 || ^18.0.0 || ^19.0.0
+
+  react-cron-generator@2.0.19:
+    resolution: {integrity: sha512-dcNDeT1gmwi5nLw0DNkB7sm5d6pZo4KS/6gm95C5A4fl21liQDTCKJKTPyHNEQOp/fQAVnzSX39UzIcIppJVbA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   react-dev-utils@12.0.1:
     resolution: {integrity: sha512-84Ivxmr17KjUupyqzFode6xKhjwuEJDROWKJy/BthkL7Wn6NJ8h4WE6k/exAv6ImS+0oZLRRW5j/aINMHyeGeQ==}
@@ -11938,6 +11954,8 @@ snapshots:
     dependencies:
       luxon: 3.6.0
 
+  cronstrue@2.57.0: {}
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -15343,6 +15361,12 @@ snapshots:
     dependencies:
       react: 19.0.0-rc.1
       tween-functions: 1.2.0
+
+  react-cron-generator@2.0.19(react-dom@19.0.0-rc.1(react@19.0.0-rc.1))(react@19.0.0-rc.1):
+    dependencies:
+      cronstrue: 2.57.0
+      react: 19.0.0-rc.1
+      react-dom: 19.0.0-rc.1(react@19.0.0-rc.1)
 
   react-dev-utils@12.0.1(eslint@9.22.0(jiti@1.21.7))(typescript@5.8.2)(webpack@5.98.0(esbuild@0.25.1)):
     dependencies:

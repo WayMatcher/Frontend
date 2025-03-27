@@ -7,7 +7,7 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
 import LoadingOverlay from '../LoadingOverlay';
-import AddressAdd from '../AddressAdd';
+import AddressAdd from '@/components/address/AddressAdd';
 
 export default function EditAddress(): React.ReactElement {
     const { showErrorModal } = useContext(ErrorModalContext);
