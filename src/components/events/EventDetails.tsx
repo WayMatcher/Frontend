@@ -1,4 +1,4 @@
-import { Alert, Button, ButtonGroup, Col, Image, ListGroup, Modal, Row } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Image, ListGroup, Modal, Row, Stack } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
@@ -9,18 +9,55 @@ import '@/components/styles/EventDetails.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiDeleteEvent } from '@/api/endpoints/event';
+import StopList from './StopList';
+import Stop from '@/types/objects/Stop/dto';
+import cronparser from 'cron-parser';
 
 const Details = ({ event }: { event: WMEvent }) => {
+    const stopListState = useState<Stop[]>([]);
     return (
         <>
             <Modal.Body>
                 <Row>
                     <Col>
+                        <Stack>
+                            <EventMap stopList={event.stopList} height={800} width={500} />
+                            <StopList stopListState={stopListState} edit={false} />
+                        </Stack>
+                    </Col>
+                    <Col>
                         <h3>Details</h3>
-                        <p>Description</p>
-                        <ListGroup>
-                            <ListGroup.Item>{event.description}</ListGroup.Item>
-                        </ListGroup>
+                        {event.description && (
+                            <>
+                                <p>Description</p>
+                                <ListGroup>
+                                    <ListGroup.Item>{event.description}</ListGroup.Item>
+                                </ListGroup>
+                            </>
+                        )}
+                        {event.schedule.cronSchedule ? (
+                            <>
+                                <p>Schedule</p>
+                                <ListGroup>
+                                    <ListGroup.Item>
+                                        {cronparser
+                                            .parse(event.schedule.cronSchedule)
+                                            .next()
+                                            .getDate()
+                                            .toLocaleString()}
+                                    </ListGroup.Item>
+                                </ListGroup>
+                            </>
+                        ) : (
+                            <>
+                                <p>Start Date & Time</p>
+                                <ListGroup>
+                                    <ListGroup.Item>
+                                        {new Date(event.startTimestamp).getDate().toLocaleString()}
+                                    </ListGroup.Item>
+                                </ListGroup>
+                            </>
+                        )}
                     </Col>
                 </Row>
             </Modal.Body>
@@ -252,7 +289,7 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
                 {isOwnedEvent ? (
                     <OwnedEvent key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
                 ) : (
-                    <Event key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
+                    <Details key={currentEvent.eventId} event={currentEvent} />
                 )}
                 <Modal.Footer>
                     <ButtonGroup>
