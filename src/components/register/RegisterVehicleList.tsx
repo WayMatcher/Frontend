@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Container, ListGroup } from 'react-bootstrap';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Vehicle from '@/types/objects/Vehicle/dto';
-import VehicleEntry from './RegisterVehicle';
+import VehicleEntry from '@/components/vehicle/Vehicle';
 import { useNavigate } from 'react-router-dom';
 
 export default function RegisterVehicleList({
@@ -40,6 +40,12 @@ export default function RegisterVehicleList({
         vehicleListState[1]((prevVehicles) => [...prevVehicles, newVehicle]);
     };
 
+    const onDelete = async (vehicleId: number) => {
+        console.log('Deleting vehicle with ID:', vehicleId);
+        // Call your API to delete the vehicle here
+        // await apiDeleteVehicle(vehicleId);
+    };
+
     return (
         <>
             <h2>Vehicles</h2>
@@ -48,7 +54,11 @@ export default function RegisterVehicleList({
                     <ListGroup>
                         {vehicleListState[0].map((vehicle: Vehicle) => (
                             <ListGroup.Item key={`vehicle-${vehicle.vehicleId}`}>
-                                <VehicleEntry vehicle={vehicle} vehicleListState={vehicleListState} />
+                                <VehicleEntry
+                                    vehicle={vehicle}
+                                    vehicleListState={vehicleListState}
+                                    onDelete={onDelete}
+                                />
                             </ListGroup.Item>
                         ))}
                         <ListGroup.Item>

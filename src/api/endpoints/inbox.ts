@@ -11,3 +11,13 @@ export const apiGetInbox = async (request: { userId?: number; username?: string;
         throw error;
     }
 };
+
+export const apiMarkNotificationAsRead = async (request: { notificationId: number }) => {
+    try {
+        const response = await api.axios.post('/User/ReadNotification', request.notificationId);
+        return response;
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};

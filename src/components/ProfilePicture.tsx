@@ -1,34 +1,29 @@
-import { Container, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
+import '@/components/styles/ProfilePicture.scss';
 
 const ProfilePicture = ({
     image,
-    ...dimensions
+    highlight,
+    width,
+    height,
 }: {
     image?: Blob;
-    width?: string | number | undefined;
-    height?: string | number | undefined;
+    width?: string | number;
+    height?: string | number;
+    highlight?: boolean;
 }) => {
-    dimensions.width = dimensions.width || dimensions.height;
-    dimensions.height = dimensions.height || dimensions.width;
+    const size = width || height;
 
     return (
-        <Container className='profile-picture'>
-            {image ? (
-                <Image
-                    src={URL.createObjectURL(image)}
-                    alt='Profile-Picture'
-                    width={dimensions.width}
-                    height={dimensions.height}
-                />
-            ) : (
-                <Image
-                    src={'https://api.ai-cats.net/v1/cat?size=1024&theme=all'}
-                    alt='Profile-Picture'
-                    width={dimensions.width}
-                    height={dimensions.height}
-                />
-            )}
-        </Container>
+        <div className='profile-picture'>
+            <Image
+                src={image ? URL.createObjectURL(image) : 'https://api.ai-cats.net/v1/cat?size=1024&theme=all'}
+                alt='Profile-Picture'
+                width={size}
+                height={size}
+                className={`profile-picture${highlight ? ' highlight' : undefined}`}
+            />
+        </div>
     );
 };
 

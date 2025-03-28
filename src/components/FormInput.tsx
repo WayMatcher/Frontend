@@ -26,9 +26,10 @@ function BaseInput({
                 <Form.Select
                     aria-label={label}
                     name={name}
-                    value={value}
-                    disabled={isSubmitting}
+                    value={value || ''} // Ensure value is not undefined
+                    disabled={isSubmitting || isLoading}
                     isValid={touchedValue && !error}
+                    isInvalid={touchedValue && !!error} // Add invalid state
                     onChange={onChange || handleChange}
                     {...restProps}
                 >
@@ -60,11 +61,11 @@ function BaseInput({
                     as={as}
                     type={type}
                     name={name}
-                    value={value}
+                    value={value || ''} // Ensure value is not undefined
                     placeholder={typeof placeholder === 'number' ? placeholder.toString() : placeholder}
-                    disabled={isSubmitting}
-                    readOnly={isLoading ? true : undefined}
+                    disabled={isSubmitting || isLoading}
                     isValid={touchedValue && !error}
+                    isInvalid={touchedValue && !!error} // Add invalid state
                     onChange={onChange || handleChange}
                     {...restProps}
                 />
@@ -84,6 +85,8 @@ const inputTypeMapping: Record<string, Partial<FormInputProps<any>>> = {
     tel: { type: 'tel' },
     number: { type: 'number' },
     text: { type: 'text' },
+    file: { type: 'file' },
+    color: { type: 'color' },
 };
 
 export default function FormInput(props: FormInputProps<any>): React.ReactElement {

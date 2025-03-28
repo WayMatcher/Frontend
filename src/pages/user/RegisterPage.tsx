@@ -44,7 +44,7 @@ const RegisterPage = () => {
                 <h1>Register</h1>
                 <Container>
                     <h2>You are already logged in!</h2>
-                    <Button variant='primary' onClick={() => navigate('/user')}>
+                    <Button variant='primary' onClick={() => navigate('/profile')}>
                         Go to your profile
                     </Button>
                 </Container>

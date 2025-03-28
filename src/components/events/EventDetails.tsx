@@ -1,12 +1,14 @@
 import { Alert, Button, ButtonGroup, Col, Image, ListGroup, Modal, Row } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import EventMap from './EventMap';
 import EventInvite from './EventInvite';
 import '@/components/styles/EventDetails.scss';
 import { Link, useNavigate } from 'react-router-dom';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
+import { apiDeleteEvent } from '@/api/endpoints/event';
 
 const Event = ({
     event,
@@ -176,10 +178,14 @@ const OwnedEvent = ({
 
 const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolean }) => {
     const navigate = useNavigate();
+
+    const { showErrorModal } = useContext(ErrorModalContext);
+
     const [show, setShow] = useState<boolean>(showModal);
     const showInvite = useState<boolean>(false);
     const [isOwnedEvent, setIsOwnedEvent] = useState<boolean>(false);
     const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
+
     const authUser = useAuthUser<User>();
     const handleCloseModal = () => {
         setShow(false);
@@ -201,37 +207,52 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
         }
     }, [currentEvent]);
 
-    if (currentEvent) {
-        return (
-            <>
-                <Modal show={show} onHide={handleCloseModal} dialogClassName='modal-wide'>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{currentEvent.description}</Modal.Title>
-                    </Modal.Header>
-                    {isOwnedEvent ? (
-                        <OwnedEvent key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
-                    ) : (
-                        <Event key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
-                    )}
-                    <Modal.Footer>
-                        <ButtonGroup>
-                            {isOwnedEvent === true ? <Button variant='primary'>Edit</Button> : null}
-                            <Button variant='secondary' onClick={handleCloseModal}>
-                                Close
+    const onDelete = async () => {
+        try {
+            if (!currentEvent?.eventId) return;
+            await apiDeleteEvent(currentEvent.eventId);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                showErrorModal(error.message || 'Failed to delete event');
+                throw error;
+            } else {
+                throw new Error('An unknown error occurred');
+            }
+        } finally {
+            handleCloseModal();
+        }
+    };
+
+    if (!currentEvent) return null;
+
+    return (
+        <>
+            <Modal show={show} onHide={handleCloseModal} dialogClassName='modal-wide'>
+                <Modal.Header closeButton>
+                    <Modal.Title>{currentEvent.description}</Modal.Title>
+                </Modal.Header>
+                {isOwnedEvent ? (
+                    <OwnedEvent key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
+                ) : (
+                    <Event key={currentEvent.eventId} event={currentEvent} showInviteState={showInvite} />
+                )}
+                <Modal.Footer>
+                    <ButtonGroup>
+                        {isOwnedEvent === true ? <Button variant='primary'>Edit</Button> : null}
+                        {isOwnedEvent === true ? (
+                            <Button variant='danger' onClick={onDelete}>
+                                Delete
                             </Button>
-                        </ButtonGroup>
-                    </Modal.Footer>
-                </Modal>
-                <EventInvite
-                    showState={showInvite}
-                    event={currentEvent}
-                    owner={isOwnedEvent === true ? true : undefined}
-                />
-            </>
-        );
-    } else {
-        return null;
-    }
+                        ) : null}
+                        <Button variant='secondary' onClick={handleCloseModal}>
+                            Close
+                        </Button>
+                    </ButtonGroup>
+                </Modal.Footer>
+            </Modal>
+            <EventInvite showState={showInvite} event={currentEvent} owner={isOwnedEvent === true ? true : undefined} />
+        </>
+    );
 };
 
 export default EventDetails;

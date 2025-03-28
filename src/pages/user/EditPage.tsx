@@ -6,7 +6,7 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import EditUser from '@/components/user/EditUser';
 import EditAddress from '@/components/user/EditAddress';
-import EditVehicle from '@/components/user/EditVehicle';
+import EditVehicleList from '@/components/user/EditVehicleList';
 
 import '../styles/EditPage.scss';
 import ProfilePicture from '@/components/ProfilePicture';
@@ -51,7 +51,7 @@ export default function EditPage() {
         return (
             <Container>
                 <h1>
-                    Welcome {authUser.firstName} {authUser.name}
+                    Welcome {authUser.firstname} {authUser.name}
                 </h1>
                 <Container className='edit-page'>
                     <Stack className='edit-nav' direction='vertical' gap={3}>
@@ -93,7 +93,7 @@ export default function EditPage() {
                         <Routes>
                             <Route path={'/user'} element={<EditUser />} />
                             <Route path={'/address'} element={<EditAddress />} />
-                            <Route path={'/vehicles'} element={<EditVehicle />} />
+                            <Route path={'/vehicles'} element={<EditVehicleList />} />
                             <Route
                                 path='/*'
                                 element={<Navigate to={`/profile/${authUser.username}/edit/user`} replace />}

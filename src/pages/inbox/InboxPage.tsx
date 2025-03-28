@@ -5,7 +5,7 @@ import Notification from '@/types/objects/Notification/dto';
 import User from '@/types/objects/User/dto';
 import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import { Container } from 'react-bootstrap';
+import { Accordion, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 function InboxPage() {
@@ -44,10 +44,13 @@ function InboxPage() {
     return (
         <Container>
             <h1>Inbox</h1>
-            {notifications.map((notification: Notification) => {
-                return <InboxItem notification={notification} />;
-            })}
-            <p>Coming soon!</p>
+            <Accordion>
+                {notifications.map((notification: Notification) => {
+                    return (
+                        <InboxItem notification={notification} notificationState={[notifications, setNotifications]} />
+                    );
+                })}
+            </Accordion>
         </Container>
     );
 }

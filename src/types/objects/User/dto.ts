@@ -1,5 +1,4 @@
 import Address from '@/types/objects/Address/dto';
-import Vehicle from '@/types/objects/Vehicle/dto';
 
 interface BaseUser {
     username: string;

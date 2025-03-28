@@ -4,7 +4,7 @@ import '@/pages/styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '@/components/events/EventCard';
 import SearchBar from '@/components/events/SearchBar';
-import { apiGetEventList, getEvent } from '@/api/endpoints/event';
+import { apiGetEventList, apiGetEvent } from '@/api/endpoints/event';
 import WMEvent from '@/types/objects/Event/dto';
 import EventDetails from '@/components/events/EventDetails';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
@@ -45,11 +45,12 @@ export default function EventPage() {
                         setShowModal(true);
                     } else {
                         showErrorModal('Event not found!');
+                        setLoading(false);
                     }
                 }
             } catch (error: unknown) {
                 if (error instanceof Error) showErrorModal(`Failed to fetch events: ${error.message}`);
-                console.error(error);
+                setLoading(false);
             }
         };
 
@@ -63,23 +64,26 @@ export default function EventPage() {
             setFilteredEvents(
                 events.filter(
                     (event) =>
-                        (event.title ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        `${event.stopList[0].address.city} - ${event.stopList[event.stopList.length - 1].address.city}`
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase()) ||
                         event.description?.toLowerCase().includes(searchTerm.toLowerCase()),
                 ),
             );
         }
     }, [searchTerm]);
 
-    const openEvent = (eventId: number) => {
+    const openEvent = async (eventId: number) => {
         console.log('Opening event with id: ', eventId);
-        getEvent({ eventid: eventId }).then((response) => {
-            if (response.data?.eventId) {
-                setCurrentEvent(response.data);
-                setShowModal(true);
-            } else {
-                showErrorModal('Event not found!');
-            }
-        });
+        setLoading(true);
+        const response = await apiGetEvent({ eventId: eventId });
+        if (response.data?.eventId) {
+            setCurrentEvent(response.data);
+            setShowModal(true);
+        } else {
+            showErrorModal('Event not found!');
+        }
+        setLoading(false);
     };
 
     return (

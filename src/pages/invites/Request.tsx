@@ -1,5 +1,5 @@
 import { apiGetEvent } from '@/api/endpoints/event';
-import { apiAcceptInvite } from '@/api/endpoints/invite';
+import { apiAcceptRequest } from '@/api/endpoints/invite';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import WMEvent from '@/types/objects/Event/dto';
@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import cronParser from 'cron-parser';
 
-const AcceptInvite = () => {
+const RequestInvite = () => {
     if (!useIsAuthenticated())
         return (
             <Container className='mt-5'>
@@ -67,7 +67,7 @@ const AcceptInvite = () => {
 
             setLoading(true);
 
-            await apiAcceptInvite({
+            await apiAcceptRequest({
                 userId: parseInt(userId),
                 eventId: parseInt(eventId),
                 eventRole: parseInt(eventRole),
@@ -83,7 +83,7 @@ const AcceptInvite = () => {
         <LoadingOverlay isLoading={loading}>
             <Card>
                 <Card.Header>
-                    <Card.Title>Accept Invite</Card.Title>
+                    <Card.Title>Accept Request</Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <p>Event Description: {currentEvent?.description}</p>
@@ -118,7 +118,7 @@ const AcceptInvite = () => {
                         ))}
                     </ul>
                     <Button onClick={onAccept} disabled={!userId || !eventId || !eventRole}>
-                        Accept Invite
+                        Accept Request
                     </Button>
                 </Card.Footer>
             </Card>
@@ -126,4 +126,4 @@ const AcceptInvite = () => {
     );
 };
 
-export default AcceptInvite;
+export default RequestInvite;

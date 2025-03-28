@@ -4,13 +4,14 @@ import FormInput from '@/components/FormInput';
 import Stop from '@/types/objects/Stop/dto';
 import User from '@/types/objects/User/dto';
 import { Form as FormikForm, Formik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { Alert, Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Col } from 'react-bootstrap';
 import cronParser, { CronExpression } from 'cron-parser';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
 
 const validationSchema = Yup.object({
     isPilot: Yup.boolean(),
@@ -43,11 +44,12 @@ const NewEvent = () => {
 
     const authUser = useAuthUser<User>();
 
-    const isLoading = false;
+    const { showErrorModal } = useContext(ErrorModalContext);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (cronExpression && cronExpression.hasNext()) {
-            setNextExecution(cronExpression.next().toLocaleString());
+            setNextExecution(cronExpression.next().toDate().toLocaleString());
         }
     }, [cronExpression]);
 
@@ -56,17 +58,29 @@ const NewEvent = () => {
             values.cronSchedule = ''; // Ensure cronSchedule is empty when repeating is off
         }
         if (authUser === null || !authUser.userId) return;
-
-        const response = await apiCreateEvent({
-            user: authUser,
-            event: {
-                ...values,
-                eventTypeId: values.isPilot ? 1 : 2,
-                stopList: stopListState[0],
-                schedule: { cronSchedule: values.cronSchedule, userId: authUser.userId },
-            },
-        });
-        navigate(`/events/${response.data.eventId}`);
+        try {
+            setLoading(true);
+            const response = await apiCreateEvent({
+                user: authUser,
+                event: {
+                    ...values,
+                    eventTypeId: values.isPilot ? 1 : 2,
+                    stopList: stopListState[0],
+                    schedule: { cronSchedule: values.cronSchedule, userId: authUser.userId },
+                },
+            });
+            if (response.data.eventId) navigate(`/events/${response.data.eventId}`);
+            else throw new Error('Failed to create event');
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error('Error creating event:', error.message);
+                showErrorModal('Failed to create event. Please try again later.' + error.message);
+            } else {
+                console.error('Unexpected error:', error);
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -101,7 +115,7 @@ const NewEvent = () => {
                                 });
                                 setCronExpression(parsedCron);
                                 if (parsedCron.hasNext()) {
-                                    setNextExecution(parsedCron.next().toLocaleString());
+                                    setNextExecution(parsedCron.next().toDate().toLocaleString());
                                 }
                             } catch (error) {
                                 console.error('Invalid cron expression:', error);
@@ -197,8 +211,8 @@ const NewEvent = () => {
                                 <Button type='reset' disabled={formikProps.isSubmitting} className='btn btn-secondary'>
                                     Reset
                                 </Button>
-                                {isLoading ? (
-                                    <Button type='submit' disabled={isLoading} className='btn btn-primary'>
+                                {loading ? (
+                                    <Button type='submit' disabled={loading} className='btn btn-primary'>
                                         Loading...
                                     </Button>
                                 ) : (

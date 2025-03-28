@@ -14,7 +14,7 @@ export const apiGetEventList = async (request: { isPilot?: boolean }) => {
     }
 };
 
-export const getEvent = async (request: { eventid: number }) => {
+export const apiGetEvent = async (request: { eventId: number }) => {
     try {
         return await api.axios.get<WMEvent>('/Event/GetEvent', { params: { ...request } });
     } catch (error) {
@@ -35,6 +35,22 @@ export const apiCreateEvent = async (request: {
 }) => {
     try {
         return await api.axios.post<WMEvent>('/Event/CreateEvent', { ...request });
+    } catch (error) {
+        throw api.handleApiError(error);
+    }
+};
+
+export const apiUpdateEvent = async (request: { eventId: number; event: WMEvent }) => {
+    try {
+        return await api.axios.post<WMEvent>('/Event/UpdateEvent', { ...request });
+    } catch (error) {
+        throw api.handleApiError(error);
+    }
+};
+
+export const apiDeleteEvent = async (request: { eventId: number }) => {
+    try {
+        return await api.axios.post('/Event/DeleteEvent', request.eventId);
     } catch (error) {
         throw api.handleApiError(error);
     }

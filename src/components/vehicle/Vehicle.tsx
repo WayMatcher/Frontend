@@ -8,9 +8,11 @@ import { useEffect } from 'react';
 const VehicleEntry = ({
     vehicle,
     vehicleListState,
+    onDelete,
 }: {
     vehicle: Vehicle;
     vehicleListState: [Vehicle[], React.Dispatch<React.SetStateAction<Vehicle[]>>];
+    onDelete: (vehicleId: number) => Promise<void>;
 }) => {
     const [vehicleList, setVehicleList] = vehicleListState;
 
@@ -41,6 +43,7 @@ const VehicleEntry = ({
 
     const deleteSelf = () => {
         const updatedVehicles = vehicleList.filter((v) => v.vehicleId !== vehicle.vehicleId);
+        if (vehicle.vehicleId) onDelete(vehicle.vehicleId);
         setVehicleList(updatedVehicles);
     };
 

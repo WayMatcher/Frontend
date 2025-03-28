@@ -1,4 +1,5 @@
 import API from '@/api/api';
+import Address from '@/types/objects/Address/dto';
 const api = new API();
 
 import User from '@/types/objects/User/dto';
@@ -69,12 +70,27 @@ export const apiAuthUser = async (request: { username: string; email: string; pa
     }
 };
 
-export const apiRegisterUser = async (request: { user: User; vehicleList?: Vehicle[]; password: string }) => {
+export const apiRegisterUser = async (request: {
+    user: {
+        userId?: number;
+        firstname?: string;
+        name?: string;
+        additionalDescription?: string;
+        license_verified?: boolean;
+        telephone?: string;
+        address?: Address;
+        jwt?: string;
+        username: string;
+        email: string;
+    };
+    vehicleList?: Vehicle[];
+    password: string;
+}) => {
     try {
         // Sets the picture equal to a random cat picture if no picture is set
-        if (request.user.profilepicture === undefined) {
+        /* if (request.user.profilepicture === undefined) {
             request.user.profilepicture = await apiGetCatPicture();
-        }
+        } */
 
         const hashedRequest = {
             ...request,
@@ -96,18 +112,21 @@ export const apiGetUsernameList = async () => {
     }
 };
 
-export const apiRequestPasswordReset = async (input: string, inputType: 'email' | 'username') => {
+export const apiForgotPassword = async (input: string, inputType: 'email' | 'username') => {
     try {
-        return await api.axios.post('/User/RequestPasswordReset', { [inputType]: input });
+        return await api.axios.post('/Login/ForgotPassword', { [inputType]: input });
     } catch (error) {
         api.handleApiError(error);
         throw error;
     }
 };
 
-export const apiSetPassword = async (userId: string, password: string) => {
+export const apiChangePassword = async (hash: string, password: string) => {
     try {
-        return await api.axios.post('/User/RequestPasswordReset', { userId: userId, password: hashString(password) });
+        return await api.axios.post('/Login/ChangePassword', {
+            hashedUsername: hash,
+            password: await hashString(password),
+        });
     } catch (error) {
         api.handleApiError(error);
         throw error;
@@ -119,6 +138,29 @@ export const apiGetCatPicture = async (size?: number): Promise<Blob> => {
         return await axios.get('https://api.ai-cats.net/v1/cat', {
             params: { size: size ? size.toString() : '512', theme: 'all' },
         });
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiGetUserRating = async (request: { userId: number }) => {
+    try {
+        return await api.axios.get<number>('/User/GetUserRating', { params: { ...request } });
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};
+
+export const apiRateUser = async (request: {
+    userWhoRatedId: number;
+    ratedUserId: number;
+    ratingValue: number;
+    ratingText?: string;
+}) => {
+    try {
+        return await api.axios.post('/User/RateUser', { ...request });
     } catch (error) {
         api.handleApiError(error);
         throw error;

@@ -4,6 +4,8 @@ import EventMemberDisplay from './EventMemberDisplay';
 import EventMap from './EventMap';
 import cronParser from 'cron-parser';
 import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import ErrorModalContext from '@/contexts/ErrorModalContext';
 
 interface EventCardProps {
     event: WMEvent;
@@ -15,6 +17,9 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
         //throw new Error('Event must have a valid stop list with at least 2 stops');
         return null;
     }
+
+    const { showErrorModal } = useContext(ErrorModalContext);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const prettyDate = new Date(event.startTimestamp).toLocaleDateString('de-AT');
     const prettyTime = new Date(event.startTimestamp).toLocaleTimeString('de-AT');
@@ -26,7 +31,6 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
             return 'Invalid schedule';
         }
     };
-
     return (
         <Card style={{ maxWidth: '18rem' }}>
             <EventMap width={600} height={400} stopList={event.stopList} />
@@ -55,7 +59,7 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                     </p>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                    <EventMemberDisplay members={event.eventMembers} />
+                    <EventMemberDisplay members={event.eventMembers} freeSeats={event.freeSeats} />
                 </ListGroup.Item>
             </ListGroup>
             <Card.Footer>
@@ -65,11 +69,14 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                         if (event.eventId) {
                             openModal(event.eventId);
                             navigate('/events/' + event.eventId);
+                        } else {
+                            showErrorModal('Event not found!');
+                            setLoading(false);
                         }
                     }}
                     disabled={event.freeSeats < 1 || event.eventId === undefined}
                 >
-                    Match
+                    {loading ? 'Loading...' : 'Match'}
                 </Button>
             </Card.Footer>
         </Card>

@@ -17,6 +17,7 @@ import EditPage from '@/pages/user/EditPage';
 import PasswordForget from '@/pages/password/PasswordForget';
 import PasswordChange from '@/pages/password/PasswordChange';
 import AcceptInvite from '@/pages/invites/Accept';
+import AcceptRequest from '@/pages/invites/Request';
 import InboxPage from '@/pages/inbox/InboxPage';
 import { ErrorModalProvider } from '@/contexts/ErrorModalContext';
 import { Container, Modal } from 'react-bootstrap';
@@ -39,6 +40,7 @@ const Pages = () => {
                         <Route path='/password/forget' element={<PasswordForget />} />
                         <Route path='/password/change' element={<PasswordChange />} />
                         <Route path='/invites/accept' element={<AcceptInvite />} />
+                        <Route path='/request/accept' element={<AcceptRequest />} />
                         <Route path='/register/*' element={<RegisterPage />} />
                         <Route path='/events' element={<EventsPage />} />
                         <Route path='/events/new' element={<NewEvent />} />

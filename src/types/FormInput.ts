@@ -33,7 +33,8 @@ export default interface FormInputProps<T> {
         | 'range'
         | 'url'
         | 'search'
-        | 'checkbox';
+        | 'checkbox'
+        | 'file';
     placeholder?: string | number;
     isLoading?: boolean;
     formikProps: FormikProps<T>;

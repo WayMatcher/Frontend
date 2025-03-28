@@ -42,7 +42,6 @@ export default function NavBar() {
                     WayMatcher
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} />
-                <Navbar.Toggle aria-controls='basic-navbar-nav' />
                 <Navbar.Offcanvas
                     id={`offcanvasNavbar-expand-lg`}
                     aria-labelledby={`offcanvasNavbarLabel-expand-lg`}

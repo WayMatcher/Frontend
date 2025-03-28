@@ -30,3 +30,19 @@ export const apiRequestInvite = async (request: {
         throw api.handleApiError(error);
     }
 };
+
+export const apiAcceptInvite = async (request: { userId: number; eventId: number; eventRole: number }) => {
+    try {
+        return await api.axios.post('/Event/AddEventMember', { ...request });
+    } catch (error) {
+        throw api.handleApiError(error);
+    }
+};
+
+export const apiAcceptRequest = async (request: { userId: number; eventId: number; eventRole: number }) => {
+    try {
+        return await api.axios.post('/Event/AddEventMember', { ...request });
+    } catch (error) {
+        throw api.handleApiError(error);
+    }
+};

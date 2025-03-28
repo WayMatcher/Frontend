@@ -17,25 +17,27 @@ export default function RegisterSummary({
     const navigate = useNavigate();
     const { showErrorModal, showAlert } = useContext(ErrorModalContext);
     const { user, address, vehicleList } = register;
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async () => {
-        const { password, ...tempUser } = user;
+        const { password, profilepicture, ...tempUser } = user;
         try {
-            setIsLoading(true);
+            setLoading(true);
             await apiRegisterUser({
                 user: {
-                    ...tempUser,
+                    ...tempUser, // Only include properties explicitly allowed
                     address: address,
                 },
                 vehicleList,
-                password: password,
+                password: password, // Explicitly include password
             });
-            setIsLoading(false);
+            setLoading(false);
             showAlert('User registered successfully!', 'success');
             navigate('/');
         } catch (error: unknown) {
             if (error instanceof Error) showErrorModal('An error occurred: ' + (error as Error).message);
+            setLoading(false);
+            throw new Error('Failed to register user');
         }
     };
 
@@ -43,7 +45,7 @@ export default function RegisterSummary({
         <>
             <h2>Summary</h2>
             <CollapseWrapper>
-                <LoadingOverlay isLoading={isLoading}>
+                <LoadingOverlay isLoading={loading}>
                     <Row className='mb-3'>
                         <Col>
                             <h3>User</h3>

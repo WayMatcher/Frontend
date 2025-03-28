@@ -9,17 +9,7 @@ const formatAddressLines = (address: Address) => {
         return ['No address provided.'];
     }
 
-    const {
-        city,
-        postalcode,
-        street, // Fallback if addressLine1 isn't provided
-        country,
-        countrycode,
-        region,
-        state,
-        addressLine1,
-        addressLine2,
-    } = address;
+    const { city, postalcode, street, country, countrycode, region, state, addressLine1, addressLine2 } = address;
 
     // Normalize country code for consistent matching
     const cc = (countrycode || '').toUpperCase();
