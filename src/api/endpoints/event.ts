@@ -6,11 +6,19 @@ import Schedule from '@/types/objects/Schedule/dto';
 
 const api = new API();
 
-export const apiGetEventList = async (request: { isPilot?: boolean }) => {
-    try {
-        return await api.axios.get<WMEvent[]>('/Event/GetEventList', { params: { ...request } });
-    } catch (error) {
-        throw api.handleApiError(error);
+export const apiGetEventList = async (request: { isPilot?: boolean; userId?: number }) => {
+    if (request.userId) {
+        try {
+            return await api.axios.get<WMEvent[]>('/Event/GetUserEventList', { params: { userId: request.userId } });
+        } catch (error) {
+            throw api.handleApiError(error);
+        }
+    } else {
+        try {
+            return await api.axios.get<WMEvent[]>('/Event/GetEventList', { params: { isPilot: request.isPilot } });
+        } catch (error) {
+            throw api.handleApiError(error);
+        }
     }
 };
 

@@ -85,7 +85,7 @@ const NewEvent = () => {
 
     useEffect(() => {
         if (!authUser) {
-            console.log('User not logged in, redirecting to login page');
+            console.error('User not logged in, redirecting to login page');
             navigate('/login');
         }
     }, [authUser, navigate]);

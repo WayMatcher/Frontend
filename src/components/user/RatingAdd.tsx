@@ -31,7 +31,6 @@ const RatingAdd = (props: { user: User; showState: [boolean, React.Dispatch<Reac
     });
 
     const onSubmit = async (values: typeof initialValues) => {
-        console.log('Submitting rating:', values);
         setLoading(true);
         try {
             if (!user?.userId) {

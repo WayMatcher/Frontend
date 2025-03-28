@@ -10,6 +10,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiDeleteEvent } from '@/api/endpoints/event';
 
+const Details = ({ event }: { event: WMEvent }) => {
+    return (
+        <>
+            <Modal.Body>
+                <Row>
+                    <Col>
+                        <h3>Details</h3>
+                        <p>Description</p>
+                        <ListGroup>
+                            <ListGroup.Item>{event.description}</ListGroup.Item>
+                        </ListGroup>
+                    </Col>
+                </Row>
+            </Modal.Body>
+        </>
+    );
+};
+
 const Event = ({
     event,
     showInviteState,
@@ -210,7 +228,7 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
     const onDelete = async () => {
         try {
             if (!currentEvent?.eventId) return;
-            await apiDeleteEvent(currentEvent.eventId);
+            await apiDeleteEvent({ eventId: currentEvent.eventId });
         } catch (error: unknown) {
             if (error instanceof Error) {
                 showErrorModal(error.message || 'Failed to delete event');

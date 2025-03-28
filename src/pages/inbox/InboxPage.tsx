@@ -19,7 +19,7 @@ function InboxPage() {
     useEffect(() => {
         const fetchData = async () => {
             if (!authUser?.userId) {
-                console.log('User is not logged in, redirecting to login page');
+                console.error('User is not logged in, redirecting to login page');
                 navigate('/login');
                 return <h2>User is not logged in</h2>;
             }
@@ -36,7 +36,7 @@ function InboxPage() {
     }, []);
 
     if (!authUser?.userId) {
-        console.log('User is not logged in, redirecting to login page');
+        console.error('User is not logged in, redirecting to login page');
         navigate('/login');
         return <h2>User is not logged in</h2>;
     }

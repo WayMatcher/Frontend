@@ -13,7 +13,11 @@ function BaseInput({
     selectOptions,
     ...restProps
 }: FormInputProps<any>): React.ReactElement {
-    const { values, errors, isSubmitting, handleChange, touched } = formikProps;
+    const values = formikProps?.values || {};
+    const errors = formikProps?.errors || {};
+    const isSubmitting = formikProps?.isSubmitting || false;
+    const handleChange = formikProps?.handleChange || (() => {});
+    const touched = formikProps?.touched || {};
 
     const error = errors[name];
     const value = values[name];

@@ -1,4 +1,4 @@
-import { Button, Card, ListGroup } from 'react-bootstrap';
+import { Button, Card, Col, ListGroup, Row, Stack } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import EventMemberDisplay from './EventMemberDisplay';
 import EventMap from './EventMap';
@@ -21,8 +21,6 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
     const { showErrorModal } = useContext(ErrorModalContext);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const prettyDate = new Date(event.startTimestamp).toLocaleDateString('de-AT');
-    const prettyTime = new Date(event.startTimestamp).toLocaleTimeString('de-AT');
     const prettySchedule = (cron: string) => {
         try {
             const interval = cronParser.parse(cron, { tz: 'Europe/Vienna' });
@@ -32,7 +30,14 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
         }
     };
     return (
-        <Card style={{ maxWidth: '18rem' }}>
+        <Card
+            style={{ maxWidth: '18rem' }}
+            className='text-center'
+            border={event.eventTypeId === 2 ? 'warning' : 'primary'}
+        >
+            <Card.Footer className='text-muted'>
+                {event.eventTypeId === 2 ? 'Looking for Passengers' : 'Looking for Pilot'}
+            </Card.Footer>
             <EventMap width={600} height={400} stopList={event.stopList} />
             <Card.Body>
                 <Card.Title>
@@ -40,29 +45,14 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                 </Card.Title>
                 <Card.Text>
                     <strong>{event.description}</strong>
-                </Card.Text>
-            </Card.Body>
-            <ListGroup>
-                <ListGroup.Item>
                     <p>
                         Free Seats: <strong>{event.freeSeats}</strong>
                     </p>
-                </ListGroup.Item>
-                <ListGroup.Item>
                     <p>
-                        Created on: <strong>{prettyDate}</strong> <strong>{prettyTime}</strong>
+                        Starts at: <strong>{prettySchedule(event.schedule.cronSchedule)}</strong>
                     </p>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                    <p>
-                        Schedule: <strong>{prettySchedule(event.schedule.cronSchedule)}</strong>
-                    </p>
-                </ListGroup.Item>
-                <ListGroup.Item>
                     <EventMemberDisplay members={event.eventMembers} freeSeats={event.freeSeats} />
-                </ListGroup.Item>
-            </ListGroup>
-            <Card.Footer>
+                </Card.Text>
                 <Button
                     variant='primary'
                     onClick={() => {
@@ -78,6 +68,13 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                 >
                     {loading ? 'Loading...' : 'Match'}
                 </Button>
+            </Card.Body>
+            <Card.Footer className='text-muted'>
+                <Stack direction='horizontal' gap={3} className='justify-content-center'>
+                    <div className='p-2'>Created by: {event.owner.username}</div>
+                    <div className='vr' />
+                    <div className='p-2'>Event ID: {event.eventId}</div>
+                </Stack>
             </Card.Footer>
         </Card>
     );

@@ -58,6 +58,11 @@ export default function NavBar() {
                             <Link to='/events' className='nav-link'>
                                 Ways
                             </Link>
+                            {isAuthenticated && (
+                                <Link to='/events?filter=owned' className='nav-link'>
+                                    Matches
+                                </Link>
+                            )}
                         </Nav>
                         <Nav>
                             {isAuthenticated ? (
@@ -78,9 +83,9 @@ export default function NavBar() {
                                         </NavDropdown.Item>
                                         <NavDropdown.Item
                                             onClick={() => {
-                                                navigate(`/profile/${authUser?.username}/ways`);
+                                                navigate(`/events?filter=owned`);
                                             }}
-                                            aria-label='My Ways'
+                                            aria-label='My Matches'
                                         >
                                             My Ways
                                         </NavDropdown.Item>

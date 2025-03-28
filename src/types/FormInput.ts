@@ -37,7 +37,7 @@ export default interface FormInputProps<T> {
         | 'file';
     placeholder?: string | number;
     isLoading?: boolean;
-    formikProps: FormikProps<T>;
+    formikProps?: FormikProps<T>;
     onChange?: (e: React.ChangeEvent<any>) => void;
     selectOptions?: { name: string; value: string | number }[];
     as?: 'input' | 'textarea' | 'select' | 'switch';

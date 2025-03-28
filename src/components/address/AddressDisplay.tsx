@@ -115,7 +115,6 @@ function AddressDisplayCard({ address }: { address: Address }) {
     const formattedLines = formatAddressLines(address);
 
     const mapUrl = latitude && longitude ? `https://www.google.com/maps?q=${latitude},${longitude}` : null;
-    console.log(stop);
     return (
         <Card style={{ width: '18rem' }} className='mb-3'>
             <Card.Body>
