@@ -1,4 +1,4 @@
-import { Button, Card, Col, ListGroup, Row, Stack } from 'react-bootstrap';
+import { Button, Card, Stack } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import EventMemberDisplay from './EventMemberDisplay';
 import EventMap from './EventMap';
@@ -35,10 +35,22 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
             className='text-center'
             border={event.eventTypeId === 2 ? 'warning' : 'primary'}
         >
-            <Card.Footer className='text-muted'>
-                {event.eventTypeId === 2 ? 'Looking for Passengers' : 'Looking for Pilot'}
-            </Card.Footer>
+            <Card.Header className='text-muted'>
+                <Stack direction='horizontal' gap={3} className='justify-content-center'>
+                    {event.eventTypeId === 2 ? 'Looking for Passengers' : 'Looking for Pilot'}
+                    <div className='vr' />
+                    <span
+                        className='bi bi-link-45deg'
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/events/${event.eventId}`);
+                            alert('Link copied to clipboard!');
+                        }}
+                    ></span>
+                </Stack>
+            </Card.Header>
             <EventMap width={600} height={400} stopList={event.stopList} />
+
             <Card.Body>
                 <Card.Title>
                     {event.stopList[0].address.city} - {event.stopList[event.stopList.length - 1].address.city}
@@ -51,29 +63,31 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                     <p>
                         Starts at: <strong>{prettySchedule(event.schedule.cronSchedule)}</strong>
                     </p>
-                    <EventMemberDisplay members={event.eventMembers} freeSeats={event.freeSeats} />
                 </Card.Text>
-                <Button
-                    variant='primary'
-                    onClick={() => {
-                        if (event.eventId) {
-                            openModal(event.eventId);
-                            navigate('/events/' + event.eventId);
-                        } else {
-                            showErrorModal('Event not found!');
-                            setLoading(false);
-                        }
-                    }}
-                    disabled={event.freeSeats < 1 || event.eventId === undefined}
-                >
-                    {loading ? 'Loading...' : 'Match'}
-                </Button>
+                <hr />
+                <EventMemberDisplay event={event} members={event.eventMembers} freeSeats={event.freeSeats} />
             </Card.Body>
             <Card.Footer className='text-muted'>
                 <Stack direction='horizontal' gap={3} className='justify-content-center'>
                     <div className='p-2'>Created by: {event.owner.username}</div>
                     <div className='vr' />
-                    <div className='p-2'>Event ID: {event.eventId}</div>
+                    <div className='p-2'>
+                        <Button
+                            variant='primary'
+                            onClick={() => {
+                                if (event.eventId) {
+                                    openModal(event.eventId);
+                                    navigate('/events/' + event.eventId);
+                                } else {
+                                    showErrorModal('Event not found!');
+                                    setLoading(false);
+                                }
+                            }}
+                            disabled={event.freeSeats < 1 || event.eventId === undefined}
+                        >
+                            {loading ? 'Loading...' : 'Match'}
+                        </Button>
+                    </div>
                 </Stack>
             </Card.Footer>
         </Card>

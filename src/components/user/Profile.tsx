@@ -11,8 +11,8 @@ import { Button, ButtonGroup, Container, Table } from 'react-bootstrap';
 import Loading from '@/components/Loading';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import ProfilePicture from '@/components/ProfilePicture';
-import Rating from './Rating';
-import RatingAdd from './RatingAdd';
+import Rating from '@/components/rating/Rating';
+import RatingAdd from '@/components/rating/RatingAdd';
 
 export default function Profile() {
     const { username } = useParams<{ username: string }>();

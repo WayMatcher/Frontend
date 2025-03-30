@@ -1,4 +1,5 @@
 import './App.scss';
+import { memo } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -24,40 +25,46 @@ import { Container, Modal } from 'react-bootstrap';
 import NotFoundPage from './pages/NotFoundPage';
 import { UserProfilePopupProvider } from '@/contexts/UserProfilePopupContext';
 import UserProfilePopup from '@/components/UserProfilePopup';
+import Privacy from './components/Privacy';
+import TermsConditions from './components/TermsConditions';
 
-const Pages = () => {
+const Pages = memo(() => {
     return (
         <BrowserRouter>
-            <header className='App-Header'>
-                <NavBar />
-            </header>
-            <ErrorModalProvider>
-                <main className='App-Main'>
-                    <Routes>
-                        <Route path='*' element={<NotFoundPage />} />
-                        <Route path='/' element={<LandingPage />} />
-                        <Route path='/login' element={<LoginPage />} />
-                        <Route path='/password/forget' element={<PasswordForget />} />
-                        <Route path='/password/change' element={<PasswordChange />} />
-                        <Route path='/invites/accept' element={<AcceptInvite />} />
-                        <Route path='/request/accept' element={<AcceptRequest />} />
-                        <Route path='/register/*' element={<RegisterPage />} />
-                        <Route path='/events' element={<EventsPage />} />
-                        <Route path='/events/new' element={<NewEvent />} />
-                        <Route path='/events/:eventid' element={<EventsPage />} />
-                        <Route path='/profile' element={<Profile />} />
-                        <Route path='/profile/:username' element={<Profile />} />
-                        <Route path='/profile/:username/edit/*' element={<EditPage />} />
-                        <Route path='/inbox' element={<InboxPage />} />
-                    </Routes>
-                </main>
-            </ErrorModalProvider>
-            <footer className='App-Footer'>
-                <Footer />
-            </footer>
+            <div className='App-Container' style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                <header className='App-Header'>
+                    <NavBar />
+                </header>
+                <ErrorModalProvider>
+                    <main className='App-Main' style={{ flex: '1 0 auto' }}>
+                        <Routes>
+                            <Route path='*' element={<NotFoundPage />} />
+                            <Route path='/' element={<LandingPage />} />
+                            <Route path='/login' element={<LoginPage />} />
+                            <Route path='/password/forget' element={<PasswordForget />} />
+                            <Route path='/password/change' element={<PasswordChange />} />
+                            <Route path='/invites/accept' element={<AcceptInvite />} />
+                            <Route path='/request/accept' element={<AcceptRequest />} />
+                            <Route path='/register/*' element={<RegisterPage />} />
+                            <Route path='/events' element={<EventsPage />} />
+                            <Route path='/events/new' element={<NewEvent />} />
+                            <Route path='/events/:eventid' element={<EventsPage />} />
+                            <Route path='/profile' element={<Profile />} />
+                            <Route path='/profile/:username' element={<Profile />} />
+                            <Route path='/profile/:username/edit/*' element={<EditPage />} />
+                            <Route path='/inbox' element={<InboxPage />} />
+                            <Route path='/privacy' element={<Privacy />} />
+                            <Route path='/terms' element={<TermsConditions />} />
+                        </Routes>
+                    </main>
+                </ErrorModalProvider>
+                <footer className='App-Footer' style={{ flexShrink: 0 }}>
+                    <Footer />
+                </footer>
+            </div>
         </BrowserRouter>
     );
-};
+});
 
 export default function AppWrapper() {
     const useErrorBoundary = import.meta.env.MODE === 'production';

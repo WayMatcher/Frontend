@@ -1,7 +1,7 @@
 import { apiGetUserRating } from '@/api/endpoints/user';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { useContext, useEffect, useState } from 'react';
-import LoadingOverlay from '../LoadingOverlay';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 const Rating = ({ userId }: { userId: number }) => {
     const { showErrorModal } = useContext(ErrorModalContext);
@@ -12,11 +12,11 @@ const Rating = ({ userId }: { userId: number }) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             if (rating && rating >= i) {
-                stars.push(<span key={i} className='bi bi-star-fill'></span>);
+                stars.push(<span key={`rating-${i}`} className='bi bi-star-fill'></span>);
             } else if (rating && rating > i - 1 && rating < i) {
-                stars.push(<span key={i} className='bi bi-star-half'></span>);
+                stars.push(<span key={`rating-${i}`} className='bi bi-star-half'></span>);
             } else {
-                stars.push(<span key={i} className='bi bi-star'></span>);
+                stars.push(<span key={`rating-${i}`} className='bi bi-star'></span>);
             }
         }
         return stars;

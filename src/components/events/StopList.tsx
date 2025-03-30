@@ -10,11 +10,11 @@ import '@/components/styles/StopList.scss';
 const StopListDisplay = ({ stopList }: { stopList: Stop[] }) => {
     return (
         <ListGroup>
-            {stopList.map((stop: Stop) => (
+            {stopList.map((stop: Stop, index: number) => (
                 <>
-                    <ListGroup.Item>
-                        {stop.stopSequenceNumber} {stop.address.state} {stop.address.city} {stop.address.street}{' '}
-                        {stop.address.postalcode}
+                    <ListGroup.Item key={`stop-${index}`} eventKey={index}>
+                        <strong>#{stop.stopSequenceNumber + 1}:</strong> {stop.address.street} {stop.address.postalcode}{' '}
+                        ({stop.address.state}, {stop.address.city})
                     </ListGroup.Item>
                 </>
             ))}

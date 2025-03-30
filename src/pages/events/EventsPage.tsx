@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import '@/pages/styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '@/components/events/EventCard';
@@ -7,12 +7,11 @@ import { apiGetEventList, apiGetEvent } from '@/api/endpoints/event';
 import WMEvent from '@/types/objects/Event/dto';
 import EventDetails from '@/components/events/EventDetails';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
-import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import LoadingOverlay from '@/components/LoadingOverlay';
 import EventFilter from '@/components/events/EventFilter';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import { useSearchParams } from 'react-router-dom';
+import EventCardPlaceholder from '@/components/events/EventCardPlaceholder';
 
 export default function EventPage() {
     const { eventid } = useParams();
@@ -22,8 +21,6 @@ export default function EventPage() {
     const [events, setEvents] = useState<WMEvent[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [filteredEvents, setFilteredEvents] = useState<WMEvent[]>([]);
-
-    const isAuthenticated = useIsAuthenticated();
 
     const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
 
@@ -136,12 +133,10 @@ export default function EventPage() {
                 break;
         }
     };
-    useEffect(() => {
-        fetchEvents();
-    }, []);
 
     useEffect(() => {
         fetchEvents();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams]);
 
     const openEvent = async (eventId: number) => {
@@ -158,37 +153,28 @@ export default function EventPage() {
 
     return (
         <>
-            <LoadingOverlay isLoading={isLoading} className='EventPage'>
-                <Container fluid className='EventPageLayout d-flex flex-column'>
+            <Container fluid className='EventPageLayout d-flex flex-column'>
+                <Container fluid>
                     <h2>Ways</h2>
                     <EventFilter eventListState={[events, setFilteredEvents]}>
                         <div className='EventContent flex-grow-1 p-3'>
                             <Container className='EventGrid d-flex flex-wrap'>
-                                {filteredEvents.map((event) => (
-                                    <EventCard
-                                        key={event.eventId}
-                                        event={event}
-                                        openEvent={() => {
-                                            if (event.eventId) openEvent(event.eventId);
-                                        }}
-                                    />
-                                ))}
+                                {isLoading
+                                    ? Array.from({ length: 6 }).map((_, index) => <EventCardPlaceholder key={index} />)
+                                    : filteredEvents.map((event) => (
+                                          <EventCard
+                                              key={event.eventId}
+                                              event={event}
+                                              openEvent={() => {
+                                                  if (event.eventId) openEvent(event.eventId);
+                                              }}
+                                          />
+                                      ))}
                             </Container>
-                            {isAuthenticated && (
-                                <Container className='text-center mt-3'>
-                                    <Button
-                                        variant='success'
-                                        className='add-button'
-                                        onClick={() => navigate('/events/new')}
-                                    >
-                                        <span className='bi bi-plus-lg'></span>
-                                    </Button>
-                                </Container>
-                            )}
                         </div>
                     </EventFilter>
                 </Container>
-            </LoadingOverlay>
+            </Container>
             <EventDetails event={currentEvent} showModal={showModal} />
         </>
     );

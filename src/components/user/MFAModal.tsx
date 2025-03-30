@@ -62,6 +62,7 @@ export default function MFAModal({
                                     type='text'
                                     placeholder='Enter 4-digit code'
                                     formikProps={formikProps}
+                                    autoFocus
                                 />
                             </Row>
                             <Row></Row>

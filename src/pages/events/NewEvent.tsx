@@ -7,14 +7,13 @@ import { Form as FormikForm, Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { Alert, Button, ButtonGroup, Container, Row } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Col } from 'react-bootstrap';
 import cronParser, { CronExpression } from 'cron-parser';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 
 const validationSchema = Yup.object({
-    isPilot: Yup.boolean(),
     description: Yup.string(),
     startTimestamp: Yup.date().required('Date is required').min(new Date(), 'Date must be in the future'),
     freeSeats: Yup.number().required('Free Seats are required'),
@@ -26,7 +25,6 @@ const validationSchema = Yup.object({
 });
 
 const initialValues = {
-    isPilot: false,
     description: '',
     freeSeats: 3,
     repeating: false,
@@ -36,6 +34,8 @@ const initialValues = {
 
 const NewEvent = () => {
     const stopListState = useState<Stop[]>([]);
+    const [searchParams] = useSearchParams();
+    const [eventTypeId, setEventTypeId] = useState(0);
     const [cronExpression, setCronExpression] = useState<CronExpression | undefined>();
     const [nextExecution, setNextExecution] = useState<string>('');
     const [repeating, setRepeating] = useState<boolean>(false);
@@ -53,6 +53,16 @@ const NewEvent = () => {
         }
     }, [cronExpression]);
 
+    useEffect(() => {
+        if (searchParams.get('ispilot')) {
+            setEventTypeId(1); // Pilot Way
+        } else if (searchParams.get('ispassenger')) {
+            setEventTypeId(2); // Passenger Way
+        } else {
+            navigate('/events');
+        }
+    }, [searchParams]);
+
     const onSubmit = async (values: typeof initialValues) => {
         if (!values.repeating) {
             values.cronSchedule = ''; // Ensure cronSchedule is empty when repeating is off
@@ -60,11 +70,17 @@ const NewEvent = () => {
         if (authUser === null || !authUser.userId) return;
         try {
             setLoading(true);
+
+            if (isNaN(eventTypeId) || (eventTypeId !== 1 && eventTypeId !== 2)) {
+                navigate('/');
+                return;
+            }
+
             const response = await apiCreateEvent({
                 user: authUser,
                 event: {
                     ...values,
-                    eventTypeId: values.isPilot ? 1 : 2,
+                    eventTypeId,
                     stopList: stopListState[0],
                     schedule: { cronSchedule: values.cronSchedule, userId: authUser.userId },
                 },
@@ -92,7 +108,13 @@ const NewEvent = () => {
 
     return (
         <Container>
-            <h3>New Way</h3>
+            <h3>
+                {eventTypeId === 1 ? (
+                    <span className='bi bi-car-front-fill'> New Pilot Way</span>
+                ) : eventTypeId === 2 ? (
+                    <span className='bi bi-person-fill'> New Passenger Way</span>
+                ) : null}
+            </h3>
             <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
                 {(formikProps) => {
                     useEffect(() => {

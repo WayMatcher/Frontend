@@ -1,4 +1,4 @@
-import { Form, Col } from 'react-bootstrap';
+import { Form, Col, FloatingLabel } from 'react-bootstrap';
 import FormInputProps from '@/types/FormInput';
 
 function BaseInput({
@@ -24,8 +24,7 @@ function BaseInput({
     const touchedValue = touched[name];
 
     return (
-        <Form.Group as={Col} controlId={`validationFormik${name}`}>
-            {label && <Form.Label>{label}</Form.Label>}
+        <>
             {as === 'select' ? (
                 <Form.Select
                     aria-label={label}
@@ -60,6 +59,20 @@ function BaseInput({
                         <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback>
                     ) : null}
                 </Form.Group>
+            ) : as === 'textarea' ? (
+                <Form.Control
+                    as={as}
+                    type={type}
+                    name={name}
+                    value={value || ''} // Ensure value is not undefined
+                    placeholder={typeof placeholder === 'number' ? placeholder.toString() : placeholder}
+                    disabled={isSubmitting || isLoading}
+                    isValid={touchedValue && !error}
+                    isInvalid={touchedValue && !!error} // Add invalid state
+                    onChange={onChange || handleChange}
+                    rows={3}
+                    {...restProps}
+                />
             ) : (
                 <Form.Control
                     as={as}
@@ -75,7 +88,7 @@ function BaseInput({
                 />
             )}
             {typeof error === 'string' ? <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback> : null}
-        </Form.Group>
+        </>
     );
 }
 
@@ -93,8 +106,36 @@ const inputTypeMapping: Record<string, Partial<FormInputProps<any>>> = {
     color: { type: 'color' },
 };
 
+const LabelledInput = (props: FormInputProps<any>) => {
+    return (
+        <Form.Group as={Col} controlId={`validationFormik${props.name}`}>
+            {props.label && props.type !== 'checkbox' && <Form.Label>{props.label}</Form.Label>}
+            <BaseInput {...props} {...props.inputProps} />
+            {typeof props.error === 'string' ? (
+                <Form.Control.Feedback type='invalid'>{props.error}</Form.Control.Feedback>
+            ) : null}
+        </Form.Group>
+    );
+};
+
+const FloatingLabelledInput = (props: FormInputProps<any>) => {
+    const { label, name, error, inputProps } = props;
+    return (
+        <Form.Group as={Col} controlId={`validationFormik${name}`}>
+            <FloatingLabel controlId={`validationFormik${name}`} label={label} className='mb-3'>
+                <BaseInput {...props} {...inputProps} />
+            </FloatingLabel>
+            {typeof error === 'string' ? <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback> : null}
+        </Form.Group>
+    );
+};
+
 export default function FormInput(props: FormInputProps<any>): React.ReactElement {
     const { type } = props;
     const inputProps = inputTypeMapping[type] || { type: 'text' };
-    return <BaseInput {...props} {...inputProps} />;
+    if (props.floatingLabel) {
+        return <FloatingLabelledInput {...props} {...inputProps} />;
+    } else {
+        return <LabelledInput {...props} {...inputProps} />;
+    }
 }

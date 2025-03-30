@@ -94,6 +94,7 @@ const RatingAdd = (props: { user: User; showState: [boolean, React.Dispatch<Reac
                                         { name: '5 Stars', value: 5 },
                                     ]}
                                     type={'select'}
+                                    autoFocus
                                 />
                             </Row>
                             {formikProps.errors.rating && formikProps.touched.rating && (

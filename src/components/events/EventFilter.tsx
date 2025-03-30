@@ -55,11 +55,13 @@ const EventFilter = ({ eventListState, children }: EventFilterProps) => {
                 ? new Date(event.startTimestamp) > new Date(filter.startsAfter)
                 : true;
             const freeSeatsMatch = filter.freeSeats ? event.freeSeats <= filter.freeSeats : true;
-            const quickSearchMatch = filter.quickSearch
-                ? `${event.stopList[0].address.city} - ${event.stopList[event.stopList.length - 1].address.city}`
-                      .toLowerCase()
-                      .includes(filter.quickSearch.toLowerCase())
-                : true;
+
+            const quickSearchMatch =
+                filter.quickSearch && startingLocation && endingLocation
+                    ? `${startingLocation.address.city} - ${endingLocation.address.city}`
+                          .toLowerCase()
+                          .includes(filter.quickSearch.toLowerCase())
+                    : true;
             const onlyRepeatingMatch = filter.onlyRepeating ? event.scheduleId : true;
             return (
                 startLocationMatch &&
@@ -91,10 +93,26 @@ const EventFilter = ({ eventListState, children }: EventFilterProps) => {
         setFilteredEvents(filteredEvents); // Update filtered events directly
     }, [filter]); // Only re-run when the filter changes
 
+    const resetFilter = () => {
+        setFilter({
+            onlyRepeating: false,
+            startsBefore: '',
+            startsAfter: '',
+            startLocation: '',
+            endLocation: '',
+            freeSeats: 0,
+            quickSearch: '',
+        });
+        setFilteredEvents(originalEventsRef.current); // Reset to original events
+    };
+
     return (
         <>
             <div className='SearchBarContainer bg-light p-3'>
-                <SearchBar onSearch={(searchTerm) => setFilter({ ...filter, quickSearch: searchTerm })} />
+                <SearchBar
+                    onSearch={(searchTerm) => setFilter({ ...filter, quickSearch: searchTerm })}
+                    onReset={resetFilter}
+                />
             </div>
             <div className='d-flex flex-grow-1'>
                 <div className='EventFilterPanel bg-light p-3' style={{ maxWidth: '250px' }}>
@@ -103,6 +121,7 @@ const EventFilter = ({ eventListState, children }: EventFilterProps) => {
                             <Form.Check
                                 type='checkbox'
                                 label='Only Repeating Events'
+                                checked={filter.onlyRepeating}
                                 onChange={(e) => setFilter({ ...filter, onlyRepeating: e.target.checked })}
                                 name='onlyRepeating'
                             />
@@ -115,6 +134,7 @@ const EventFilter = ({ eventListState, children }: EventFilterProps) => {
                                 type='text'
                                 label='Search by starting location'
                                 placeholder='Search a starting location'
+                                value={filter.startLocation}
                                 onChange={(e) => setFilter({ ...filter, startLocation: e.target.value })}
                                 name={'startLocation'}
                             />

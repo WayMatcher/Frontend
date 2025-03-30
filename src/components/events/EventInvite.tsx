@@ -8,6 +8,7 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { apiRequestInvite, apiSendInvite } from '@/api/endpoints/invite';
 import WMEvent from '@/types/objects/Event/dto';
 import User from '@/types/objects/User/dto';
+import LoadingOverlay from '../LoadingOverlay';
 
 export const EventInvite = ({
     showState,
@@ -23,33 +24,47 @@ export const EventInvite = ({
     const [show, setShow] = showState;
 
     const authUser = useAuthUser<User>();
-
+    const [loading, setLoading] = useState(true);
+    const { showErrorModal } = useContext(ErrorModalContext);
     if (!authUser) return null;
 
     useEffect(() => {
         const fetchUsernames = async () => {
-            const response = await apiGetUsernameList();
+            try {
+                const response = await apiGetUsernameList();
 
-            const uniqueUsernames = response.data
-                .filter((user: User) => user.userId !== undefined)
-                .map((user: User) => ({
-                    userId: user.userId || -1,
-                    username: user.username,
-                }));
+                const uniqueUsernames = response.data
+                    .filter((user: User) => user.userId !== undefined)
+                    .map((user: User) => ({
+                        userId: user.userId || -1,
+                        username: user.username,
+                    }));
 
-            setUsernameList(uniqueUsernames);
+                setUsernameList(uniqueUsernames);
+            } catch (error) {
+                showErrorModal(error instanceof Error ? error.message : 'An error occurred');
+                return;
+            } finally {
+                setLoading(false);
+            }
         };
         if (owner) {
             fetchUsernames();
         }
     }, []);
 
+    useEffect(() => {
+        if (!show) {
+            setShow(false); // Ensure modal closes properly
+        }
+    }, [show]);
+
     return (
         <Modal show={show} onHide={() => setShow(false)}>
             {owner === true ? (
                 <Invite event={event} setShow={setShow} userList={usernameList} />
             ) : (
-                <Request event={event} authUser={authUser} setShow={setShow} />
+                <Request event={event} authUser={authUser} setShow={setShow} loading={loading} />
             )}
         </Modal>
     );
@@ -171,10 +186,12 @@ const Request = ({
     authUser,
     event,
     setShow,
+    loading,
 }: {
     authUser: User;
     event: WMEvent;
     setShow: React.Dispatch<React.SetStateAction<boolean>>;
+    loading: boolean;
 }) => {
     const { showErrorModal } = useContext(ErrorModalContext);
     const handleRequest = async (values: { message: string; isPilot: boolean }) => {
@@ -210,50 +227,54 @@ const Request = ({
                         <Modal.Title>{'Request Match'}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Row className='mb-3'>
-                            <Form.Group as={Col} controlId={`validationFormik_message`}>
-                                <Form.Label>Message</Form.Label>
-                                <Form.Control
-                                    aria-label='Message to send'
-                                    as={'textarea'}
-                                    name={'message'}
-                                    value={formikProps.values.message}
-                                    placeholder={'Enter a message you want to send to the Owner'}
-                                    disabled={formikProps.isSubmitting}
-                                    isValid={formikProps.touched.message && !formikProps.errors.message}
-                                    onChange={formikProps.handleChange}
-                                />
-                                {typeof formikProps.errors.message === 'string' ? (
-                                    <Form.Control.Feedback type='invalid'>
-                                        {formikProps.errors.message}
-                                    </Form.Control.Feedback>
-                                ) : null}
-                            </Form.Group>
-
-                            <Row>
-                                <Form.Group as={Col} controlId={`validationFormik_isPilot`}>
-                                    <Form.Switch
-                                        type='switch'
-                                        id='isPilot'
-                                        name='isPilot'
-                                        onChange={() =>
-                                            formikProps.setValues({
-                                                ...formikProps.values,
-                                                isPilot: !formikProps.values.isPilot,
-                                            })
-                                        }
-                                        label='Request as Pilot Role'
+                        <LoadingOverlay isLoading={loading}>
+                            <Row className='mb-3'>
+                                <Form.Group as={Col} controlId={`validationFormik_message`}>
+                                    <Form.Label>Message</Form.Label>
+                                    <Form.Control
+                                        aria-label='Message to send'
+                                        as={'textarea'}
+                                        name={'message'}
+                                        value={formikProps.values.message}
+                                        placeholder={'Enter a message you want to send to the Owner'}
+                                        disabled={formikProps.isSubmitting}
+                                        isValid={formikProps.touched.message && !formikProps.errors.message}
+                                        onChange={formikProps.handleChange}
+                                        readOnly={loading ? true : undefined}
                                     />
+                                    {typeof formikProps.errors.message === 'string' ? (
+                                        <Form.Control.Feedback type='invalid'>
+                                            {formikProps.errors.message}
+                                        </Form.Control.Feedback>
+                                    ) : null}
                                 </Form.Group>
+                                <Row>
+                                    <Form.Group as={Col} controlId={`validationFormik_isPilot`}>
+                                        <Form.Switch
+                                            type='switch'
+                                            id='isPilot'
+                                            name='isPilot'
+                                            onChange={() =>
+                                                formikProps.setValues({
+                                                    ...formikProps.values,
+                                                    isPilot: !formikProps.values.isPilot,
+                                                })
+                                            }
+                                            label='Request as Pilot Role'
+                                        />
+                                    </Form.Group>
+                                </Row>
                             </Row>
-                        </Row>
+                        </LoadingOverlay>
                     </Modal.Body>
                     <Modal.Footer>
                         <ButtonGroup>
                             <Button variant='secondary' onClick={() => setShow(false)}>
                                 Close
                             </Button>
-                            <Button type='submit'>{'Request'}</Button>
+                            <Button type='submit' disabled={loading}>
+                                Request
+                            </Button>
                         </ButtonGroup>
                     </Modal.Footer>
                 </FormikForm>

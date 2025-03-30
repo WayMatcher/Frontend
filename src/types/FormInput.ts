@@ -42,4 +42,5 @@ export default interface FormInputProps<T> {
     selectOptions?: { name: string; value: string | number }[];
     as?: 'input' | 'textarea' | 'select' | 'switch';
     [key: string]: any; // Allow passing down generic props
+    floatingLabel?: boolean; // Optional prop for floating label functionality
 }

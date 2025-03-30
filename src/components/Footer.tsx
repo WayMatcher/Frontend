@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import './styles/Footer.scss';
+import '@/components/styles/Footer.scss';
 import { Container } from 'react-bootstrap';
 
 export default function Footer() {
     return (
         <>
             <Container>
-                <Link to='/privacy'>Privacy</Link>
+                <Link to='/privacy'>Privacy Policy</Link>
                 <Link to='/terms'>Terms & Conditions</Link>
             </Container>
             <Container>

@@ -1,7 +1,13 @@
 import { Button, Form, Stack } from 'react-bootstrap';
 import { useState } from 'react';
 
-export default function SearchBar({ onSearch }: { onSearch: (searchTerm: string) => void }) {
+export default function SearchBar({
+    onSearch,
+    onReset,
+}: {
+    onSearch: (searchTerm: string) => void;
+    onReset: () => void;
+}) {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,6 +19,7 @@ export default function SearchBar({ onSearch }: { onSearch: (searchTerm: string)
     const handleReset = () => {
         setSearchTerm('');
         onSearch('');
+        onReset();
     };
 
     return (
