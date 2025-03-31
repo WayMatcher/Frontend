@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import { Col } from 'react-bootstrap';
 import cronParser, { CronExpression } from 'cron-parser';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
+import { generateCronExpression, RepeatSchedule } from '@/utils/generateCronExpression';
 
 const validationSchema = Yup.object({
     description: Yup.string(),
@@ -121,23 +122,24 @@ const NewEvent = () => {
                         if (formikProps.values.startTimestamp && formikProps.values.cronSchedule) {
                             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                             const startDate = new Date(formikProps.values.startTimestamp);
-                            const hours = startDate.getHours();
-                            const minutes = startDate.getMinutes();
 
-                            const adjustedCronSchedule = formikProps.values.cronSchedule.replace(
-                                /^0 0/,
-                                `${minutes} ${hours}`,
+                            const cronExpression = generateCronExpression(
+                                startDate,
+                                formikProps.values.cronSchedule as RepeatSchedule,
                             );
-
+                            // TODO: Fix this
+                            console.log('Cron Expression:', cronExpression);
                             try {
-                                const parsedCron = cronParser.parse(adjustedCronSchedule, {
-                                    tz: timezone,
+                                const parsedCron = cronParser.parse(cronExpression, {
+                                    startDate: formikProps.values.startTimestamp,
                                     currentDate: new Date(),
-                                    startDate: startDate,
                                 });
+
                                 setCronExpression(parsedCron);
                                 if (parsedCron.hasNext()) {
-                                    setNextExecution(parsedCron.next().toDate().toLocaleString());
+                                    setNextExecution(
+                                        parsedCron.next().toDate().toLocaleString('de-AT', { timeZone: timezone }),
+                                    );
                                 }
                             } catch (error) {
                                 console.error('Invalid cron expression:', error);
@@ -199,12 +201,12 @@ const NewEvent = () => {
                                             type='select'
                                             formikProps={formikProps}
                                             selectOptions={[
-                                                { name: 'Daily', value: '0 0 * * *' },
-                                                { name: 'Monthly', value: '0 0 1 * *' },
-                                                { name: 'Weekends', value: '0 0 * * 6,0' },
-                                                { name: 'Weekdays', value: '0 0 * * 1-5' },
-                                                { name: 'Weekly', value: '0 0 * * 0' },
-                                                { name: 'Yearly', value: '0 0 1 1 *' },
+                                                { name: 'Daily', value: `Daily` },
+                                                { name: 'Monthly', value: `Monthly` },
+                                                { name: 'Weekends', value: `Weekends` },
+                                                { name: 'Weekdays', value: `Weekdays` },
+                                                { name: 'Weekly', value: `Weekly` },
+                                                { name: 'Yearly', value: `Yearly` },
                                             ]}
                                         />
                                     )}

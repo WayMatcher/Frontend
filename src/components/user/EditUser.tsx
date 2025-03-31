@@ -1,20 +1,27 @@
 import React, { useContext } from 'react';
-import { Row } from 'react-bootstrap';
+import { Button, Container, Modal, Row } from 'react-bootstrap';
 import FormInput from '@/components/FormInput';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import { Formik, Form as FormikForm } from 'formik';
-import { apiGetUser, apiSetUser } from '@/api/endpoints/user';
+import { apiDeleteUser, apiGetUser, apiSetUser } from '@/api/endpoints/user';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import EditButtons from './EditButtons';
 import LoadingOverlay from '../LoadingOverlay';
 import * as Yup from 'yup';
+import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import { useNavigate } from 'react-router-dom';
 
 export default function EditUser(): React.ReactElement {
     const { showErrorModal } = useContext(ErrorModalContext);
-    const [isLoading, setIsLoading] = React.useState(true);
+    const [loading, setLoading] = React.useState(true);
+    const [deletePopup, setDeletePopup] = React.useState(false);
     const authUser = useAuthUser<User>();
+
+    const signOut = useSignOut();
+
+    const navigate = useNavigate();
 
     const initialValues: Omit<User, 'email' | 'username'> & { password: string; password_confirm: string } = {
         password: '',
@@ -66,11 +73,31 @@ export default function EditUser(): React.ReactElement {
         }
     };
 
+    const handleDelete = async () => {
+        if (authUser?.userId) {
+            try {
+                setLoading(true);
+                await apiDeleteUser({ userId: authUser.userId });
+                signOut();
+                navigate('/login');
+                setDeletePopup(false);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    showErrorModal(error.message);
+                } else {
+                    console.error('Unexpected error:', error);
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
     return (
         <>
             <h2>User</h2>
             <CollapseWrapper>
-                <LoadingOverlay isLoading={isLoading}>
+                <LoadingOverlay isLoading={loading}>
                     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                         {(formikProps) => {
                             React.useEffect(() => {
@@ -93,7 +120,7 @@ export default function EditUser(): React.ReactElement {
                                     } catch (error: unknown) {
                                         showErrorModal((error as Error).message);
                                     } finally {
-                                        setIsLoading(false);
+                                        setLoading(false);
                                     }
                                 };
                                 fetchData();
@@ -106,14 +133,14 @@ export default function EditUser(): React.ReactElement {
                                             label='Password'
                                             name='password'
                                             type='password'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                         <FormInput
                                             label='Confirm Password'
                                             name='password_confirm'
                                             type='password'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                     </Row>
@@ -124,7 +151,7 @@ export default function EditUser(): React.ReactElement {
                                             name='firstname'
                                             type='text'
                                             placeholder='John'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                         <FormInput
@@ -132,7 +159,7 @@ export default function EditUser(): React.ReactElement {
                                             name='name'
                                             type='text'
                                             placeholder='Doe'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                     </Row>
@@ -142,7 +169,7 @@ export default function EditUser(): React.ReactElement {
                                             name='telephone'
                                             type='tel'
                                             placeholder='555-555-5555'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                     </Row>
@@ -153,7 +180,7 @@ export default function EditUser(): React.ReactElement {
                                             name='additionalDescription'
                                             type='textarea'
                                             placeholder='Tell us about yourself'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                     </Row>
@@ -162,7 +189,7 @@ export default function EditUser(): React.ReactElement {
                                             label="Owns driver's license"
                                             name='licenseVerified'
                                             type='switch'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                     </Row>
@@ -171,18 +198,39 @@ export default function EditUser(): React.ReactElement {
                                             label='Profile Picture'
                                             name='profilePicture'
                                             type='file'
-                                            isLoading={isLoading}
+                                            isLoading={loading}
                                             formikProps={formikProps}
                                         />
                                     </Row>
                                     <br />
-                                    <EditButtons isLoading={isLoading} isSubmitting={formikProps.isSubmitting} />
+                                    <div className='d-flex justify-content-between'>
+                                        <EditButtons isLoading={loading} isSubmitting={formikProps.isSubmitting} />
+                                        <Button onClick={() => setDeletePopup(true)} variant='danger'>
+                                            Delete
+                                        </Button>
+                                    </div>
                                 </FormikForm>
                             );
                         }}
                     </Formik>
                 </LoadingOverlay>
             </CollapseWrapper>
+            <Modal show={deletePopup} onHide={() => setDeletePopup(false)} centered>
+                <Modal.Body>
+                    <h3>{authUser?.username}</h3>
+                    <p>Are you sure you want to delete this user?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Container className='d-flex justify-content-between'>
+                        <Button variant='secondary' onClick={() => setDeletePopup(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant='danger' onClick={handleDelete}>
+                            Delete User
+                        </Button>
+                    </Container>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }

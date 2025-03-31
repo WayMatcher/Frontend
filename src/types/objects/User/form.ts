@@ -61,19 +61,6 @@ export interface FormUserRegister extends FormUser {
     password_confirm: string;
 }
 
-export const initialValuesUserRegister: FormUserRegister = {
-    email: '',
-    username: '',
-    password: '',
-    password_confirm: '',
-    name: '',
-    firstName: '',
-    telephone: '',
-    additionaldescription: '',
-    profile_picture: '',
-    licenseVerified: false,
-};
-
 export interface FormUserEdit extends FormUser {
     password: string;
     password_confirm: string;

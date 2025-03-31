@@ -42,7 +42,11 @@ export const ErrorModalProvider: React.FC<{ children: ReactNode }> = ({ children
                 showAlert,
             }}
         >
-            {alertMessage ? <Alert variant={alertMessageVariant}>{alertMessageText}</Alert> : null}
+            {alertMessage ? (
+                <Alert variant={alertMessageVariant} onClose={() => setAlertMessage(false)} dismissible>
+                    {alertMessageText}
+                </Alert>
+            ) : null}
             {children}
             <ErrorModal show={errorModal} handleClose={hideErrorModal}>
                 {errorMessage}

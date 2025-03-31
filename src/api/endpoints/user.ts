@@ -166,3 +166,12 @@ export const apiRateUser = async (request: {
         throw error;
     }
 };
+
+export const apiDeleteUser = async (request: { userId: number }) => {
+    try {
+        return await api.axios.post('/User/DeleteUser', { ...request });
+    } catch (error) {
+        api.handleApiError(error);
+        throw error;
+    }
+};

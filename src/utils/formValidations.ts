@@ -3,27 +3,6 @@ import * as Yup from 'yup';
 // --- Register Schemas --- //
 
 /**
- * Schema for validating user registration form.
- */
-export const RegisterUserSchema = Yup.object({
-    email: Yup.string().email("E-Mail isn't an E-Mail").required('Please enter an E-Mail'),
-    username: Yup.string().required('Please enter a Username'),
-    password: Yup.string()
-        .required('Please enter a Password')
-        .matches(
-            /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/,
-            'Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.',
-        ),
-    password_confirm: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match'),
-    name: Yup.string(),
-    firstName: Yup.string(),
-    telephone: Yup.string(),
-    additionaldescription: Yup.string(),
-    ProfilePicture: Yup.string(),
-    licenseVerified: Yup.boolean(),
-}); // User Page
-
-/**
  * Schema for validating address registration form.
  */
 export const RegisterAddressSchema = Yup.object({

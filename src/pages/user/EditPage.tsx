@@ -50,57 +50,52 @@ export default function EditPage() {
         );
     } else {
         return (
-            <Container>
-                <h1>
-                    Welcome {authUser.firstname} {authUser.name}
-                </h1>
-                <Container className='edit-page'>
-                    <Stack className='edit-nav' direction='vertical' gap={3}>
-                        <ProfilePicture image={authUser.profilePicture} width={'144px'} />
-                        <Container>
-                            <Nav
-                                className='flex-column'
-                                variant='pills'
-                                defaultActiveKey={`/profile/${authUser.username}/edit/user`}
-                            >
-                                <Nav.Item>
-                                    <Nav.Link
-                                        onClick={() => navigate(basePath + '/user')}
-                                        active={currentPath.toLowerCase().includes('/user')}
-                                    >
-                                        User
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link
-                                        onClick={() => navigate(basePath + '/address')}
-                                        active={currentPath.toLowerCase().includes('/address')}
-                                    >
-                                        Address
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link
-                                        onClick={() => navigate(basePath + '/vehicles')}
-                                        active={currentPath.toLowerCase().includes('/vehicles')}
-                                    >
-                                        Vehicles
-                                    </Nav.Link>
-                                </Nav.Item>
-                            </Nav>
-                        </Container>
-                    </Stack>
-                    <Container className='edit-content'>
-                        <Routes>
-                            <Route path={'/user'} element={<EditUser />} />
-                            <Route path={'/address'} element={<EditAddress />} />
-                            <Route path={'/vehicles'} element={<EditVehicleList />} />
-                            <Route
-                                path='/*'
-                                element={<Navigate to={`/profile/${authUser.username}/edit/user`} replace />}
-                            />
-                        </Routes>
+            <Container className='edit-page'>
+                <Stack className='edit-nav' direction='vertical' gap={3}>
+                    <ProfilePicture image={authUser.profilePicture} width={'144px'} />
+                    <Container>
+                        <Nav
+                            className='flex-column'
+                            variant='pills'
+                            defaultActiveKey={`/profile/${authUser.username}/edit/user`}
+                        >
+                            <Nav.Item>
+                                <Nav.Link
+                                    onClick={() => navigate(basePath + '/user')}
+                                    active={currentPath.toLowerCase().includes('/user')}
+                                >
+                                    User
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    onClick={() => navigate(basePath + '/address')}
+                                    active={currentPath.toLowerCase().includes('/address')}
+                                >
+                                    Address
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    onClick={() => navigate(basePath + '/vehicles')}
+                                    active={currentPath.toLowerCase().includes('/vehicles')}
+                                >
+                                    Vehicles
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
                     </Container>
+                </Stack>
+                <Container className='edit-content'>
+                    <Routes>
+                        <Route path={'/user'} element={<EditUser />} />
+                        <Route path={'/address'} element={<EditAddress />} />
+                        <Route path={'/vehicles'} element={<EditVehicleList />} />
+                        <Route
+                            path='/*'
+                            element={<Navigate to={`/profile/${authUser.username}/edit/user`} replace />}
+                        />
+                    </Routes>
                 </Container>
             </Container>
         );

@@ -94,7 +94,7 @@ export default function LoginPage() {
                                     <Button
                                         className='btn btn-secondary'
                                         type='reset'
-                                        onClick={() => navigate('/user/register')}
+                                        onClick={() => navigate('/register')}
                                     >
                                         Register
                                     </Button>

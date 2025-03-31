@@ -68,24 +68,6 @@ export default function NavBar() {
                             {isAuthenticated ? (
                                 <>
                                     <NavDropdown
-                                        title={<span className='bi bi-plus-lg'> Create New Way</span>}
-                                        className='justify-content-end'
-                                    >
-                                        <NavDropdown.Item
-                                            onClick={() => navigate('/events/new/?ispilot=true')}
-                                            eventKey='2'
-                                        >
-                                            <span className='bi bi-car-front-fill'> New Pilot Way</span>
-                                        </NavDropdown.Item>
-                                        <NavDropdown.Item
-                                            onClick={() => navigate('/events/new/?ispassenger=true')}
-                                            eventKey='1'
-                                        >
-                                            <span className='bi bi-person-fill'> New Passenger Way</span>
-                                        </NavDropdown.Item>
-                                    </NavDropdown>
-                                    <div className='vr' />
-                                    <NavDropdown
                                         title={authUser?.username}
                                         id='user-options-dropdown'
                                         aria-label='User Options'

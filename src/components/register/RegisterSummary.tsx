@@ -28,7 +28,7 @@ export default function RegisterSummary({
                     ...tempUser, // Only include properties explicitly allowed
                     address: address,
                 },
-                vehicleList,
+                vehicleList: vehicleList.map(({ vehicleId, ...vehicle }) => vehicle), // Exclude vehicleId from each vehicle
                 password: password, // Explicitly include password
             });
             setLoading(false);

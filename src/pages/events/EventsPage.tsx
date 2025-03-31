@@ -160,7 +160,7 @@ export default function EventPage() {
                         <div className='EventContent flex-grow-1 p-3'>
                             <Container className='EventGrid d-flex flex-wrap'>
                                 {isLoading
-                                    ? Array.from({ length: 6 }).map((_, index) => <EventCardPlaceholder key={index} />)
+                                    ? Array.from({ length: 8 }).map((_, index) => <EventCardPlaceholder key={index} />)
                                     : filteredEvents.map((event) => (
                                           <EventCard
                                               key={event.eventId}
