@@ -1,7 +1,7 @@
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import Notification from '@/types/objects/Notification/dto';
 import { useContext, useState } from 'react';
-import { Accordion, Badge, Button } from 'react-bootstrap';
+import { Badge, Button, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import LoadingOverlay from '../LoadingOverlay';
 import { apiMarkNotificationAsRead } from '@/api/endpoints/inbox';
@@ -47,23 +47,21 @@ const InboxItem = ({
     };
     return (
         <LoadingOverlay isLoading={loading}>
-            <Accordion.Item
-                eventKey={`notification-${notificationId}`}
-                onClick={handleClick}
-                key={notificationId}
-                className='mb-2'
-            >
-                <Accordion.Header className='d-flex justify-content-between'>
-                    {read ? <Badge bg={'secondary'}>Read</Badge> : <Badge bg={'primary'}>New</Badge>} {message}
-                </Accordion.Header>
-                <Accordion.Body>
+            <ListGroup onClick={handleClick} key={notificationId} className='mb-2'>
+                <ListGroup.Item
+                    className='d-flex justify-content-between'
+                    eventKey={`notification-${notificationId}`}
+                    key={`notification-${notificationId}`}
+                >
+                    {read ? <Badge bg={'secondary'}>Read</Badge> : <Badge bg={'primary'}>New</Badge>}
+                    {message}
                     {entitytype === 'event' ? (
                         <Link to={`/events/${entityid}`}>
                             <Button>Go to Event</Button>
                         </Link>
                     ) : null}
-                </Accordion.Body>
-            </Accordion.Item>
+                </ListGroup.Item>
+            </ListGroup>
         </LoadingOverlay>
     );
 };
