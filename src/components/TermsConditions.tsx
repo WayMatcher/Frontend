@@ -1,6 +1,7 @@
 import { Container } from 'react-bootstrap';
-import '@/components/styles/Footer.scss';
-export default function Footer() {
+import '@/components/_styles/Footer.scss';
+
+export function TermsConditions() {
     return (
         <Container className='TermsConditions'>
             <h1 id='waymatcher-terms-and-conditions'>WayMatcher - Terms and Conditions</h1>
@@ -244,3 +245,5 @@ export default function Footer() {
         </Container>
     );
 }
+
+export default TermsConditions;

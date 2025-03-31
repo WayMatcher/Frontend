@@ -5,7 +5,7 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
 import EventMap from './EventMap';
 import EventInvite from './EventInvite';
-import '@/components/styles/EventDetails.scss';
+import '@/components/_styles/EventDetails.scss';
 import { useNavigate } from 'react-router-dom';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiDeleteEvent, apiUpdateEvent } from '@/api/endpoints/event';

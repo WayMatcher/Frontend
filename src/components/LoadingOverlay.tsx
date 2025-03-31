@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Spinner, ContainerProps } from 'react-bootstrap';
-import './styles/LoadingOverlay.scss';
+import '@/components/_styles/LoadingOverlay.scss';
 
 interface LoadingOverlayProps extends ContainerProps {
     isLoading: boolean;

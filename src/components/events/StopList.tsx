@@ -5,7 +5,7 @@ import AddressAddModal from '@/components/address/AddressAddModal';
 import Address from '@/types/objects/Address/dto';
 import { Variant } from 'react-bootstrap/esm/types';
 import InternationalAddressDisplay from '@/components/address/AddressDisplay';
-import '@/components/styles/StopList.scss';
+import '@/components/_styles/StopList.scss';
 
 const StopListDisplay = ({ stopList }: { stopList: Stop[] }) => {
     return (

@@ -3,12 +3,13 @@ import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-do
 
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
+import '@/pages/_styles/EditPage.scss';
+
 import User from '@/types/objects/User/dto';
 import EditUser from '@/components/user/EditUser';
 import EditAddress from '@/components/user/EditAddress';
 import EditVehicleList from '@/components/user/EditVehicleList';
 
-import '../styles/EditPage.scss';
 import ProfilePicture from '@/components/ProfilePicture';
 
 export default function EditPage() {

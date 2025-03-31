@@ -1,5 +1,5 @@
 import { Container } from 'react-bootstrap';
-import '@/components/styles/Footer.scss';
+import '@/components/_styles/Footer.scss';
 export default function Footer() {
     return (
         <Container className='Privacy'>

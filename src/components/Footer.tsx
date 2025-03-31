@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import '@/components/styles/Footer.scss';
+import '@/components/_styles/Footer.scss';
 import { Container } from 'react-bootstrap';
 
 export default function Footer() {

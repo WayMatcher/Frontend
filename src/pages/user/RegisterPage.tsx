@@ -1,4 +1,4 @@
-import '@/pages/styles/RegisterPage.scss';
+import '@/pages/_styles/RegisterPage.scss';
 
 import { Button, Container } from 'react-bootstrap';
 import { useState } from 'react';

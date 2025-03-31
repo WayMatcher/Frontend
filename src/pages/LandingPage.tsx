@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import '@/pages/styles/LandingPage.scss';
+import '@/pages/_styles/LandingPage.scss';
 import { Container, Button, Col, Row } from 'react-bootstrap';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import '@/pages/styles/EventsPage.scss';
+import '@/pages/_styles/EventsPage.scss';
 import { useContext, useEffect, useState } from 'react';
 import EventCard from '@/components/events/EventCard';
 import { apiGetEventList, apiGetEvent } from '@/api/endpoints/event';
