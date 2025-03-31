@@ -47,9 +47,11 @@ const Details = ({
     isOwnedEvent: boolean;
 }) => {
     const stopListState = useState<Stop[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const { showErrorModal } = useContext(ErrorModalContext);
-    const [loading, setLoading] = useState(false);
+
+    const authUser = useAuthUser<User>();
 
     const [editMode, setEditMode] = editModeState;
 
@@ -62,6 +64,11 @@ const Details = ({
 
     const onSubmit = async (values: typeof initialValues) => {
         if (editMode) {
+            if (!event.eventTypeId) {
+                showErrorModal('Event Type ID is undefined');
+                return;
+            }
+
             const updatedEvent = {
                 ...event,
                 description: values.description,
@@ -71,13 +78,15 @@ const Details = ({
                     startDate: new Date(values.startTimestamp),
                     userId: event.schedule.userId,
                 },
+                eventTypeId: event.eventTypeId, // Ensure eventTypeId is defined
             };
 
             if (updatedEvent.eventId !== undefined) {
+                if (!authUser) return;
                 try {
                     setLoading(true);
                     await apiUpdateEvent({
-                        eventId: updatedEvent.eventId,
+                        user: authUser,
                         event: updatedEvent,
                     });
                     setEditMode(false);

@@ -48,7 +48,17 @@ export const apiCreateEvent = async (request: {
     }
 };
 
-export const apiUpdateEvent = async (request: { eventId: number; event: WMEvent }) => {
+export const apiUpdateEvent = async (request: {
+    user: User;
+    event: {
+        description: string;
+        freeSeats: number;
+        startTimestamp: string;
+        eventTypeId: number;
+        stopList: Stop[];
+        schedule: Schedule;
+    };
+}) => {
     try {
         return await api.axios.post<WMEvent>('/Event/UpdateEvent', { ...request });
     } catch (error) {
