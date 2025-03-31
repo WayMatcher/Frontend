@@ -23,24 +23,17 @@ export default function EditUser(): React.ReactElement {
         name: '',
         telephone: '',
         additionalDescription: '',
-        profilepicture: undefined,
+        profilePicture: undefined,
     };
 
     const validationSchema = Yup.object({
         email: Yup.string().email("E-Mail isn't an E-Mail").required('Please enter an E-Mail'),
         username: Yup.string().required('Please enter a Username'),
-        password: Yup.string()
-            .required('Please enter a Password')
-            .matches(
-                /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/,
-                'Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.',
-            ),
-        password_confirm: Yup.string().oneOf([Yup.ref('password')], 'Passwords must match'),
         name: Yup.string(),
         firstName: Yup.string(),
         telephone: Yup.string(),
-        additional_description: Yup.string(),
-        ProfilePicture: Yup.string(),
+        additionaldescription: Yup.string(),
+        licenseVerified: Yup.boolean(),
     });
 
     const handleSubmit = async (values: typeof initialValues) => {
@@ -62,6 +55,7 @@ export default function EditUser(): React.ReactElement {
                 password: password ? password : '',
             };
 
+            console.log('hydratedData', hydratedData);
             await apiSetUser(hydratedData);
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -165,8 +159,17 @@ export default function EditUser(): React.ReactElement {
                                     </Row>
                                     <Row className='mb-3'>
                                         <FormInput
+                                            label="Owns driver's license"
+                                            name='licenseVerified'
+                                            type='switch'
+                                            isLoading={isLoading}
+                                            formikProps={formikProps}
+                                        />
+                                    </Row>
+                                    <Row className='mb-3'>
+                                        <FormInput
                                             label='Profile Picture'
-                                            name='profilepicture'
+                                            name='profilePicture'
                                             type='file'
                                             isLoading={isLoading}
                                             formikProps={formikProps}

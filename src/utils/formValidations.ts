@@ -18,8 +18,9 @@ export const RegisterUserSchema = Yup.object({
     name: Yup.string(),
     firstName: Yup.string(),
     telephone: Yup.string(),
-    additional_description: Yup.string(),
+    additionaldescription: Yup.string(),
     ProfilePicture: Yup.string(),
+    licenseVerified: Yup.boolean(),
 }); // User Page
 
 /**
@@ -47,7 +48,7 @@ export const RegisterVehicleSchema = Yup.object({
     year: Yup.number().min(1900).max(2125),
     seats: Yup.number().min(2).required('Please enter the number of seats'),
     license_plate: Yup.string(),
-    additional_description: Yup.string(),
+    additionaldescription: Yup.string(),
 }); // Vehicle Page
 
 // --- Login Schemas --- //
@@ -85,7 +86,7 @@ export const EditUserSchema = Yup.object({
     name: Yup.string(),
     firstName: Yup.string(),
     telephone: Yup.string(),
-    additional_description: Yup.string(),
+    additionaldescription: Yup.string(),
     ProfilePicture: Yup.string(),
 }); // Edit User Page
 

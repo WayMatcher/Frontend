@@ -20,7 +20,7 @@ export default function RegisterSummary({
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async () => {
-        const { password, profilepicture, ...tempUser } = user;
+        const { password, profilePicture, ...tempUser } = user;
         try {
             setLoading(true);
             await apiRegisterUser({

@@ -2,7 +2,7 @@ import API from '@/api/api';
 const api = new API();
 import Vehicle from '@/types/objects/Vehicle/dto';
 
-export const apiGetVehicleList = async (request: { vehicle?: Vehicle; userId?: number; username?: string }) => {
+export const apiGetVehicleList = async (request: { userId?: number; username?: string }) => {
     try {
         const response = await api.axios.get<Vehicle[]>('/User/GetVehicleList', { params: { ...request } });
         return response;

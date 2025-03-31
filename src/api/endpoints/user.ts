@@ -25,8 +25,8 @@ export const apiGetUser = async (request: { username?: string; email?: string; u
 export const apiSetUser = async (request: { user: User; password?: string }) => {
     try {
         // Sets the picture equal to a random cat picture if no picture is set
-        if (request.user.profilepicture === undefined) {
-            request.user.profilepicture = await apiGetCatPicture();
+        if (request.user.profilePicture === undefined) {
+            request.user.profilePicture = await apiGetCatPicture();
         }
         const hashedRequest = {
             ...request,
@@ -76,7 +76,7 @@ export const apiRegisterUser = async (request: {
         firstname?: string;
         name?: string;
         additionalDescription?: string;
-        license_verified?: boolean;
+        licenseVerified?: boolean;
         telephone?: string;
         address?: Address;
         jwt?: string;
@@ -88,8 +88,8 @@ export const apiRegisterUser = async (request: {
 }) => {
     try {
         // Sets the picture equal to a random cat picture if no picture is set
-        /* if (request.user.profilepicture === undefined) {
-            request.user.profilepicture = await apiGetCatPicture();
+        /* if (request.user.profilePicture === undefined) {
+            request.user.profilePicture = await apiGetCatPicture();
         } */
 
         const hashedRequest = {

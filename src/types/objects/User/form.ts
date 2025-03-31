@@ -38,9 +38,9 @@ export interface FormUser extends User {
     name: string;
     firstName: string;
     telephone: string;
-    additional_description: string;
+    additionaldescription: string;
     profile_picture: string;
-    license_verified: boolean;
+    licenseVerified: boolean;
 }
 
 export const initialValuesUser: FormUser = {
@@ -51,9 +51,9 @@ export const initialValuesUser: FormUser = {
     name: '',
     firstName: '',
     telephone: '',
-    additional_description: '',
+    additionaldescription: '',
     profile_picture: '',
-    license_verified: false,
+    licenseVerified: false,
 };
 
 export interface FormUserRegister extends FormUser {
@@ -69,9 +69,9 @@ export const initialValuesUserRegister: FormUserRegister = {
     name: '',
     firstName: '',
     telephone: '',
-    additional_description: '',
+    additionaldescription: '',
     profile_picture: '',
-    license_verified: false,
+    licenseVerified: false,
 };
 
 export interface FormUserEdit extends FormUser {
@@ -87,7 +87,7 @@ export const initialValuesUserEdit: FormUserEdit = {
     name: '',
     firstName: '',
     telephone: '',
-    additional_description: '',
+    additionaldescription: '',
     profile_picture: '',
-    license_verified: false,
+    licenseVerified: false,
 };

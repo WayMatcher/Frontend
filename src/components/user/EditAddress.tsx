@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Button, ListGroup } from 'react-bootstrap';
+import { Button, ButtonGroup, ListGroup } from 'react-bootstrap';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
 import User from '@/types/objects/User/dto';
@@ -8,6 +8,7 @@ import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiGetAddress, apiSetAddress } from '@/api/endpoints/address';
 import LoadingOverlay from '../LoadingOverlay';
 import AddressAdd from '@/components/address/AddressAdd';
+import { SingleAddressMap } from '../maps/SingleAddressMap';
 
 export default function EditAddress(): React.ReactElement {
     const { showErrorModal } = useContext(ErrorModalContext);
@@ -17,7 +18,7 @@ export default function EditAddress(): React.ReactElement {
     const [address, setAddress] = React.useState<Address | null>(null);
     const [newAddress, setNewAddress] = React.useState<Address | null>(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 if (authUser?.userId === undefined) {
@@ -58,6 +59,11 @@ export default function EditAddress(): React.ReactElement {
         if (newAddress) set();
     }, [newAddress]);
 
+    const mapUrl =
+        address && address.latitude && address.longitude
+            ? `https://www.google.com/maps?q=${address.latitude},${address.longitude}`
+            : null;
+
     return (
         <>
             <h2>Address</h2>
@@ -65,22 +71,63 @@ export default function EditAddress(): React.ReactElement {
                 <LoadingOverlay isLoading={isLoading}>
                     {address ? (
                         <ListGroup>
-                            <ListGroup.Item>Street: {address.street}</ListGroup.Item>
-                            <ListGroup.Item>Postal Code: {address.postalcode}</ListGroup.Item>
-                            <ListGroup.Item>Region: {address.region}</ListGroup.Item>
-                            <ListGroup.Item>City: {address.city}</ListGroup.Item>
-                            <ListGroup.Item>Country: {address.country}</ListGroup.Item>
-                            <ListGroup.Item>Longitude: {address.latitude}</ListGroup.Item>
-                            <ListGroup.Item>Latitude: {address.longitude}</ListGroup.Item>
+                            <ListGroup.Item style={{ padding: '0' }}>
+                                <SingleAddressMap address={address} width={640} height={400} />
+                            </ListGroup.Item>
                             <ListGroup.Item>
-                                <Button
-                                    variant='outline-danger'
-                                    onClick={() => {
-                                        setAddress(null);
-                                    }}
-                                >
-                                    Unset Address
-                                </Button>
+                                <strong>Street:</strong> {address.street}
+                            </ListGroup.Item>
+                            {address.postalcode && (
+                                <ListGroup.Item>
+                                    <strong>Postal Code:</strong> {address.postalcode}
+                                </ListGroup.Item>
+                            )}
+                            {address.region && (
+                                <ListGroup.Item>
+                                    <strong>Region:</strong> {address.region}
+                                </ListGroup.Item>
+                            )}
+                            {address.city && (
+                                <ListGroup.Item>
+                                    <strong>City:</strong> {address.city}
+                                </ListGroup.Item>
+                            )}
+                            {address.country && (
+                                <ListGroup.Item>
+                                    <strong>Country:</strong> {address.country}
+                                </ListGroup.Item>
+                            )}
+                            {address.latitude && (
+                                <ListGroup.Item>
+                                    <strong>Longitude:</strong> {address.latitude}
+                                </ListGroup.Item>
+                            )}
+                            {address.longitude && (
+                                <ListGroup.Item>
+                                    <strong>Latitude:</strong> {address.longitude}
+                                </ListGroup.Item>
+                            )}
+                            <ListGroup.Item>
+                                <ButtonGroup>
+                                    <Button
+                                        variant='outline-danger'
+                                        onClick={() => {
+                                            setAddress(null);
+                                        }}
+                                    >
+                                        Unset Address
+                                    </Button>
+                                    {mapUrl && (
+                                        <Button
+                                            variant='outline-primary'
+                                            href={mapUrl}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                        >
+                                            View on Google Maps
+                                        </Button>
+                                    )}
+                                </ButtonGroup>
                             </ListGroup.Item>
                         </ListGroup>
                     ) : (

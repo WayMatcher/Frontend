@@ -118,8 +118,16 @@ export default function RegisterUser({
                                 </Row>
                                 <Row className='mb-3'>
                                     <FormInput
+                                        label="Owns driver's license"
+                                        name='licenseVerified'
+                                        type='switch'
+                                        formikProps={formikProps}
+                                    />
+                                </Row>
+                                <Row className='mb-3'>
+                                    <FormInput
                                         label='Profile Picture'
-                                        name='profilepicture'
+                                        name='profilePicture'
                                         type='file'
                                         formikProps={formikProps}
                                     />

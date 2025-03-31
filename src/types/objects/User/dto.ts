@@ -10,8 +10,8 @@ export default interface User extends BaseUser {
     firstname?: string;
     name?: string;
     additionalDescription?: string;
-    license_verified?: boolean;
-    profilepicture?: Blob;
+    licenseVerified?: boolean;
+    profilePicture?: Blob;
     telephone?: string;
     address?: Address;
     jwt?: string;

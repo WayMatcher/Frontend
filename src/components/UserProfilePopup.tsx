@@ -29,7 +29,7 @@ const UserProfilePopup: React.FC = () => {
                     <strong>Telephone:</strong> {user.telephone}
                 </p>
                 <p>
-                    <strong>License Verified:</strong> {user.license_verified ? 'Yes' : 'No'}
+                    <strong>License Verified:</strong> {user.licenseVerified ? 'Yes' : 'No'}
                 </p>
                 {user.address && (
                     <p>

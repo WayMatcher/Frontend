@@ -4,7 +4,7 @@ export interface FormVehicle {
     year?: number;
     seats?: number;
     license_plate?: string;
-    additional_description?: string;
+    additionaldescription?: string;
 }
 
 export const initialValuesVehicle: FormVehicle = {
@@ -13,5 +13,5 @@ export const initialValuesVehicle: FormVehicle = {
     year: 2025,
     seats: 4,
     license_plate: '',
-    additional_description: '',
+    additionaldescription: '',
 };

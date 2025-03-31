@@ -1,7 +1,7 @@
 import { Button, Card, Stack } from 'react-bootstrap';
 import WMEvent from '@/types/objects/Event/dto';
 import EventMemberDisplay from './EventMemberDisplay';
-import EventMap from './EventMap';
+import EventMap from '../maps/MultiStopMap';
 import cronParser from 'cron-parser';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';

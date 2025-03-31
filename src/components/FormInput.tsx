@@ -49,11 +49,14 @@ function BaseInput({
                         type='switch'
                         label={label}
                         name={name}
-                        value={value}
+                        checked={!!value} // Ensure checked is a boolean
                         disabled={isSubmitting}
                         readOnly={isLoading ? true : undefined}
                         isValid={touchedValue && !error}
-                        onChange={onChange || handleChange}
+                        onChange={(e) => {
+                            const checked = e.target.checked;
+                            onChange ? onChange(e) : handleChange({ target: { name, value: checked } });
+                        }}
                     />
                     {typeof error === 'string' ? (
                         <Form.Control.Feedback type='invalid'>{error}</Form.Control.Feedback>

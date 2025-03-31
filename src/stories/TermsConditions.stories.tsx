@@ -1,4 +1,3 @@
-import React from 'react';
 import { TermsConditions } from '../components/TermsConditions';
 
 export default {

@@ -100,7 +100,7 @@ const EventInvites = ({ event, owner = false }: { event: WMEvent; owner?: boolea
                             <ListGroup.Item key={invite.user?.userId} active={invite.user?.userId === authUser?.userId}>
                                 <Row>
                                     <Col md='auto'>
-                                        <ProfilePicture image={invite.user?.profilepicture} width={50} height={50} />
+                                        <ProfilePicture image={invite.user?.profilePicture} width={50} height={50} />
                                     </Col>
                                     <Col>
                                         <Row>

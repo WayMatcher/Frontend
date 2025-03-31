@@ -3,7 +3,7 @@ import WMEvent from '@/types/objects/Event/dto';
 import { useContext, useEffect, useState } from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import User from '@/types/objects/User/dto';
-import EventMap from './EventMap';
+import EventMap from '../maps/MultiStopMap';
 import EventInvite from './EventInvite';
 import '@/components/_styles/EventDetails.scss';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,7 @@ const initialValues = {
     description: '',
     freeSeats: 3,
     repeating: false,
-    startTimestamp: new Date(),
+    startTimestamp: '',
     cronSchedule: '',
 };
 const Details = ({
@@ -72,10 +72,10 @@ const Details = ({
             const updatedEvent = {
                 ...event,
                 description: values.description,
-                startTimestamp: new Date(values.startTimestamp).toString(),
+                startTimestamp: values.startTimestamp,
                 schedule: {
                     cronSchedule: values.cronSchedule,
-                    startDate: new Date(values.startTimestamp),
+                    startDate: values.startTimestamp,
                     userId: event.schedule.userId,
                 },
                 eventTypeId: event.eventTypeId, // Ensure eventTypeId is defined
@@ -133,9 +133,7 @@ const Details = ({
                                             description: event.description || '',
                                             freeSeats: event.freeSeats || 3,
                                             repeating: !!event.schedule?.cronSchedule,
-                                            startTimestamp: event.startTimestamp
-                                                ? new Date(event.startTimestamp)
-                                                : new Date(),
+                                            startTimestamp: event.startTimestamp ? event.startTimestamp : '',
                                             cronSchedule: event.schedule?.cronSchedule || '',
                                         });
 

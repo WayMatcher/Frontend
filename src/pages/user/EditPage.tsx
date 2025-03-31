@@ -56,7 +56,7 @@ export default function EditPage() {
                 </h1>
                 <Container className='edit-page'>
                     <Stack className='edit-nav' direction='vertical' gap={3}>
-                        <ProfilePicture image={authUser.profilepicture} width={'144px'} />
+                        <ProfilePicture image={authUser.profilePicture} width={'144px'} />
                         <Container>
                             <Nav
                                 className='flex-column'

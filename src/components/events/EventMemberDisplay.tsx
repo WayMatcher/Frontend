@@ -36,7 +36,7 @@ const EventMemberDisplay = ({
                             <Row>
                                 <Col md='auto'>
                                     <ProfilePicture
-                                        image={member.user.profilepicture}
+                                        image={member.user.profilePicture}
                                         width={50}
                                         height={50}
                                         highlight={member.memberId === authUser?.userId}
@@ -116,7 +116,7 @@ const EventMemberDisplay = ({
                             }}
                         >
                             <ProfilePicture
-                                image={member.user.profilepicture}
+                                image={member.user.profilePicture}
                                 width={30}
                                 height={30}
                                 highlight={member.memberId === authUser?.userId}
