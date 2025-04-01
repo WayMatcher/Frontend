@@ -1,3 +1,4 @@
+import cronParser, { CronExpression } from 'cron-parser';
 import { format } from 'date-fns'; // You might need to install date-fns: npm install date-fns
 
 /**
@@ -31,9 +32,8 @@ export const generateCronExpression = (startDate: Date, scheduleType: RepeatSche
         case RepeatSchedule.None:
             return '';
 
-        case RepeatSchedule.Daily: // Added case for Daily
-            // Runs every day at the same time as the start date.
-            return `${minute} ${hour} * * *`; // Min Hour * * *
+        case RepeatSchedule.Daily:
+            return `${minute} ${hour} * * *`;
 
         case RepeatSchedule.Weekly:
             const cronDayOfWeekWeekly = dayOfWeek === '7' ? '0' : dayOfWeek;
@@ -52,4 +52,35 @@ export const generateCronExpression = (startDate: Date, scheduleType: RepeatSche
             console.error(`Invalid schedule type provided: ${scheduleType}`);
             throw new Error(`Invalid schedule type: ${scheduleType}`);
     }
+};
+
+/**
+ * Calculates the next execution date and cron expression based on the start date and schedule.
+ *
+ * @param startDate - The initial start date and time of the event.
+ * @param schedule - The desired repeating schedule type from the RepeatSchedule enum.
+ * @returns An object containing the parsed CronExpression and the next execution date.
+ */
+export const calculateNextExecution = (
+    startDate: Date,
+    schedule: RepeatSchedule,
+): { cronExpression?: CronExpression; nextExecution?: Date } => {
+    try {
+        const cronExpr = generateCronExpression(startDate, schedule);
+
+        const parsedCron = cronParser.parse(cronExpr, {
+            currentDate: new Date(startDate.getTime() - 1000), // Adjust currentDate slightly
+        });
+
+        if (parsedCron.hasNext()) {
+            return {
+                cronExpression: parsedCron,
+                nextExecution: parsedCron.next().toDate(),
+            };
+        }
+    } catch (error) {
+        console.error('Error calculating next execution:', error);
+    }
+
+    return { cronExpression: undefined, nextExecution: undefined };
 };

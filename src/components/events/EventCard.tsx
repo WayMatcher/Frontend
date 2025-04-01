@@ -57,19 +57,19 @@ export default function EventCard({ event, openEvent: openModal }: EventCardProp
                 </Card.Title>
                 <Card.Text>
                     <strong>{event.description}</strong>
-                    <p>
-                        Free Seats: <strong>{event.freeSeats}</strong>
-                    </p>
-                    <p>
-                        Starts at: <strong>{prettySchedule(event.schedule.cronSchedule)}</strong>
-                    </p>
+                    <br />
+                    Starts at: <strong>{prettySchedule(event.schedule.cronSchedule)}</strong>
+                    <br />
+                    Created by: {event.owner.username}
                 </Card.Text>
                 <hr />
                 <EventMemberDisplay event={event} members={event.eventMembers} freeSeats={event.freeSeats} />
             </Card.Body>
             <Card.Footer className='text-muted'>
                 <Stack direction='horizontal' gap={3} className='justify-content-center'>
-                    <div className='p-2'>Created by: {event.owner.username}</div>
+                    <div className='p-2'>
+                        Seats remaining: <strong>{event.freeSeats}</strong>
+                    </div>
                     <div className='vr' />
                     <div className='p-2'>
                         <Button

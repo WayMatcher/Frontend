@@ -1,6 +1,7 @@
 import { Button, Dropdown, DropdownButton, Form, Stack } from 'react-bootstrap';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 export default function SearchBar({
     onSearch,
@@ -25,16 +26,19 @@ export default function SearchBar({
 
     const navigate = useNavigate();
 
+    const isAuthenticated = useIsAuthenticated();
     return (
         <Stack direction='horizontal' gap={3} className='SearchBar'>
-            <DropdownButton title={' Create New Way'} drop='down'>
-                <Dropdown.Item onClick={() => navigate('/events/new/?ispilot=true')} eventKey='2'>
-                    <span className='bi bi-car-front-fill'> New Pilot Way</span>
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => navigate('/events/new/?ispassenger=true')} eventKey='1'>
-                    <span className='bi bi-person-fill'> New Passenger Way</span>
-                </Dropdown.Item>
-            </DropdownButton>
+            {isAuthenticated && (
+                <DropdownButton title={' Create New Way'} drop='down'>
+                    <Dropdown.Item onClick={() => navigate('/events/new/?ispilot=true')} eventKey='2'>
+                        <span className='bi bi-car-front-fill'> New Pilot Way</span>
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate('/events/new/?ispassenger=true')} eventKey='1'>
+                        <span className='bi bi-person-fill'> New Passenger Way</span>
+                    </Dropdown.Item>
+                </DropdownButton>
+            )}
             <Form.Control
                 className='me-auto'
                 type='text'

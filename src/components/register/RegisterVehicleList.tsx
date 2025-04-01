@@ -42,7 +42,7 @@ export default function RegisterVehicleList({
 
     const onDelete = async (vehicleId: number) => {
         console.log('Deleting vehicle with ID:', vehicleId);
-        // Call your API to delete the vehicle here
+        // TODO: Call your API to delete the vehicle here
         // await apiDeleteVehicle(vehicleId);
     };
 

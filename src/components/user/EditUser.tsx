@@ -62,7 +62,6 @@ export default function EditUser(): React.ReactElement {
                 password: password ? password : '',
             };
 
-            console.log('hydratedData', hydratedData);
             await apiSetUser(hydratedData);
         } catch (error: unknown) {
             if (error instanceof Error) {

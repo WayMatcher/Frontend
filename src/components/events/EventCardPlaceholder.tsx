@@ -22,14 +22,12 @@ export default function EventCardPlaceholder() {
                         <Placeholder xs={6} />
                     </Placeholder>
                 </Card.Title>
-                <Card.Text>
-                    <Placeholder as='p' animation='glow'>
-                        <Placeholder xs={7} /> <Placeholder xs={4} />
-                    </Placeholder>
-                    <Placeholder as='p' animation='glow'>
-                        <Placeholder xs={5} /> <Placeholder xs={6} />
-                    </Placeholder>
-                </Card.Text>
+                <Placeholder as='p' animation='glow'>
+                    <Placeholder xs={7} /> <Placeholder xs={4} />
+                </Placeholder>
+                <Placeholder as='p' animation='glow'>
+                    <Placeholder xs={5} /> <Placeholder xs={6} />
+                </Placeholder>
                 <hr />
                 <Placeholder as='div' animation='glow'>
                     <Placeholder xs={8} />

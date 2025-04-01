@@ -10,9 +10,9 @@ import { Alert, Button, ButtonGroup, Container, Row } from 'react-bootstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Col } from 'react-bootstrap';
-import cronParser, { CronExpression } from 'cron-parser';
+import { CronExpression } from 'cron-parser';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
-import { generateCronExpression, RepeatSchedule } from '@/utils/generateCronExpression';
+import { RepeatSchedule, calculateNextExecution } from '@/utils/cronUtils';
 
 const validationSchema = Yup.object({
     description: Yup.string(),
@@ -38,7 +38,8 @@ const NewEvent = () => {
     const [searchParams] = useSearchParams();
     const [eventTypeId, setEventTypeId] = useState(0);
     const [cronExpression, setCronExpression] = useState<CronExpression | undefined>();
-    const [nextExecution, setNextExecution] = useState<string>('');
+    const [nextExecution, setNextExecution] = useState<Date>();
+    const [startDate, setStartDate] = useState<Date>();
     const [repeating, setRepeating] = useState<boolean>(false);
 
     const navigate = useNavigate();
@@ -50,9 +51,9 @@ const NewEvent = () => {
 
     useEffect(() => {
         if (cronExpression && cronExpression.hasNext()) {
-            setNextExecution(cronExpression.next().toDate().toLocaleString());
+            setNextExecution(cronExpression.next().toDate());
         }
-    }, [cronExpression]);
+    }, [cronExpression, startDate]);
 
     useEffect(() => {
         if (searchParams.get('ispilot')) {
@@ -119,36 +120,22 @@ const NewEvent = () => {
             <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
                 {(formikProps) => {
                     useEffect(() => {
-                        if (formikProps.values.startTimestamp && formikProps.values.cronSchedule) {
-                            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                            const startDate = new Date(formikProps.values.startTimestamp);
+                        const { startTimestamp, cronSchedule } = formikProps.values;
 
-                            const cronExpression = generateCronExpression(
-                                startDate,
-                                formikProps.values.cronSchedule as RepeatSchedule,
+                        if (startTimestamp && cronSchedule) {
+                            const tempStartDate = new Date(startTimestamp);
+                            setStartDate(tempStartDate);
+
+                            const { cronExpression, nextExecution } = calculateNextExecution(
+                                tempStartDate,
+                                cronSchedule as RepeatSchedule,
                             );
-                            // TODO: Fix this
-                            console.log('Cron Expression:', cronExpression);
-                            try {
-                                const parsedCron = cronParser.parse(cronExpression, {
-                                    startDate: formikProps.values.startTimestamp,
-                                    currentDate: new Date(),
-                                });
 
-                                setCronExpression(parsedCron);
-                                if (parsedCron.hasNext()) {
-                                    setNextExecution(
-                                        parsedCron.next().toDate().toLocaleString('de-AT', { timeZone: timezone }),
-                                    );
-                                }
-                            } catch (error) {
-                                console.error('Invalid cron expression:', error);
-                                setCronExpression(undefined);
-                                setNextExecution('');
-                            }
+                            setCronExpression(cronExpression);
+                            setNextExecution(nextExecution);
                         } else {
                             setCronExpression(undefined);
-                            setNextExecution('');
+                            setNextExecution(undefined);
                         }
                     }, [formikProps.values.startTimestamp, formikProps.values.cronSchedule]);
 
@@ -182,43 +169,54 @@ const NewEvent = () => {
                                     formikProps={formikProps}
                                     onChange={(e) => {
                                         formikProps.handleChange(e);
-                                        setRepeating(!repeating);
+                                        const isRepeating = e.target.checked;
+                                        setRepeating(isRepeating);
+
+                                        if (isRepeating && startDate && formikProps.values.cronSchedule) {
+                                            const { cronExpression, nextExecution } = calculateNextExecution(
+                                                startDate,
+                                                formikProps.values.cronSchedule as RepeatSchedule,
+                                            );
+
+                                            setCronExpression(cronExpression);
+                                            setNextExecution(nextExecution);
+                                        } else {
+                                            setCronExpression(undefined);
+                                            setNextExecution(undefined);
+                                        }
                                     }}
                                 />
                             </Row>
                             <Row className='mb-3'>
-                                <Row className='mb-2'>
+                                <FormInput
+                                    label='Start Date'
+                                    name='startTimestamp'
+                                    type='datetime-local'
+                                    formikProps={formikProps}
+                                />
+                                {repeating && (
                                     <FormInput
-                                        label='Start Date'
-                                        name='startTimestamp'
-                                        type='datetime-local'
+                                        label='Schedule'
+                                        name='cronSchedule'
+                                        type='select'
                                         formikProps={formikProps}
+                                        selectOptions={[
+                                            { name: 'Daily', value: `Daily` },
+                                            { name: 'Monthly', value: `Monthly` },
+                                            { name: 'Weekdays', value: `Weekdays` },
+                                            { name: 'Weekly', value: `Weekly` },
+                                            { name: 'Yearly', value: `Yearly` },
+                                        ]}
                                     />
-                                    {repeating && (
-                                        <FormInput
-                                            label='Schedule'
-                                            name='cronSchedule'
-                                            type='select'
-                                            formikProps={formikProps}
-                                            selectOptions={[
-                                                { name: 'Daily', value: `Daily` },
-                                                { name: 'Monthly', value: `Monthly` },
-                                                { name: 'Weekends', value: `Weekends` },
-                                                { name: 'Weekdays', value: `Weekdays` },
-                                                { name: 'Weekly', value: `Weekly` },
-                                                { name: 'Yearly', value: `Yearly` },
-                                            ]}
-                                        />
-                                    )}
-                                </Row>
-                                {cronExpression && (
-                                    <Row>
-                                        <Col>
-                                            <Alert variant={'info'}>Next: {nextExecution}</Alert>
-                                        </Col>
-                                    </Row>
                                 )}
                             </Row>
+                            {cronExpression && (
+                                <Row>
+                                    <Col>
+                                        <Alert variant={'info'}>Next: {nextExecution?.toLocaleString('de-AT')}</Alert>
+                                    </Col>
+                                </Row>
+                            )}
                             <Row className='mb-3'>
                                 <Container>
                                     <StopList edit={true} stopListState={stopListState} />

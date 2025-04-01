@@ -1,5 +1,5 @@
 import './App.scss';
-import { memo } from 'react';
+import { memo, useContext } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -20,15 +20,28 @@ import PasswordChange from '@/pages/password/PasswordChange';
 import AcceptInvite from '@/pages/invites/Accept';
 import AcceptRequest from '@/pages/invites/Request';
 import InboxPage from '@/pages/inbox/InboxPage';
-import { ErrorModalProvider } from '@/contexts/ErrorModalContext';
+import ErrorModalContext, { ErrorModalProvider } from '@/contexts/ErrorModalContext';
 import { Container, Modal } from 'react-bootstrap';
 import NotFoundPage from './pages/NotFoundPage';
 import { UserProfilePopupProvider } from '@/contexts/UserProfilePopupContext';
 import UserProfilePopup from '@/components/UserProfilePopup';
 import Privacy from './components/Privacy';
 import TermsConditions from './components/TermsConditions';
+import API from './api/api';
 
 const Pages = memo(() => {
+    const { showAlert } = useContext(ErrorModalContext);
+    const getAPIStatus = async () => {
+        const api = new API();
+        try {
+            const response = await api.axios.get('/User/GetStatus');
+            console.info('API Status:', response);
+        } catch (error) {
+            if (error instanceof Error) showAlert(error.message, 'danger');
+            throw new Error('Failed to fetch API status');
+        }
+    };
+    getAPIStatus();
     return (
         <BrowserRouter>
             <div className='App-Container' style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>

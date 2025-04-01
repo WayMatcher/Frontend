@@ -1,4 +1,4 @@
-import { MultiStopMap } from '../maps/MultiStopMap';
+import MultiStopMap from '../maps/MultiStopMap';
 import { SingleAddressMap } from '../maps/SingleAddressMap';
 import Stop from '@/types/objects/Stop/dto';
 
