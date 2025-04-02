@@ -29,8 +29,17 @@ import Privacy from './components/Privacy';
 import TermsConditions from './components/TermsConditions';
 import API from './api/api';
 
+/**
+ * Component that renders the main application pages.
+ * It fetches the API status on load and sets up routing for the application.
+ */
 const Pages = memo(() => {
     const { showAlert } = useContext(ErrorModalContext);
+
+    /**
+     * Fetches the API status and logs it to the console.
+     * If an error occurs, it shows an alert using the ErrorModalContext.
+     */
     const getAPIStatus = async () => {
         const api = new API();
         try {
@@ -41,16 +50,23 @@ const Pages = memo(() => {
             throw new Error('Failed to fetch API status');
         }
     };
+
+    // Fetch API status on component mount
     getAPIStatus();
+
     return (
         <BrowserRouter>
             <div className='App-Container' style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                {/* Application Header */}
                 <header className='App-Header'>
                     <NavBar />
                 </header>
+
+                {/* Main Content Area */}
                 <ErrorModalProvider>
                     <main className='App-Main' style={{ flex: '1 0 auto' }}>
                         <Routes>
+                            {/* Define application routes */}
                             <Route path='*' element={<NotFoundPage />} />
                             <Route path='/' element={<LandingPage />} />
                             <Route path='/login' element={<LoginPage />} />
@@ -71,6 +87,8 @@ const Pages = memo(() => {
                         </Routes>
                     </main>
                 </ErrorModalProvider>
+
+                {/* Application Footer */}
                 <footer className='App-Footer' style={{ flexShrink: 0 }}>
                     <Footer />
                 </footer>
@@ -79,10 +97,19 @@ const Pages = memo(() => {
     );
 });
 
+/**
+ * Wrapper component for the application.
+ * It conditionally wraps the application in an ErrorBoundary based on the environment.
+ */
 export default function AppWrapper() {
     const useErrorBoundary = import.meta.env.MODE === 'production';
-    if (import.meta.env.MODE === 'development') console.warn('Error boundary is disabled in development mode');
 
+    // Log a warning if the error boundary is disabled in development mode
+    if (import.meta.env.MODE === 'development') {
+        console.warn('Error boundary is disabled in development mode');
+    }
+
+    // Conditionally render the application with or without an ErrorBoundary
     const AppContent = useErrorBoundary ? (
         <ErrorBoundary
             fallback={
@@ -104,7 +131,9 @@ export default function AppWrapper() {
 
     return (
         <UserProfilePopupProvider>
+            {/* Render the main application content */}
             {AppContent}
+            {/* Render the user profile popup */}
             <UserProfilePopup />
         </UserProfilePopupProvider>
     );

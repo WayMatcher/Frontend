@@ -108,37 +108,3 @@ export const apiDeleteEvent = async (request: { eventId: number }) => {
         throw api.handleApiError(error);
     }
 };
-
-/**
- * Fetches a route based on the provided origin, destination, and waypoints.
- *
- * @param request - The request object containing origin, destination, and waypoints.
- * @returns A promise resolving to the route data.
- * @throws Will throw an error if the API call fails.
- */
-export const apiGetRoute = async (request: {
-    origin: { latitude: number; longitude: number };
-    destination: { latitude: number; longitude: number };
-    waypoints: { latitude: number; longitude: number }[];
-}) => {
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
-
-    if (!apiKey) {
-        throw new Error('Google Maps API key is missing!');
-    }
-
-    const waypointsParam = request.waypoints.map((wp) => `${wp.latitude},${wp.longitude}`).join('|');
-
-    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${request.origin.latitude},${request.origin.longitude}&destination=${request.destination.latitude},${request.destination.longitude}&waypoints=${waypointsParam}&key=${apiKey}`;
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Failed to fetch route data');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
-};

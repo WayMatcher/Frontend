@@ -21,7 +21,7 @@ export enum RepeatSchedule {
  * @returns A Cron expression string representing the schedule.
  * @throws Error if an invalid schedule type is provided.
  */
-export const generateCronExpression = (startDate: Date, scheduleType: RepeatSchedule): string => {
+const generateCronExpression = (startDate: Date, scheduleType: RepeatSchedule): string => {
     const minute = format(startDate, 'm'); // Get minute (0-59)
     const hour = format(startDate, 'H'); // Get hour (0-23)
     const dayOfMonth = format(startDate, 'd'); // Get day of the month (1-31)

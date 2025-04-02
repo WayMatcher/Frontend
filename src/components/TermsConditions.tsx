@@ -1,7 +1,37 @@
 import { Container } from 'react-bootstrap';
 import '@/components/_styles/Footer.scss';
+import { JSX } from 'react';
 
-export function TermsConditions() {
+/**
+ * TermsConditions Component
+ *
+ * This component renders the Terms and Conditions page for the WayMatcher platform.
+ * It provides detailed information about the platform's terms of use, user responsibilities,
+ * and legal disclaimers. The content is structured into multiple sections, including:
+ *
+ * - Service Description
+ * - User Accounts
+ * - User Conduct
+ * - Event Creation and Participation
+ * - User Ratings
+ * - Intellectual Property
+ * - Third-Party Services (Google Maps)
+ * - Disclaimers
+ * - Limitation of Liability
+ * - Indemnification
+ * - Termination
+ * - Governing Law
+ * - Changes to Terms
+ * - Contact Information
+ *
+ * The component is designed to inform users about their rights and obligations when using
+ * the WayMatcher service. It also includes a disclaimer encouraging users to exercise caution
+ * when arranging carpools.
+ *
+ * @component
+ * @returns {JSX.Element} A container with the Terms and Conditions content.
+ */
+function TermsConditions(): JSX.Element {
     return (
         <Container className='TermsConditions'>
             <h1 id='waymatcher-terms-and-conditions'>WayMatcher - Terms and Conditions</h1>

@@ -18,26 +18,40 @@ import RegisterVehicleList from '@/components/register/RegisterVehicleList';
 import RegisterSummary from '@/components/register/RegisterSummary';
 import RegisterNavigation from '@/components/register/RegisterButtons';
 
+/**
+ * The RegisterPage component handles the multi-step registration process.
+ * It includes user, address, and vehicle registration steps, as well as a summary step.
+ */
 const RegisterPage = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const isAuthenticated = useIsAuthenticated();
+    const navigate = useNavigate(); // Hook to programmatically navigate between routes
+    const location = useLocation(); // Hook to access the current location
+    const isAuthenticated = useIsAuthenticated(); // Hook to check if the user is authenticated
 
+    // State to manage user data
     const [user, setUser] = useState<(User & { password: string }) | null>(null);
+    // State to manage address data
     const [address, setAddress] = useState<Address | null>(null);
+    // State to manage the list of vehicles
     const [vehicleList, setVehicleList] = useState<Vehicle[]>([]);
 
+    // State to track completion of each step
     const [isUserDone, setIsUserDone] = useState(false);
     const [isAddressDone, setIsAddressDone] = useState(false);
     const [isVehicleListDone, setIsVehicleListDone] = useState(false);
 
+    // Object containing all registration data
     const registerObject = { user, address, vehicleList };
+    // Object tracking the completion status of each step
     const doneStates = { user: isUserDone, address: isAddressDone, vehicle: isVehicleListDone };
 
+    // Define the steps of the registration process
     const steps = ['user', 'address', 'vehicles', 'summary'];
+    // Determine the current step index based on the URL
     const currentStepIndex = steps.indexOf(location.pathname.split('/').pop() || 'user');
+    // Calculate the progress percentage
     const progress = ((currentStepIndex + 1) / steps.length) * 100;
 
+    // If the user is already authenticated, redirect them to their profile
     if (isAuthenticated) {
         return (
             <Container className='register-page'>
@@ -55,13 +69,16 @@ const RegisterPage = () => {
     return (
         <Container className='register-page'>
             <h1>Register</h1>
+            {/* Display a progress bar to indicate the current step */}
             <ProgressBar now={progress} variant={currentStepIndex === steps.length - 1 ? 'success' : 'primary'} />
             <br />
             <Container>
+                {/* Navigation component for moving between steps */}
                 <RegisterNavigation
                     doneStates={{ user: isUserDone, address: isAddressDone, vehicle: isVehicleListDone }}
                 >
                     <Routes>
+                        {/* Route for the user registration step */}
                         <Route
                             path={steps[0]}
                             element={
@@ -70,12 +87,13 @@ const RegisterPage = () => {
                                     done={{
                                         ...doneStates,
                                         onComplete(isDone) {
-                                            setIsUserDone(isDone);
+                                            setIsUserDone(isDone); // Update user step completion status
                                         },
                                     }}
                                 />
                             }
                         />
+                        {/* Route for the address registration step */}
                         <Route
                             path={steps[1]}
                             element={
@@ -84,12 +102,13 @@ const RegisterPage = () => {
                                     done={{
                                         ...doneStates,
                                         onComplete(isDone) {
-                                            setIsAddressDone(isDone);
+                                            setIsAddressDone(isDone); // Update address step completion status
                                         },
                                     }}
                                 />
                             }
                         />
+                        {/* Route for the vehicle registration step */}
                         <Route
                             path={steps[2]}
                             element={
@@ -98,12 +117,13 @@ const RegisterPage = () => {
                                     done={{
                                         ...doneStates,
                                         onComplete(isDone) {
-                                            setIsVehicleListDone(isDone);
+                                            setIsVehicleListDone(isDone); // Update vehicle step completion status
                                         },
                                     }}
                                 />
                             }
                         />
+                        {/* Route for the summary step */}
                         <Route
                             path={steps[3]}
                             element={
@@ -120,6 +140,7 @@ const RegisterPage = () => {
                                 ) : null
                             }
                         />
+                        {/* Redirect to the first step if the path is invalid */}
                         <Route path='/*' element={<Navigate to={'/register/user'} replace />} />
                     </Routes>
                 </RegisterNavigation>

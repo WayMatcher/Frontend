@@ -9,25 +9,37 @@ import { useEffect, useState } from 'react';
 import { apiGetInbox } from '@/api/endpoints/inbox';
 import Notification from '@/types/objects/Notification/dto';
 import brandImgUrl from './WayMatcher-Logo-NoText-Transparent.png';
-export default function NavBar() {
-    const signOut = useSignOut();
-    const authUser = useAuthUser<User>();
-    const isAuthenticated = useIsAuthenticated();
-    const navigate = useNavigate();
-    const [inbox, setInbox] = useState<Notification[]>([]);
-    const [notificationCount, setNotificationCount] = useState<number>(0);
 
+/**
+ * NavBar component that provides navigation and user interaction options.
+ * Includes links, dropdowns, and user-specific actions like login/logout.
+ */
+export default function NavBar() {
+    const signOut = useSignOut(); // Hook to handle user sign-out
+    const authUser = useAuthUser<User>(); // Hook to get authenticated user details
+    const isAuthenticated = useIsAuthenticated(); // Hook to check if the user is authenticated
+    const navigate = useNavigate(); // Hook to programmatically navigate between routes
+    const [inbox, setInbox] = useState<Notification[]>([]); // State to store notifications
+    const [notificationCount, setNotificationCount] = useState<number>(0); // State to store unread notification count
+
+    /**
+     * Fetches notifications for the authenticated user.
+     * Runs on component mount and when `isAuthenticated` changes.
+     */
     useEffect(() => {
         const getNotifications = async () => {
             if (isAuthenticated) {
                 const response = await apiGetInbox({ userId: authUser?.userId });
-                if (response.data) setInbox(response.data);
+                if (response.data) setInbox(response.data); // Update inbox state with fetched notifications
             }
         };
 
         getNotifications();
     }, [isAuthenticated]);
 
+    /**
+     * Updates the unread notification count whenever the inbox changes.
+     */
     useEffect(() => {
         setNotificationCount(inbox.filter((notification) => !notification.read).length);
     }, [inbox]);
@@ -35,9 +47,10 @@ export default function NavBar() {
     return (
         <Navbar className='bg-body-tertiary mb-3' expand='lg'>
             <Container fluid>
+                {/* Brand logo and title */}
                 <Navbar.Brand
                     onClick={() => {
-                        navigate('/');
+                        navigate('/'); // Navigate to the home page
                     }}
                 >
                     <Image src={brandImgUrl} height={30} /> WayMatcher
@@ -53,6 +66,7 @@ export default function NavBar() {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Nav className='me-auto'>
+                            {/* Navigation links */}
                             <Link to='/' className='nav-link'>
                                 Home
                             </Link>
@@ -62,6 +76,7 @@ export default function NavBar() {
                                 aria-label='Way Filters'
                                 className='justify-content-end'
                             >
+                                {/* Dropdown options for filtering "Ways" */}
                                 <NavDropdown.Item onClick={() => navigate('/events')} aria-label='Events'>
                                     <strong>All Ways</strong>
                                 </NavDropdown.Item>
@@ -93,6 +108,7 @@ export default function NavBar() {
                         <Nav>
                             {isAuthenticated ? (
                                 <>
+                                    {/* User-specific dropdown menu */}
                                     <NavDropdown
                                         title={authUser?.username}
                                         id='user-options-dropdown'
@@ -101,7 +117,7 @@ export default function NavBar() {
                                     >
                                         <NavDropdown.Item
                                             onClick={() => {
-                                                navigate(`/profile/${authUser?.username}/edit`);
+                                                navigate(`/profile/${authUser?.username}/edit`); // Navigate to edit profile
                                             }}
                                             aria-label='Edit Profile'
                                         >
@@ -109,7 +125,7 @@ export default function NavBar() {
                                         </NavDropdown.Item>
                                         <NavDropdown.Item
                                             onClick={() => {
-                                                navigate(`/events?filter=owned`);
+                                                navigate(`/events?filter=owned`); // Navigate to user's "Ways"
                                             }}
                                             aria-label='My Matches'
                                         >
@@ -118,8 +134,8 @@ export default function NavBar() {
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item
                                             onClick={() => {
-                                                signOut();
-                                                navigate('/login');
+                                                signOut(); // Sign out the user
+                                                navigate('/login'); // Redirect to login page
                                             }}
                                             aria-label='Logout'
                                         >
@@ -127,6 +143,7 @@ export default function NavBar() {
                                         </NavDropdown.Item>
                                     </NavDropdown>
 
+                                    {/* Inbox link with notification count */}
                                     <Link to='/inbox' className='nav-link'>
                                         <Badge>
                                             <span className={'bi bi-inbox-fill'}> {notificationCount}</span>
@@ -135,6 +152,7 @@ export default function NavBar() {
                                 </>
                             ) : (
                                 <ButtonGroup>
+                                    {/* Login and Register buttons for unauthenticated users */}
                                     <Button className='btn btn-primary' onClick={() => navigate('/login')}>
                                         Login
                                     </Button>

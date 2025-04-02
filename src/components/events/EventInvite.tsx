@@ -10,7 +10,15 @@ import WMEvent from '@/types/objects/Event/dto';
 import User from '@/types/objects/User/dto';
 import LoadingOverlay from '../LoadingOverlay';
 
-export const EventInvite = ({
+/**
+ * EventInvite component for inviting users or requesting invites to an event.
+ * @param {Object} props - Component props.
+ * @param {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} props.showState - State to control modal visibility.
+ * @param {boolean} [props.owner] - Indicates if the current user is the event owner.
+ * @param {WMEvent} props.event - Event details.
+ * @returns {JSX.Element | null} The rendered component.
+ */
+const EventInvite = ({
     showState,
     owner,
     event,
@@ -20,12 +28,11 @@ export const EventInvite = ({
     event: WMEvent;
 }) => {
     const [usernameList, setUsernameList] = useState<{ userId: number; username: string }[]>([]);
-
     const [show, setShow] = showState;
-
     const authUser = useAuthUser<User>();
     const [loading, setLoading] = useState(false);
     const { showErrorModal } = useContext(ErrorModalContext);
+
     if (!authUser) return null;
 
     useEffect(() => {
@@ -34,6 +41,7 @@ export const EventInvite = ({
                 setLoading(true);
                 const response = await apiGetUsernameList();
 
+                // Filter out the current user and map to required format
                 const uniqueUsernames = response.data
                     .filter((user: User) => user.userId !== undefined && user.userId !== authUser.userId)
                     .map((user: User) => ({
@@ -49,6 +57,8 @@ export const EventInvite = ({
                 setLoading(false);
             }
         };
+
+        // Fetch usernames only if the user is the owner and the modal is shown
         if (owner && show) {
             fetchUsernames();
         }
@@ -75,6 +85,14 @@ export const EventInvite = ({
     );
 };
 
+/**
+ * Invite component for sending event invitations.
+ * @param {Object} props - Component props.
+ * @param {WMEvent} props.event - Event details.
+ * @param {Array<{ userId: number, username: string }>} props.userList - List of users to invite.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setShow - Function to control modal visibility.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Invite = ({
     event,
     userList,
@@ -91,6 +109,13 @@ const Invite = ({
 
     const userIdArray = userList.map((user) => user.userId);
 
+    /**
+     * Handles the submission of an invite.
+     * @param {Object} values - Form values.
+     * @param {number} values.userId - ID of the user to invite.
+     * @param {string} values.message - Message to send with the invite.
+     * @param {boolean} values.isPilot - Whether the invite is for a pilot role.
+     */
     const handleInvite = async (values: { userId: number; message: string; isPilot: boolean }) => {
         try {
             await apiSendInvite({
@@ -122,6 +147,7 @@ const Invite = ({
                         <Modal.Title>{'Invite User'}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                        {/* Message input field */}
                         <Row className='mb-3'>
                             <Form.Group as={Col} controlId={`validationFormik_message`}>
                                 <Form.Label>Message</Form.Label>
@@ -142,6 +168,7 @@ const Invite = ({
                                 ) : null}
                             </Form.Group>
                         </Row>
+                        {/* Username dropdown */}
                         <Row className='mb-3'>
                             <Form.Group as={Col} controlId={`validationFormik_username`}>
                                 <Form.Label>Username</Form.Label>
@@ -166,6 +193,7 @@ const Invite = ({
                                 ) : null}
                             </Form.Group>
                         </Row>
+                        {/* Pilot role switch */}
                         <Row>
                             <Form.Group as={Col} controlId={`validationFormik_isPilot`}>
                                 <Form.Switch type='switch' id='isPilot' name='isPilot' label='Invite as Pilot Role' />
@@ -186,6 +214,14 @@ const Invite = ({
     );
 };
 
+/**
+ * Request component for requesting an invite to an event.
+ * @param {Object} props - Component props.
+ * @param {User} props.authUser - Authenticated user details.
+ * @param {WMEvent} props.event - Event details.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setShow - Function to control modal visibility.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Request = ({
     authUser,
     event,
@@ -196,6 +232,13 @@ const Request = ({
     setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     const { showErrorModal } = useContext(ErrorModalContext);
+
+    /**
+     * Handles the submission of a request.
+     * @param {Object} values - Form values.
+     * @param {string} values.message - Message to send with the request.
+     * @param {boolean} values.isPilot - Whether the request is for a pilot role.
+     */
     const handleRequest = async (values: { message: string; isPilot: boolean }) => {
         try {
             if (authUser.userId === undefined) throw new Error('No user ID provided');
@@ -229,6 +272,7 @@ const Request = ({
                         <Modal.Title>{'Request Match'}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                        {/* Message input field */}
                         <Row className='mb-3'>
                             <Form.Group as={Col} controlId={`validationFormik_message`}>
                                 <Form.Label>Message</Form.Label>
@@ -248,6 +292,7 @@ const Request = ({
                                     </Form.Control.Feedback>
                                 ) : null}
                             </Form.Group>
+                            {/* Pilot role switch */}
                             <Row>
                                 <Form.Group as={Col} controlId={`validationFormik_isPilot`}>
                                     <Form.Switch

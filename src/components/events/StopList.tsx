@@ -7,12 +7,18 @@ import { Variant } from 'react-bootstrap/esm/types';
 import InternationalAddressDisplay from '@/components/address/AddressDisplay';
 import '@/components/_styles/StopList.scss';
 
+/**
+ * Displays a list of stops in a read-only format.
+ * @param {Object} props - Component props.
+ * @param {Stop[]} props.stopList - Array of stops to display.
+ */
 const StopListDisplay = ({ stopList }: { stopList: Stop[] }) => {
     return (
         <ListGroup>
             {stopList.map((stop: Stop, index: number) => (
                 <>
                     <ListGroup.Item key={`stop-${index}`} eventKey={index}>
+                        {/* Display stop sequence number and address */}
                         <strong>#{stop.stopSequenceNumber + 1}:</strong> {stop.address.street} {stop.address.postalcode}{' '}
                         ({stop.address.state}, {stop.address.city})
                     </ListGroup.Item>
@@ -22,16 +28,30 @@ const StopListDisplay = ({ stopList }: { stopList: Stop[] }) => {
     );
 };
 
+/**
+ * Allows editing of a list of stops, including reordering, adding, and deleting stops.
+ * @param {Object} props - Component props.
+ * @param {[Stop[], React.Dispatch<React.SetStateAction<Stop[]>>]} props.stopListState - State tuple for the stop list.
+ */
 const StopListEdit = ({ stopListState }: { stopListState: [Stop[], React.Dispatch<React.SetStateAction<Stop[]>>] }) => {
     const [stops, setStops] = stopListState;
     const showAddressState = React.useState(false);
     const [alertMessage, setAlertMessage] = React.useState<string>('');
     const [address, setAddress] = React.useState<Address | null>(null);
 
+    /**
+     * Gets the index of a stop in the stop list.
+     * @param {Stop} stop - The stop to find.
+     * @returns {number} - The index of the stop.
+     */
     const getIndexOfStop = (stop: Stop) => {
         return stops.indexOf(stop);
     };
 
+    /**
+     * Moves a stop up in the list.
+     * @param {Stop} stop - The stop to move up.
+     */
     const handleUp = (stop: Stop) => {
         const index = getIndexOfStop(stop);
         if (index > 0) {
@@ -62,13 +82,17 @@ const StopListEdit = ({ stopListState }: { stopListState: [Stop[], React.Dispatc
                 const newStops = [...stops];
                 [newStops[index - 1], newStops[index]] = [newStops[index], newStops[index - 1]];
                 newStops.forEach((s, i) => {
-                    s.stopSequenceNumber = i;
+                    s.stopSequenceNumber = i; // Update sequence numbers
                 });
                 setStops(newStops);
             }, 300);
         }
     };
 
+    /**
+     * Moves a stop down in the list.
+     * @param {Stop} stop - The stop to move down.
+     */
     const handleDown = (stop: Stop) => {
         const index = getIndexOfStop(stop);
         if (index < stops.length - 1) {
@@ -99,13 +123,14 @@ const StopListEdit = ({ stopListState }: { stopListState: [Stop[], React.Dispatc
                 const newStops = [...stops];
                 [newStops[index + 1], newStops[index]] = [newStops[index], newStops[index + 1]];
                 newStops.forEach((s, i) => {
-                    s.stopSequenceNumber = i;
+                    s.stopSequenceNumber = i; // Update sequence numbers
                 });
                 setStops(newStops);
             }, 300);
         }
     };
 
+    // Add a new stop when an address is selected
     useEffect(() => {
         if (address) {
             setStops([
@@ -118,11 +143,18 @@ const StopListEdit = ({ stopListState }: { stopListState: [Stop[], React.Dispatc
         }
     }, [address]);
 
+    /**
+     * Opens the modal to add a new stop.
+     */
     const handleNew = () => {
         setAddress(null);
         showAddressState[1](true);
     };
 
+    /**
+     * Deletes a stop from the list.
+     * @param {Stop} stop - The stop to delete.
+     */
     const handleDelete = (stop: Stop) => {
         setStops(stops.filter((s) => s !== stop));
     };
@@ -131,13 +163,17 @@ const StopListEdit = ({ stopListState }: { stopListState: [Stop[], React.Dispatc
         <>
             <ListGroup className='stop-list'>
                 {stops.map((stop: Stop) => {
+                    /**
+                     * Determines the badge color for a stop based on its position.
+                     * @returns {Variant} - The badge color variant.
+                     */
                     const assessBadgeColor = (): Variant => {
                         if (getIndexOfStop(stop) === 0) {
-                            return 'primary';
+                            return 'primary'; // First stop
                         } else if (getIndexOfStop(stop) === stops.length - 1) {
-                            return 'success';
+                            return 'success'; // Last stop
                         } else {
-                            return 'secondary';
+                            return 'secondary'; // Intermediate stops
                         }
                     };
 
@@ -185,6 +221,12 @@ const StopListEdit = ({ stopListState }: { stopListState: [Stop[], React.Dispatc
     );
 };
 
+/**
+ * Main component for displaying or editing a stop list.
+ * @param {Object} props - Component props.
+ * @param {boolean} props.edit - Whether the list is in edit mode.
+ * @param {[Stop[], React.Dispatch<React.SetStateAction<Stop[]>>]} props.stopListState - State tuple for the stop list.
+ */
 const StopList = ({
     edit,
     stopListState,

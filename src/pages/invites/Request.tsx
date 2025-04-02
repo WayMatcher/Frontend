@@ -10,7 +10,12 @@ import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import cronParser from 'cron-parser';
 
+/**
+ * Component for handling and displaying an invite request.
+ * Fetches event details and allows the user to accept the invite.
+ */
 const RequestInvite = () => {
+    // Check if the user is authenticated. If not, display a login prompt.
     if (!useIsAuthenticated())
         return (
             <Container className='mt-5'>
@@ -20,44 +25,48 @@ const RequestInvite = () => {
                 </Link>
             </Container>
         );
-    const [loading, setLoading] = useState<boolean>(false);
 
-    const { showErrorModal } = useContext(ErrorModalContext);
-
-    const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
+    const [loading, setLoading] = useState<boolean>(false); // State to manage loading overlay
+    const { showErrorModal } = useContext(ErrorModalContext); // Context for displaying error modals
+    const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>(); // State to store event details
 
     const [searchParams] = useSearchParams();
-    const userId = searchParams.get('userId');
-    const eventId = searchParams.get('eventId');
-    const eventRole = searchParams.get('eventRole');
+    const userId = searchParams.get('userId'); // Extract userId from URL parameters
+    const eventId = searchParams.get('eventId'); // Extract eventId from URL parameters
+    const eventRole = searchParams.get('eventRole'); // Extract eventRole from URL parameters
 
+    // Validate URL parameters and show an error if any are missing or invalid
     if (!userId || !eventId || !eventRole) {
         showErrorModal('Missing parameters in URL');
         throw new Error('Missing parameters in URL');
     }
-
     if (parseInt(eventId) <= 0) throw new Error('Invalid eventId');
     if (parseInt(userId) <= 0) throw new Error('Invalid userId');
     if (parseInt(eventRole) <= 0) throw new Error('Invalid eventRole');
 
     useEffect(() => {
+        /**
+         * Fetches event details from the API and updates the state.
+         */
         const fetchEventDetails = async () => {
             try {
-                setLoading(true);
-
+                setLoading(true); // Show loading overlay
                 const response = await apiGetEvent({ eventId: parseInt(eventId) });
-
-                setCurrentEvent(response.data);
-                setLoading(false);
+                setCurrentEvent(response.data); // Update event details in state
             } catch (error) {
+                // Show error modal if the API call fails
                 showErrorModal('An error occurred: ' + (error as Error).message);
             } finally {
-                setLoading(false);
+                setLoading(false); // Hide loading overlay
             }
         };
         fetchEventDetails();
-    }, []);
+    }, []); // Empty dependency array ensures this runs only once on component mount
 
+    /**
+     * Handles the acceptance of the invite request.
+     * Sends the acceptance request to the API.
+     */
     const onAccept = async () => {
         try {
             if (!userId || !eventId || !eventRole) {
@@ -65,7 +74,7 @@ const RequestInvite = () => {
                 return;
             }
 
-            setLoading(true);
+            setLoading(true); // Show loading overlay
 
             await apiAcceptRequest({
                 userId: parseInt(userId),
@@ -73,9 +82,10 @@ const RequestInvite = () => {
                 eventRole: parseInt(eventRole),
             });
         } catch (error: unknown) {
+            // Show error modal if the API call fails
             showErrorModal('An error occurred: ' + (error as Error).message);
         } finally {
-            setLoading(false);
+            setLoading(false); // Hide loading overlay
         }
     };
 
@@ -86,6 +96,7 @@ const RequestInvite = () => {
                     <Card.Title>Accept Request</Card.Title>
                 </Card.Header>
                 <Card.Body>
+                    {/* Display event details */}
                     <p>Event Description: {currentEvent?.description}</p>
                     <p>Event Start: {currentEvent?.startTimestamp}</p>
                     <p>Event Type: {currentEvent?.eventTypeId}</p>
@@ -109,6 +120,7 @@ const RequestInvite = () => {
                     </ul>
                 </Card.Body>
                 <Card.Footer>
+                    {/* Display event members */}
                     <p>Event Members:</p>
                     <ul>
                         {currentEvent?.eventMembers.map((member) => (
@@ -117,6 +129,7 @@ const RequestInvite = () => {
                             </li>
                         ))}
                     </ul>
+                    {/* Button to accept the invite */}
                     <Button onClick={onAccept} disabled={!userId || !eventId || !eventRole}>
                         Accept Request
                     </Button>

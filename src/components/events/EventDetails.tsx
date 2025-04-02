@@ -18,6 +18,9 @@ import * as Yup from 'yup';
 import cronParser from 'cron-parser';
 import EventMemberDisplay from './EventMemberDisplay';
 
+/**
+ * Validation schema for the event form using Yup.
+ */
 const validationSchema = Yup.object({
     isPilot: Yup.boolean(),
     description: Yup.string(),
@@ -30,6 +33,9 @@ const validationSchema = Yup.object({
     }),
 });
 
+/**
+ * Initial values for the event form.
+ */
 const initialValues = {
     description: '',
     freeSeats: 3,
@@ -37,6 +43,14 @@ const initialValues = {
     startTimestamp: '',
     cronSchedule: '',
 };
+
+/**
+ * Component to display and edit event details.
+ * @param {Object} props - Component props.
+ * @param {WMEvent} props.event - The event object.
+ * @param {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} props.editModeState - State for edit mode.
+ * @param {boolean} props.isOwnedEvent - Whether the event is owned by the current user.
+ */
 const Details = ({
     event,
     editModeState,
@@ -46,22 +60,24 @@ const Details = ({
     editModeState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
     isOwnedEvent: boolean;
 }) => {
-    const stopListState = useState<Stop[]>([]);
-    const [loading, setLoading] = useState(false);
+    const stopListState = useState<Stop[]>([]); // State for the list of stops
+    const [loading, setLoading] = useState(false); // Loading state for form submission
+    const { showErrorModal } = useContext(ErrorModalContext); // Error modal context
+    const authUser = useAuthUser<User>(); // Authenticated user
+    const [editMode, setEditMode] = editModeState; // Edit mode state
+    const [cronExpression, setCronExpression] = useState<CronExpression | undefined>(); // Parsed cron expression
+    const [nextExecution, setNextExecution] = useState<string>(''); // Next execution time for the cron schedule
+    const [repeating, setRepeating] = useState<boolean>(false); // State for repeating events
 
-    const { showErrorModal } = useContext(ErrorModalContext);
-
-    const authUser = useAuthUser<User>();
-
-    const [editMode, setEditMode] = editModeState;
-
+    // Update stop list when the event's stop list changes
     useEffect(() => {
         stopListState[1](event.stopList);
     }, [event.stopList]);
-    const [cronExpression, setCronExpression] = useState<CronExpression | undefined>();
-    const [nextExecution, setNextExecution] = useState<string>('');
-    const [repeating, setRepeating] = useState<boolean>(false);
 
+    /**
+     * Handles form submission to update the event.
+     * @param {Object} values - Form values.
+     */
     const onSubmit = async (values: typeof initialValues) => {
         if (editMode) {
             if (!event.eventTypeId) {
@@ -113,6 +129,7 @@ const Details = ({
                 <Row>
                     <Col>
                         <Stack>
+                            {/* Map displaying the stops */}
                             <EventMap width={400} height={600} stopList={event.stopList} />
                         </Stack>
                     </Col>
@@ -128,6 +145,7 @@ const Details = ({
                                 validationSchema={validationSchema}
                             >
                                 {(formikProps) => {
+                                    // Update form values and cron expression when the event changes
                                     useEffect(() => {
                                         formikProps.setValues({
                                             description: event.description || '',
@@ -171,6 +189,7 @@ const Details = ({
 
                                     return (
                                         <FormikForm>
+                                            {/* Form inputs for event details */}
                                             <Row className='mb-3'>
                                                 <FormInput
                                                     label='Description'
@@ -238,6 +257,7 @@ const Details = ({
                                             </Row>
                                             <Row className='mb-3'>
                                                 <Container>
+                                                    {/* Stop list editor */}
                                                     <StopList edit={true} stopListState={stopListState} />
                                                     <br />
                                                     {stopListState.length < 2 && (
@@ -282,6 +302,7 @@ const Details = ({
                             </Formik>
                         ) : (
                             <>
+                                {/* Display event details in read-only mode */}
                                 {event.description && (
                                     <FormInput
                                         name='description'
@@ -329,6 +350,7 @@ const Details = ({
                     </Col>
                     <Col>
                         <Stack>
+                            {/* Display event members */}
                             <EventMemberDisplay
                                 members={event.eventMembers}
                                 freeSeats={event.freeSeats}
@@ -336,12 +358,6 @@ const Details = ({
                                 owner={isOwnedEvent}
                                 event={event}
                             />
-                            {isOwnedEvent && (
-                                <>
-                                    <br />
-                                    {/* <EventInvites event={event} owner={isOwnedEvent} /> */}
-                                </>
-                            )}
                         </Stack>
                     </Col>
                 </Row>
@@ -350,24 +366,31 @@ const Details = ({
     );
 };
 
+/**
+ * Main component for displaying event details in a modal.
+ * @param {Object} props - Component props.
+ * @param {WMEvent} [props.event] - The event object.
+ * @param {boolean} props.showModal - Whether the modal is visible.
+ */
 const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolean }) => {
     const navigate = useNavigate();
-
     const { showErrorModal } = useContext(ErrorModalContext);
+    const [show, setShow] = useState<boolean>(showModal); // Modal visibility state
+    const [showInvite, setShowInvite] = useState<boolean>(false); // Invite modal visibility state
+    const [editMode, setEditMode] = useState<boolean>(false); // Edit mode state
+    const [isOwnedEvent, setIsOwnedEvent] = useState<boolean>(false); // Whether the event is owned by the user
+    const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>(); // Current event being displayed
+    const authUser = useAuthUser<User>(); // Authenticated user
 
-    const [show, setShow] = useState<boolean>(showModal);
-    const [showInvite, setShowInvite] = useState<boolean>(false); // Changed to useState for proper state handling
-    const [editMode, setEditMode] = useState<boolean>(false);
-
-    const [isOwnedEvent, setIsOwnedEvent] = useState<boolean>(false);
-    const [currentEvent, setCurrentEvent] = useState<WMEvent | undefined>();
-
-    const authUser = useAuthUser<User>();
+    /**
+     * Handles closing the modal and navigating back to the events page.
+     */
     const handleCloseModal = () => {
         setShow(false);
         navigate('/events');
     };
 
+    // Update modal visibility and current event when props change
     useEffect(() => {
         setShow(showModal);
         if (event) {
@@ -375,6 +398,7 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
         }
     }, [showModal, event]);
 
+    // Determine if the current user owns the event
     useEffect(() => {
         if (authUser?.userId === currentEvent?.owner.userId) {
             setIsOwnedEvent(true);
@@ -383,6 +407,9 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
         }
     }, [currentEvent]);
 
+    /**
+     * Handles deleting the current event.
+     */
     const onDelete = async () => {
         try {
             if (!currentEvent?.eventId) return;
@@ -406,6 +433,7 @@ const EventDetails = ({ event, showModal }: { event?: WMEvent; showModal: boolea
             <Modal show={show} onHide={handleCloseModal} dialogClassName='modal-wide'>
                 <Modal.Header closeButton>
                     <Modal.Title>
+                        {/* Display event title based on the first and last stop */}
                         {currentEvent.stopList[0].address.city} -{' '}
                         {currentEvent.stopList[currentEvent.stopList.length - 1].address.city}
                     </Modal.Title>

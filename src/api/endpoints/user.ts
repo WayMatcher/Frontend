@@ -197,7 +197,7 @@ export const apiChangePassword = async (hash: string, password: string) => {
  * @returns A promise resolving to the cat picture blob.
  * @throws Will throw an error if the API call fails.
  */
-export const apiGetCatPicture = async (size?: number): Promise<Blob> => {
+const apiGetCatPicture = async (size?: number): Promise<Blob> => {
     try {
         return await axios.get('https://api.ai-cats.net/v1/cat', {
             params: { size: size ? size.toString() : '512', theme: 'all' },

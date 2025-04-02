@@ -14,56 +14,78 @@ import Rating from '@/components/rating/Rating';
 import RatingAdd from '@/components/rating/RatingAdd';
 import Placeholder from 'react-bootstrap/Placeholder';
 
+/**
+ * Profile component displays user profile information, including personal details,
+ * address, vehicles, and ratings. It also provides options to edit the profile or rate the user.
+ */
 export default function Profile() {
+    // Extract the username from the URL parameters
     const { username } = useParams<{ username: string }>();
+
+    // Get the authenticated user details
     const authUser = useAuthUser<User>();
 
+    // React Router's navigation hook
     const navigate = useNavigate();
 
+    // State variables for loading, user data, address, vehicles, and rating modal visibility
     const [loading, setLoading] = useState(false);
     const [showRating, setShowRating] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [address, setAddress] = useState<Address | null>(null);
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
+    // Context for displaying error modals
     const { showErrorModal } = useContext(ErrorModalContext);
 
+    /**
+     * Fetches user data, address, and vehicles based on the username.
+     * Redirects to login if no username is available.
+     */
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
+            setLoading(true); // Start loading
             try {
                 const effectiveUsername = username || authUser?.username;
+
+                // Redirect to the authenticated user's profile if no username is provided
                 if (!username && authUser?.username) {
                     navigate(`/profile/${authUser?.username}`);
                     return;
                 }
+
+                // Redirect to login if no username is available
                 if (!effectiveUsername) {
                     navigate('/login');
                     return;
                 }
 
+                // Fetch user, address, and vehicle data
                 const userResponse = await apiGetUser({ username: effectiveUsername });
                 const addressResponse = await apiGetAddress({ username: effectiveUsername });
                 const vehicleResponse = await apiGetVehicleList({ username: effectiveUsername });
 
+                // Update state with fetched data
                 setUser(userResponse.data);
                 setAddress(addressResponse.data);
                 setVehicles(vehicleResponse.data);
             } catch (error) {
+                // Show error modal in case of an error
                 showErrorModal(`Error fetching data: ${error}`);
             } finally {
-                setLoading(false);
+                setLoading(false); // Stop loading
             }
         };
 
         fetchData();
-    }, [username, authUser]);
+    }, [username, authUser]); // Dependencies: username and authUser
 
     return (
         <>
             <Container className='profile'>
                 {loading ? (
                     <>
+                        {/* Placeholder UI while loading */}
                         <Container className='profile-picture'>
                             <Placeholder as='div' animation='glow'>
                                 <Placeholder style={{ width: 150, height: 150, borderRadius: '0.375rem' }} />
@@ -83,42 +105,33 @@ export default function Profile() {
                                 </tr>
                             </thead>
                             <tbody>
+                                {/* Placeholder rows */}
                                 <tr key={'username-placeholder'}>
-                                    <td>
-                                        <td>Username</td>
-                                    </td>
+                                    <td>Username</td>
                                     <td>
                                         <Placeholder xs={4} />
                                     </td>
                                 </tr>
                                 <tr key={'email-placeholder'}>
-                                    <td>
-                                        <td>Email</td>
-                                    </td>
+                                    <td>Email</td>
                                     <td>
                                         <Placeholder xs={6} />
                                     </td>
                                 </tr>
                                 <tr key={'phone-placeholder'}>
-                                    <td>
-                                        <td>Phone</td>
-                                    </td>
+                                    <td>Phone</td>
                                     <td>
                                         <Placeholder xs={5} />
                                     </td>
                                 </tr>
                                 <tr key={'address-placeholder'}>
-                                    <td>
-                                        <td>Address</td>
-                                    </td>
+                                    <td>Address</td>
                                     <td>
                                         <Placeholder xs={8} />
                                     </td>
                                 </tr>
                                 <tr key={'rating-placeholder'}>
-                                    <td>
-                                        <td>Rating</td>
-                                    </td>
+                                    <td>Rating</td>
                                     <td>
                                         <Placeholder xs={4} />
                                     </td>
@@ -128,6 +141,7 @@ export default function Profile() {
                     </>
                 ) : user ? (
                     <>
+                        {/* Display user profile information */}
                         <Container className='profile-picture'>
                             <ProfilePicture image={user?.profilePicture} width={150} height={150} />
                         </Container>
@@ -144,6 +158,7 @@ export default function Profile() {
                                 </tr>
                             </thead>
                             <tbody>
+                                {/* User details */}
                                 <tr>
                                     <td>Username</td>
                                     <td>{user.username}</td>
@@ -189,6 +204,7 @@ export default function Profile() {
                             </tbody>
                         </Table>
                         <ButtonGroup>
+                            {/* Buttons for rating, editing, and changing password */}
                             {authUser?.userId !== user?.userId && authUser && (
                                 <Button onClick={() => setShowRating(true)}>Rate User</Button>
                             )}
@@ -204,6 +220,7 @@ export default function Profile() {
                     </>
                 ) : null}
             </Container>
+            {/* Rating modal */}
             {user && <RatingAdd showState={[showRating, setShowRating]} user={user} />}
         </>
     );

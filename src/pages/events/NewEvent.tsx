@@ -14,6 +14,10 @@ import { CronExpression } from 'cron-parser';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { RepeatSchedule, calculateNextExecution } from '@/utils/cronUtils';
 
+/**
+ * Validation schema for the event creation form.
+ * Ensures required fields are filled and valid.
+ */
 const validationSchema = Yup.object({
     description: Yup.string(),
     startTimestamp: Yup.date().required('Date is required').min(new Date(), 'Date must be in the future'),
@@ -25,6 +29,9 @@ const validationSchema = Yup.object({
     }),
 });
 
+/**
+ * Initial values for the event creation form.
+ */
 const initialValues = {
     description: '',
     freeSeats: 3,
@@ -33,28 +40,37 @@ const initialValues = {
     cronSchedule: '',
 };
 
+/**
+ * Component for creating a new event.
+ * Handles form submission, validation, and dynamic UI updates.
+ */
 const NewEvent = () => {
-    const stopListState = useState<Stop[]>([]);
-    const [searchParams] = useSearchParams();
-    const [eventTypeId, setEventTypeId] = useState(0);
-    const [cronExpression, setCronExpression] = useState<CronExpression | undefined>();
-    const [nextExecution, setNextExecution] = useState<Date>();
-    const [startDate, setStartDate] = useState<Date>();
-    const [repeating, setRepeating] = useState<boolean>(false);
+    const stopListState = useState<Stop[]>([]); // State for managing the list of stops
+    const [searchParams] = useSearchParams(); // Query parameters from the URL
+    const [eventTypeId, setEventTypeId] = useState(0); // Event type ID (1 for Pilot, 2 for Passenger)
+    const [cronExpression, setCronExpression] = useState<CronExpression | undefined>(); // Parsed cron expression
+    const [nextExecution, setNextExecution] = useState<Date>(); // Next execution date for repeating events
+    const [startDate, setStartDate] = useState<Date>(); // Start date of the event
+    const [repeating, setRepeating] = useState<boolean>(false); // Whether the event is repeating
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Navigation hook
+    const authUser = useAuthUser<User>(); // Authenticated user
+    const { showErrorModal } = useContext(ErrorModalContext); // Error modal context
+    const [loading, setLoading] = useState(false); // Loading state for form submission
 
-    const authUser = useAuthUser<User>();
-
-    const { showErrorModal } = useContext(ErrorModalContext);
-    const [loading, setLoading] = useState(false);
-
+    /**
+     * Updates the next execution date when the cron expression or start date changes.
+     */
     useEffect(() => {
         if (cronExpression && cronExpression.hasNext()) {
             setNextExecution(cronExpression.next().toDate());
         }
     }, [cronExpression, startDate]);
 
+    /**
+     * Determines the event type based on query parameters.
+     * Redirects to the events page if no valid type is found.
+     */
     useEffect(() => {
         if (searchParams.get('ispilot')) {
             setEventTypeId(1); // Pilot Way
@@ -65,19 +81,26 @@ const NewEvent = () => {
         }
     }, [searchParams]);
 
+    /**
+     * Handles form submission to create a new event.
+     * @param values - Form values submitted by the user.
+     */
     const onSubmit = async (values: typeof initialValues) => {
         if (!values.repeating) {
             values.cronSchedule = ''; // Ensure cronSchedule is empty when repeating is off
         }
         if (authUser === null || !authUser.userId) return;
+
         try {
             setLoading(true);
 
+            // Validate event type ID
             if (isNaN(eventTypeId) || (eventTypeId !== 1 && eventTypeId !== 2)) {
                 navigate('/');
                 return;
             }
 
+            // API call to create the event
             const response = await apiCreateEvent({
                 user: authUser,
                 event: {
@@ -87,6 +110,8 @@ const NewEvent = () => {
                     schedule: { cronSchedule: values.cronSchedule, userId: authUser.userId },
                 },
             });
+
+            // Navigate to the event details page if successful
             if (response.data.eventId) navigate(`/events/${response.data.eventId}`);
             else throw new Error('Failed to create event');
         } catch (error: unknown) {
@@ -101,6 +126,9 @@ const NewEvent = () => {
         }
     };
 
+    /**
+     * Redirects to the login page if the user is not authenticated.
+     */
     useEffect(() => {
         if (!authUser) {
             console.error('User not logged in, redirecting to login page');
@@ -119,6 +147,7 @@ const NewEvent = () => {
             </h3>
             <Formik validationSchema={validationSchema} initialValues={initialValues} onSubmit={onSubmit}>
                 {(formikProps) => {
+                    // Dynamically update cron expression and next execution date based on form values
                     useEffect(() => {
                         const { startTimestamp, cronSchedule } = formikProps.values;
 

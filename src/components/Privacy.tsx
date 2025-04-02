@@ -1,5 +1,34 @@
 import { Container } from 'react-bootstrap';
 import '@/components/_styles/Footer.scss';
+/**
+ * Footer component that displays the Privacy Policy for the WayMatcher application.
+ *
+ * @component
+ * @returns {JSX.Element} A container with the Privacy Policy content, including sections
+ * such as data collection, usage, sharing, GDPR compliance, and user rights.
+ *
+ * @remarks
+ * - This component is designed to provide transparency about how user data is handled.
+ * - The policy includes details about data controllers, data retention, cookies, and third-party services.
+ * - It is recommended to review the policy periodically for updates.
+ *
+ * @example
+ * ```tsx
+ * import Footer from './Privacy';
+ *
+ * function App() {
+ *   return (
+ *     <div>
+ *       <Footer />
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
+ * @note
+ * This Privacy Policy is a template and should be reviewed by a legal professional to ensure compliance
+ * with all applicable laws and regulations, including GDPR.
+ */
 export default function Footer() {
     return (
         <Container className='Privacy'>

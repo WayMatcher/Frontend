@@ -1,5 +1,4 @@
 import API from '@/api/api';
-import { Invite } from '@/types/objects/Invite/dto';
 const api = new API();
 
 /**
@@ -69,21 +68,6 @@ export const apiAcceptInvite = async (request: { userId: number; eventId: number
 export const apiAcceptRequest = async (request: { userId: number; eventId: number; eventRole: number }) => {
     try {
         return await api.axios.post('/Event/AddEventMember', { ...request });
-    } catch (error) {
-        throw api.handleApiError(error);
-    }
-};
-
-/**
- * Retrieves the list of invites for an event.
- *
- * @param request - The request object containing the event ID.
- * @returns A promise resolving to the list of invites.
- * @throws Will throw an error if the API call fails.
- */
-export const apiGetInviteList = async (request: { eventId: number }) => {
-    try {
-        return await api.axios.post<Invite[]>('/Event/GetEventInvites', { ...request });
     } catch (error) {
         throw api.handleApiError(error);
     }
