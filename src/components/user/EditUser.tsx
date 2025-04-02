@@ -14,15 +14,27 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import { useNavigate } from 'react-router-dom';
 
 export default function EditUser(): React.ReactElement {
+    // Context to show error modals
     const { showErrorModal } = useContext(ErrorModalContext);
+
+    // State to manage loading spinner visibility
     const [loading, setLoading] = React.useState(true);
+
+    // State to manage delete confirmation popup visibility
     const [deletePopup, setDeletePopup] = React.useState(false);
+
+    // Hook to get authenticated user details
     const authUser = useAuthUser<User>();
 
+    // Hook to handle user sign-out
     const signOut = useSignOut();
 
+    // Hook to navigate between routes
     const navigate = useNavigate();
 
+    /**
+     * Initial form values for editing user details
+     */
     const initialValues: Omit<User, 'email' | 'username'> & { password: string; password_confirm: string } = {
         password: '',
         password_confirm: '',
@@ -33,6 +45,9 @@ export default function EditUser(): React.ReactElement {
         profilePicture: undefined,
     };
 
+    /**
+     * Validation schema for the form using Yup
+     */
     const validationSchema = Yup.object({
         email: Yup.string().email("E-Mail isn't an E-Mail").required('Please enter an E-Mail'),
         username: Yup.string().required('Please enter a Username'),
@@ -43,6 +58,10 @@ export default function EditUser(): React.ReactElement {
         licenseVerified: Yup.boolean(),
     });
 
+    /**
+     * Handles form submission to update user details
+     * @param values - Form values submitted by the user
+     */
     const handleSubmit = async (values: typeof initialValues) => {
         try {
             if (authUser?.userId === undefined) {
@@ -50,6 +69,7 @@ export default function EditUser(): React.ReactElement {
                 return;
             }
 
+            // Extract password fields and prepare data for API
             const { password_confirm, password, ...tempData } = values;
 
             const hydratedData = {
@@ -64,6 +84,7 @@ export default function EditUser(): React.ReactElement {
 
             await apiSetUser(hydratedData);
         } catch (error: unknown) {
+            // Handle errors and show error modal
             if (error instanceof Error) {
                 showErrorModal(error.message);
             } else {
@@ -72,6 +93,9 @@ export default function EditUser(): React.ReactElement {
         }
     };
 
+    /**
+     * Handles user deletion
+     */
     const handleDelete = async () => {
         if (authUser?.userId) {
             try {
@@ -81,6 +105,7 @@ export default function EditUser(): React.ReactElement {
                 navigate('/login');
                 setDeletePopup(false);
             } catch (error: unknown) {
+                // Handle errors and show error modal
                 if (error instanceof Error) {
                     showErrorModal(error.message);
                 } else {
@@ -107,6 +132,7 @@ export default function EditUser(): React.ReactElement {
                                             return;
                                         }
 
+                                        // Fetch user data and populate form
                                         const response = await apiGetUser({ userID: authUser.userId });
 
                                         formikProps.setValues({
@@ -127,6 +153,7 @@ export default function EditUser(): React.ReactElement {
 
                             return (
                                 <FormikForm>
+                                    {/* Password fields */}
                                     <Row className='mb-3'>
                                         <FormInput
                                             label='Password'
@@ -144,6 +171,7 @@ export default function EditUser(): React.ReactElement {
                                         />
                                     </Row>
                                     <hr />
+                                    {/* Personal details fields */}
                                     <Row className='mb-3'>
                                         <FormInput
                                             label='First Name'
@@ -203,7 +231,9 @@ export default function EditUser(): React.ReactElement {
                                     </Row>
                                     <br />
                                     <div className='d-flex justify-content-between'>
+                                        {/* Edit buttons */}
                                         <EditButtons isLoading={loading} isSubmitting={formikProps.isSubmitting} />
+                                        {/* Delete button */}
                                         <Button onClick={() => setDeletePopup(true)} variant='danger'>
                                             Delete
                                         </Button>
@@ -214,6 +244,7 @@ export default function EditUser(): React.ReactElement {
                     </Formik>
                 </LoadingOverlay>
             </CollapseWrapper>
+            {/* Delete confirmation modal */}
             <Modal show={deletePopup} onHide={() => setDeletePopup(false)} centered>
                 <Modal.Body>
                     <h3>{authUser?.username}</h3>

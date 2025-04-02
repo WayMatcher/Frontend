@@ -10,14 +10,19 @@ import LoadingOverlay from '../LoadingOverlay';
 import AddressAdd from '@/components/address/AddressAdd';
 import { SingleAddressMap } from '../maps/SingleAddressMap';
 
+/**
+ * Component for editing a user's address.
+ * Fetches the current address, displays it, and allows the user to update or unset it.
+ */
 export default function EditAddress(): React.ReactElement {
-    const { showErrorModal } = useContext(ErrorModalContext);
-    const [isLoading, setIsLoading] = React.useState(true);
-    const authUser = useAuthUser<User>();
+    const { showErrorModal } = useContext(ErrorModalContext); // Context for displaying error modals
+    const [isLoading, setIsLoading] = React.useState(true); // Loading state
+    const authUser = useAuthUser<User>(); // Hook to get the authenticated user
 
-    const [address, setAddress] = React.useState<Address | null>(null);
-    const [newAddress, setNewAddress] = React.useState<Address | null>(null);
+    const [address, setAddress] = React.useState<Address | null>(null); // Current address state
+    const [newAddress, setNewAddress] = React.useState<Address | null>(null); // New address state
 
+    // Fetch the user's address when the component mounts
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -27,17 +32,17 @@ export default function EditAddress(): React.ReactElement {
                 }
 
                 const response = await apiGetAddress({ userID: authUser.userId });
-
-                setAddress(response.data);
+                setAddress(response.data); // Set the fetched address
             } catch (error: unknown) {
-                showErrorModal((error as Error).message);
+                showErrorModal((error as Error).message); // Show error modal on failure
             } finally {
-                setIsLoading(false);
+                setIsLoading(false); // Stop loading spinner
             }
         };
         fetchData();
     }, []);
 
+    // Update the user's address when `newAddress` changes
     useEffect(() => {
         const set = async () => {
             try {
@@ -46,19 +51,20 @@ export default function EditAddress(): React.ReactElement {
                     return;
                 }
 
-                setIsLoading(true);
+                setIsLoading(true); // Start loading spinner
                 if (newAddress && newAddress !== address) {
                     await apiSetAddress({ address: newAddress, userId: authUser?.userId });
-                    setAddress(newAddress);
+                    setAddress(newAddress); // Update the current address
                 }
-                setIsLoading(false);
+                setIsLoading(false); // Stop loading spinner
             } catch (error) {
-                showErrorModal((error as Error).message);
+                showErrorModal((error as Error).message); // Show error modal on failure
             }
         };
-        if (newAddress) set();
+        if (newAddress) set(); // Trigger address update if `newAddress` is set
     }, [newAddress]);
 
+    // Generate a Google Maps URL for the current address
     const mapUrl =
         address && address.latitude && address.longitude
             ? `https://www.google.com/maps?q=${address.latitude},${address.longitude}`
@@ -71,9 +77,11 @@ export default function EditAddress(): React.ReactElement {
                 <LoadingOverlay isLoading={isLoading}>
                     {address ? (
                         <ListGroup>
+                            {/* Display the address on a map */}
                             <ListGroup.Item style={{ padding: '0' }}>
                                 <SingleAddressMap address={address} width={400} height={640} />
                             </ListGroup.Item>
+                            {/* Display address details */}
                             <ListGroup.Item>
                                 <strong>Street:</strong> {address.street}
                             </ListGroup.Item>
@@ -97,22 +105,24 @@ export default function EditAddress(): React.ReactElement {
                                     <strong>Country:</strong> {address.country}
                                 </ListGroup.Item>
                             )}
+                            {/* Note: Latitude and longitude labels were swapped */}
                             {address.latitude && (
                                 <ListGroup.Item>
-                                    <strong>Longitude:</strong> {address.latitude}
+                                    <strong>Latitude:</strong> {address.latitude}
                                 </ListGroup.Item>
                             )}
                             {address.longitude && (
                                 <ListGroup.Item>
-                                    <strong>Latitude:</strong> {address.longitude}
+                                    <strong>Longitude:</strong> {address.longitude}
                                 </ListGroup.Item>
                             )}
+                            {/* Buttons for unsetting the address or viewing it on Google Maps */}
                             <ListGroup.Item>
                                 <ButtonGroup>
                                     <Button
                                         variant='outline-danger'
                                         onClick={() => {
-                                            setAddress(null);
+                                            setAddress(null); // Unset the current address
                                         }}
                                     >
                                         Unset Address
@@ -131,6 +141,7 @@ export default function EditAddress(): React.ReactElement {
                             </ListGroup.Item>
                         </ListGroup>
                     ) : (
+                        // Show the address add form if no address is set
                         <AddressAdd setAddress={setNewAddress} />
                     )}
                 </LoadingOverlay>

@@ -5,6 +5,13 @@ import { RegisterVehicleSchema } from '@/utils/formValidations';
 import Vehicle from '@/types/objects/Vehicle/dto';
 import { useEffect } from 'react';
 
+/**
+ * Component for displaying and editing a single vehicle entry.
+ *
+ * @param vehicle - The vehicle object to display or edit.
+ * @param vehicleListState - State containing the list of vehicles and its setter function.
+ * @param onDelete - Callback function to handle vehicle deletion.
+ */
 const VehicleEntry = ({
     vehicle,
     vehicleListState,
@@ -26,6 +33,12 @@ const VehicleEntry = ({
         additionalInfo: '',
     };
 
+    /**
+     * Handles form submission to update or add a vehicle.
+     *
+     * @param values - The form values representing the vehicle.
+     * @param formikHelpers - Formik helpers for managing form state.
+     */
     const onSubmit = (values: typeof initialValues, formikHelpers: FormikHelpers<Vehicle>) => {
         formikHelpers.setSubmitting(true);
         const vehicleIndex = vehicleList.findIndex((v) => v.vehicleId === vehicle.vehicleId);
@@ -41,6 +54,9 @@ const VehicleEntry = ({
         formikHelpers.setSubmitting(false);
     };
 
+    /**
+     * Deletes the current vehicle from the list.
+     */
     const deleteSelf = () => {
         const updatedVehicles = vehicleList.filter((v) => v.vehicleId !== vehicle.vehicleId);
         if (vehicle.vehicleId) onDelete(vehicle.vehicleId);

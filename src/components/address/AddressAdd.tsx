@@ -8,9 +8,22 @@ import { getHEREAddress } from '@/api/endpoints/address';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import LoadingOverlay from '@/components/LoadingOverlay';
 
+/**
+ * AddressAddModal component allows users to add an address by fetching data from the HERE API.
+ * @param {Object} props - Component props.
+ * @param {React.Dispatch<React.SetStateAction<Address | null>>} props.setAddress - Function to set the selected address.
+ * @returns {JSX.Element} The rendered AddressAddModal component.
+ */
 const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetStateAction<Address | null>> }) => {
-    const { showErrorModal } = useContext(ErrorModalContext);
-    const [isLoading, setIsLoading] = useState(false);
+    const { showErrorModal } = useContext(ErrorModalContext); // Context for displaying error modals.
+    const [isLoading, setIsLoading] = useState(false); // State to manage loading overlay visibility.
+
+    /**
+     * Fetches address details from the HERE API.
+     * @param {string} address - The address string to search for.
+     * @returns {Promise<Address>} The formatted address object.
+     * @throws Will throw an error if the API call fails.
+     */
     const getAddress = async (address: string): Promise<Address> => {
         try {
             const response = await getHEREAddress({ q: address });
@@ -29,25 +42,29 @@ const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetS
                 street: item.address.street + ' ' + item.address.houseNumber || '',
             };
         } catch (error) {
-            showErrorModal('Error fetching address');
+            showErrorModal('Error fetching address'); // Show error modal if API call fails.
             throw error;
         }
     };
 
-    const initialValues = { address: '' };
+    const initialValues = { address: '' }; // Initial form values.
 
     const validationSchema = Yup.object({
-        address: Yup.string().required('Address is required'),
+        address: Yup.string().required('Address is required'), // Validation schema for the form.
     });
 
+    /**
+     * Handles form submission.
+     * @param {typeof initialValues} values - The form values.
+     */
     const onSubmit = async (values: typeof initialValues) => {
         try {
-            setIsLoading(true);
-            const response = await getAddress(values.address);
-            setAddress(response);
-            setIsLoading(false);
+            setIsLoading(true); // Show loading overlay.
+            const response = await getAddress(values.address); // Fetch address details.
+            setAddress(response); // Update the parent component with the fetched address.
+            setIsLoading(false); // Hide loading overlay.
         } catch (error: unknown) {
-            if (error instanceof Error) showErrorModal(error.message);
+            if (error instanceof Error) showErrorModal(error.message); // Show error modal if an error occurs.
             throw error;
         }
     };
@@ -58,6 +75,7 @@ const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetS
                 {(formikProps) => (
                     <FormikForm>
                         <Row className='mb-3'>
+                            {/* Input field for entering the address */}
                             <FormInput
                                 type='text'
                                 label='Address'
@@ -68,6 +86,7 @@ const AddressAddModal = ({ setAddress }: { setAddress: React.Dispatch<React.SetS
                         </Row>
                         <Row>
                             <Col>
+                                {/* Submit button */}
                                 <Button type='submit' disabled={formikProps.isSubmitting}>
                                     {formikProps.isSubmitting ? 'Saving...' : 'Save'}
                                 </Button>

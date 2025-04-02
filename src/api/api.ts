@@ -1,13 +1,28 @@
 import axios, { AxiosInstance } from 'axios';
 
+/**
+ * API class for handling HTTP requests and managing API errors.
+ */
 export default class API {
+    /**
+     * The base URL for the API.
+     */
     public readonly BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
+
+    /**
+     * Axios instance for making HTTP requests.
+     */
     public axios: AxiosInstance;
 
     constructor() {
         this.axios = this.createAxiosInstance();
     }
 
+    /**
+     * Creates a new Axios instance with default configuration.
+     *
+     * @returns A configured Axios instance.
+     */
     private createAxiosInstance(): AxiosInstance {
         return axios.create({
             baseURL: this.BASE_URL,
@@ -19,13 +34,11 @@ export default class API {
     }
 
     /**
-     * Handles errors from API requests, specifically those made using Axios.
-     * Differentiates between various types of errors (e.g., network issues, server responses, request setup errors)
-     * and logs appropriate messages to the console. Throws an error with a relevant message based on the type of error.
+     * Handles errors from API requests, differentiating between various types of errors.
      *
-     * @param error - The error object to handle. Can be an Axios error or a generic error.
-     *
-     * @throws {Error} Throws an error with a specific message based on the type of error encountered.
+     * @param error - The error object to handle.
+     * @returns The error object after handling.
+     * @throws Will throw an error with a specific message based on the type of error encountered.
      */
     handleApiError(error: unknown): unknown {
         if (axios.isAxiosError(error)) {

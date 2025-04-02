@@ -6,6 +6,13 @@ import Schedule from '@/types/objects/Schedule/dto';
 
 const api = new API();
 
+/**
+ * Fetches a list of events based on the provided request parameters.
+ *
+ * @param request - The request object containing optional user ID or pilot status.
+ * @returns A promise resolving to the list of events.
+ * @throws Will throw an error if the API call fails.
+ */
 export const apiGetEventList = async (request: { isPilot?: boolean; userId?: number }) => {
     if (request.userId) {
         try {
@@ -22,6 +29,13 @@ export const apiGetEventList = async (request: { isPilot?: boolean; userId?: num
     }
 };
 
+/**
+ * Fetches details of a specific event.
+ *
+ * @param request - The request object containing the event ID.
+ * @returns A promise resolving to the event details.
+ * @throws Will throw an error if the API call fails.
+ */
 export const apiGetEvent = async (request: { eventId: number }) => {
     try {
         return await api.axios.get<WMEvent>('/Event/GetEvent', { params: { ...request } });
@@ -30,6 +44,13 @@ export const apiGetEvent = async (request: { eventId: number }) => {
     }
 };
 
+/**
+ * Creates a new event.
+ *
+ * @param request - The request object containing user and event details.
+ * @returns A promise resolving to the created event.
+ * @throws Will throw an error if the API call fails.
+ */
 export const apiCreateEvent = async (request: {
     user: User;
     event: {
@@ -48,6 +69,13 @@ export const apiCreateEvent = async (request: {
     }
 };
 
+/**
+ * Updates an existing event.
+ *
+ * @param request - The request object containing user and event details.
+ * @returns A promise resolving to the updated event.
+ * @throws Will throw an error if the API call fails.
+ */
 export const apiUpdateEvent = async (request: {
     user: User;
     event: {
@@ -66,6 +94,13 @@ export const apiUpdateEvent = async (request: {
     }
 };
 
+/**
+ * Deletes an event.
+ *
+ * @param request - The request object containing the event ID.
+ * @returns A promise resolving to the deletion result.
+ * @throws Will throw an error if the API call fails.
+ */
 export const apiDeleteEvent = async (request: { eventId: number }) => {
     try {
         return await api.axios.post('/Event/DeleteEvent', request.eventId);
@@ -74,6 +109,13 @@ export const apiDeleteEvent = async (request: { eventId: number }) => {
     }
 };
 
+/**
+ * Fetches a route based on the provided origin, destination, and waypoints.
+ *
+ * @param request - The request object containing origin, destination, and waypoints.
+ * @returns A promise resolving to the route data.
+ * @throws Will throw an error if the API call fails.
+ */
 export const apiGetRoute = async (request: {
     origin: { latitude: number; longitude: number };
     destination: { latitude: number; longitude: number };

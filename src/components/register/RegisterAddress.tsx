@@ -4,6 +4,19 @@ import CollapseWrapper from '@/components/CollapseWrapper';
 import Address from '@/types/objects/Address/dto';
 import AddressAdd from '@/components/address/AddressAdd';
 
+/**
+ * Component for managing and displaying an address during the registration process.
+ *
+ * @param {Object} props - Component props.
+ * @param {[Address | null, React.Dispatch<React.SetStateAction<Address | null>>]} props.addressState - State for the address object.
+ * @param {Object} props.done - Object tracking completion status of different registration steps.
+ * @param {boolean} props.done.user - Indicates if the user step is complete.
+ * @param {boolean} props.done.address - Indicates if the address step is complete.
+ * @param {boolean} props.done.vehicle - Indicates if the vehicle step is complete.
+ * @param {Function} props.done.onComplete - Callback to update the completion status.
+ *
+ * @returns {React.ReactElement} The rendered component.
+ */
 export default function RegisterAddress({
     addressState,
     done,
@@ -18,7 +31,7 @@ export default function RegisterAddress({
 }): React.ReactElement {
     const [address, setAddress] = addressState;
 
-    // Mark as done based on completion
+    // Mark the address step as done if an address is set
     useEffect(() => done.onComplete(!!address), [address, done.onComplete]);
 
     return (
@@ -27,6 +40,7 @@ export default function RegisterAddress({
                 <Container>
                     {address ? (
                         <ListGroup>
+                            {/* Display address details */}
                             <ListGroup.Item>Street: {address.street}</ListGroup.Item>
                             <ListGroup.Item>Postal Code: {address.postalcode}</ListGroup.Item>
                             <ListGroup.Item>Region: {address.region}</ListGroup.Item>
@@ -35,6 +49,7 @@ export default function RegisterAddress({
                             <ListGroup.Item>Longitude: {address.latitude}</ListGroup.Item>
                             <ListGroup.Item>Latitude: {address.longitude}</ListGroup.Item>
                             <ListGroup.Item>
+                                {/* Button to unset the address */}
                                 <Button
                                     variant='outline-danger'
                                     onClick={() => {
@@ -46,6 +61,7 @@ export default function RegisterAddress({
                             </ListGroup.Item>
                         </ListGroup>
                     ) : (
+                        // Render AddressAdd component if no address is set
                         <AddressAdd setAddress={setAddress} />
                     )}
                 </Container>

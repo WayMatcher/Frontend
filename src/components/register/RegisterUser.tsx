@@ -1,16 +1,26 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Form as FormikForm, Formik } from 'formik';
 import { Button, Row } from 'react-bootstrap';
 import FormInput from '@/components/FormInput';
 import { FormUserRegister } from '@/types/objects/User/form';
 import CollapseWrapper from '@/components/CollapseWrapper';
 import User from '@/types/objects/User/dto';
-import { useEffect } from 'react';
 import ErrorModalContext from '@/contexts/ErrorModalContext';
 import { apiGetUsernameList } from '@/api/endpoints/user';
 import * as Yup from 'yup';
 import LoadingOverlay from '../LoadingOverlay';
 
+/**
+ * Component for registering a new user.
+ * @param {Object} props - Component props.
+ * @param {[User & { password: string } | null, React.Dispatch<React.SetStateAction<User & { password: string } | null>>]} props.userState - State for the user object.
+ * @param {Object} props.done - Object to track completion status of different steps.
+ * @param {boolean} props.done.user - Indicates if the user step is complete.
+ * @param {boolean} props.done.address - Indicates if the address step is complete.
+ * @param {boolean} props.done.vehicle - Indicates if the vehicle step is complete.
+ * @param {Function} props.done.onComplete - Callback to mark a step as complete.
+ * @returns {React.ReactElement} The RegisterUser component.
+ */
 export default function RegisterUser({
     userState,
     done,
@@ -26,45 +36,48 @@ export default function RegisterUser({
         onComplete: (isDone: boolean) => void;
     };
 }): React.ReactElement {
-    const [usernames, setUsernames] = useState<string[]>([]);
-    const [emails, setEmails] = useState<string[]>([]);
-    const [loading, setLoading] = React.useState<boolean>(true);
-    const { showErrorModal } = useContext(ErrorModalContext);
+    const [usernames, setUsernames] = useState<string[]>([]); // List of existing usernames
+    const [emails, setEmails] = useState<string[]>([]); // List of existing emails
+    const [loading, setLoading] = React.useState<boolean>(true); // Loading state for API calls
+    const { showErrorModal } = useContext(ErrorModalContext); // Context for displaying error modals
 
-    // Fetch Usernames on Page load
+    // Fetch usernames and emails on component mount
     useEffect(() => {
         const fetchUsernames = async () => {
             try {
                 setLoading(true);
-                // Fetch usernames from the API or any other source
-                const response = await apiGetUsernameList();
+                const response = await apiGetUsernameList(); // Fetch usernames from the API
 
-                // Sets the usernames
+                // Extract usernames and emails from the response
                 const usernamesList = response.data.map((user: User) => user.username);
                 setUsernames(usernamesList);
 
-                // Sets the emails
                 const emailList = response.data.map((user: User) => user.email);
                 setEmails(emailList);
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                    showErrorModal(error.message);
+                    showErrorModal(error.message); // Show error modal if an error occurs
                 } else {
                     console.error('Unexpected error:', error);
                 }
             } finally {
-                setLoading(false);
+                setLoading(false); // Stop loading indicator
             }
         };
 
         fetchUsernames();
     }, []);
 
+    /**
+     * Handles form submission.
+     * @param {FormUserRegister} values - Form values submitted by the user.
+     */
     const handleSubmit = async (values: FormUserRegister) => {
-        userState[1](values);
-        done.onComplete(true);
+        userState[1](values); // Update user state with form values
+        done.onComplete(true); // Mark the step as complete
     };
 
+    // Validation schema for the form using Yup
     const validationSchema = Yup.object({
         email: Yup.string()
             .email("E-Mail isn't an E-Mail")
@@ -88,6 +101,7 @@ export default function RegisterUser({
         licenseVerified: Yup.boolean(),
     });
 
+    // Initial values for the form
     const initialValues: FormUserRegister = {
         email: '',
         username: '',
@@ -108,6 +122,7 @@ export default function RegisterUser({
                     {(formikProps) => {
                         const { setValues } = formikProps; // Access Formik context here
 
+                        // Update form values if userState changes
                         useEffect(() => {
                             if (userState[0]) {
                                 setValues({
@@ -119,6 +134,7 @@ export default function RegisterUser({
 
                         return (
                             <FormikForm>
+                                {/* Username and Email Fields */}
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='Username'
@@ -135,6 +151,7 @@ export default function RegisterUser({
                                         formikProps={formikProps}
                                     />
                                 </Row>
+                                {/* Password Fields */}
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='Password'
@@ -150,6 +167,7 @@ export default function RegisterUser({
                                     />
                                 </Row>
                                 <hr />
+                                {/* Personal Information Fields */}
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='First Name'
@@ -176,6 +194,7 @@ export default function RegisterUser({
                                     />
                                 </Row>
                                 <hr />
+                                {/* Additional Information Fields */}
                                 <Row className='mb-3'>
                                     <FormInput
                                         label='Additional Information'
@@ -201,6 +220,7 @@ export default function RegisterUser({
                                         formikProps={formikProps}
                                     />
                                 </Row>
+                                {/* Submit Button */}
                                 <Button type='submit'>{formikProps.isSubmitting ? 'Saving...' : 'Save'}</Button>
                             </FormikForm>
                         );
