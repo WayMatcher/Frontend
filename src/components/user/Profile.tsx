@@ -178,9 +178,9 @@ export default function Profile() {
                                         </td>
                                     </tr>
                                 )}
-                                {vehicles?.map((vehicle) => (
-                                    <tr key={vehicle.vehicleId}>
-                                        <td>Vehicle #{vehicle.vehicleId}</td>
+                                {vehicles?.map((vehicle, index) => (
+                                    <tr key={`vehicle-${index + 1}`}>
+                                        <td>Vehicle #{index + 1}</td>
                                         <td>
                                             {vehicle?.manufacturerName} {vehicle?.model} {vehicle?.yearOfManufacture}
                                         </td>

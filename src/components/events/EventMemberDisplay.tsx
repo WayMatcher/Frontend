@@ -7,6 +7,7 @@ import Rating from '../rating/Rating';
 import EventInvite from './EventInvite';
 import WMEvent from '@/types/objects/Event/dto';
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
 const EventMemberDisplay = ({
     members,
@@ -32,6 +33,8 @@ const EventMemberDisplay = ({
                         <ListGroup.Item
                             key={member.memberId}
                             className={member.memberId === authUser?.userId ? 'eventOwner' : undefined}
+                            as={Link}
+                            to={`/profile/${member.user.username}`}
                         >
                             <Row>
                                 <Col md='auto'>
@@ -114,6 +117,8 @@ const EventMemberDisplay = ({
                                 width: 50,
                                 height: 50,
                             }}
+                            as={Link}
+                            to={`/profile/${member.user.username}`}
                         >
                             <ProfilePicture
                                 image={member.user.profilePicture}

@@ -72,7 +72,7 @@ export default function EditAddress(): React.ReactElement {
                     {address ? (
                         <ListGroup>
                             <ListGroup.Item style={{ padding: '0' }}>
-                                <SingleAddressMap address={address} width={640} height={400} />
+                                <SingleAddressMap address={address} width={400} height={640} />
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <strong>Street:</strong> {address.street}

@@ -77,7 +77,12 @@ const VehicleEntry = ({
                         <Row className='mb-3'>
                             <FormInput label='Year' name='yearOfManufacture' type='number' formikProps={formikProps} />
                             <FormInput label='Seats' name='seats' type='number' formikProps={formikProps} />
-                            <FormInput label='Fuel Milage' name='fuelMilage' type='number' formikProps={formikProps} />
+                            <FormInput
+                                label='Fuel Milage (L/100km)'
+                                name='fuelMilage'
+                                type='number'
+                                formikProps={formikProps}
+                            />
                         </Row>
                         <Row className='mb-3'>
                             <FormInput

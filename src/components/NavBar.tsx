@@ -1,6 +1,6 @@
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import '@/components/_styles/NavBar.scss';
-import { NavDropdown, Navbar, Nav, Container, ButtonGroup, Button, Offcanvas, Badge } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Container, ButtonGroup, Button, Offcanvas, Badge, Image } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
@@ -8,6 +8,7 @@ import User from '@/types/objects/User/dto';
 import { useEffect, useState } from 'react';
 import { apiGetInbox } from '@/api/endpoints/inbox';
 import Notification from '@/types/objects/Notification/dto';
+import brandImgUrl from './WayMatcher-Logo-NoText-Transparent.png';
 export default function NavBar() {
     const signOut = useSignOut();
     const authUser = useAuthUser<User>();
@@ -39,7 +40,7 @@ export default function NavBar() {
                         navigate('/');
                     }}
                 >
-                    WayMatcher
+                    <Image src={brandImgUrl} height={30} /> WayMatcher
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} />
                 <Navbar.Offcanvas
@@ -55,14 +56,39 @@ export default function NavBar() {
                             <Link to='/' className='nav-link'>
                                 Home
                             </Link>
-                            <Link to='/events' className='nav-link'>
-                                Ways
-                            </Link>
-                            {isAuthenticated && (
-                                <Link to='/events?filter=owned' className='nav-link'>
-                                    Matches
-                                </Link>
-                            )}
+                            <NavDropdown
+                                title='Ways'
+                                id='ways-dropdown'
+                                aria-label='Way Filters'
+                                className='justify-content-end'
+                            >
+                                <NavDropdown.Item onClick={() => navigate('/events')} aria-label='Events'>
+                                    <strong>All Ways</strong>
+                                </NavDropdown.Item>
+                                <NavDropdown.Item
+                                    onClick={() => navigate('/events?filter=passenger')}
+                                    aria-label='Passenger Ways'
+                                >
+                                    Passenger Ways
+                                </NavDropdown.Item>
+                                <NavDropdown.Item
+                                    onClick={() => navigate('/events?filter=pilot')}
+                                    aria-label='Pilot Ways'
+                                >
+                                    Pilot Ways
+                                </NavDropdown.Item>
+                                {isAuthenticated && (
+                                    <>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item
+                                            onClick={() => navigate('/events?filter=owned')}
+                                            aria-label='My Matches'
+                                        >
+                                            My Matches
+                                        </NavDropdown.Item>
+                                    </>
+                                )}
+                            </NavDropdown>
                         </Nav>
                         <Nav>
                             {isAuthenticated ? (
